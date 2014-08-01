@@ -81,6 +81,7 @@ void windowing (Mat image, int dpi, Mat *window, window** imageWindow) {//, int 
 	cout << "Nx: " << Nx << endl;
 	cout << "Ny: " << Ny << endl;
 	cout << "extraX" << extraX << endl;
+	cout << "extraY" << extraY << endl;
 
 	return;
 }
