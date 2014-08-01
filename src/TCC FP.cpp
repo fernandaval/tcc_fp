@@ -60,7 +60,7 @@ void fillWindowBorderWhite(Mat image, Mat *imageWhiteBorder, int N, int extraX, 
 	//quando extraX ou extraY for ímpar, ex: 5, as bordas lateral esquerda e/ou superior serão preenchidas com
 	//1 branco a menos que as bordas inferior e lateral direita
 
-	imageWhiteBorder->create(x + extraX, y + extraY, image.type());
+	imageWhiteBorder->create(y + extraY, x + extraX, image.type());
 	//imageWhiteBorder->create(extraX/2, y, image.type());
 
 	cout << "y: " << y << endl;
@@ -72,47 +72,44 @@ void fillWindowBorderWhite(Mat image, Mat *imageWhiteBorder, int N, int extraX, 
 
 	//preenche borda superior
 	cout << "preenche borda superior" << endl;
-	for (int i =0; i < extraX/2; i++){
-		for (int j = 0; j < y + extraY; j++) {
+	for (int i =0; i < extraY/2; i++){
+		for (int j = 0; j < x + extraX; j++) {
 			imageWhiteBorder->at<uchar>(i,j) = 255;
 		}
 	}
 
 	//preenche lateral esquerda
 	cout << "preenche lateral esquerda" << endl;
-	for (int i = extraX/2; i < x + extraX/2; i++){
-		for (int j = 0; j < extraY/2; j++) {
-			//cout << "j: " << j << endl;
+	for (int i = extraY/2; i < y + extraY/2; i++){
+		for (int j = 0; j < extraX/2; j++) {
 			imageWhiteBorder->at<uchar>(i,j) = 255;
 		}
 	}
 
 	//preenche lateral direita
 	cout << "preenche lateral direita" << endl;
-	for (int i = extraX/2; i < x + extraX/2; i++){
-		for (int j = y + extraY/2; j < y + extraY; j++) {
-			//cout << "j: " << j << endl;
+	for (int i = extraY/2; i < y + extraY/2; i++){
+		for (int j = x + extraX/2; j < x + extraX; j++) {
 			imageWhiteBorder->at<uchar>(i,j) = 255;
 		}
 	}
 
 	//preenche borda inferior
 	cout << "preenche borda inferior" << endl;
-	for (int i = x + extraX/2; i < x +extraX; i++){
-		for (int j = 0; j < y + extraY; j++) {
-			//cout << "j: " << j << endl;
+	for (int i = y + extraY/2; i < y + extraY; i++){
+		for (int j = 0; j < x + extraX; j++) {
 			imageWhiteBorder->at<uchar>(i,j) = 255;
 		}
 	}
 
 	//preenche imagem na digital no centro
 	cout << "preenche imagem na digital no centro" << endl;
-	for (int i = extraX/2; i < x + extraX/2; i++){
+	for (int i = extraY/2; i < y + extraY/2; i++){
 	//for (int i = extraX/2; i < x; i++){
 		cout << "i: " << i << endl;
-		for (int j = extraY/2; j < y + extraY/2; j++){
+		for (int j = extraX/2; j < x + extraX/2; j++){
 		//for (int j = extraY/2; j < y ; j++){
-			imageWhiteBorder->at<uchar>(i,j) = image.at<uchar>(i - extraX/2, j - extraY/2);
+			imageWhiteBorder->at<uchar>(i,j) = image.at<uchar>(i - extraY/2, j - extraX/2);
 		}
 	}
 
@@ -120,17 +117,8 @@ void fillWindowBorderWhite(Mat image, Mat *imageWhiteBorder, int N, int extraX, 
 	namedWindow( "Borda", WINDOW_AUTOSIZE ); // Create a window to display image
 	imshow( "Borda", *imageWhiteBorder); // Show the image inside it
 
-	cout << "depois da janela das bordas" << endl;
-
-//	vector< vector<int> > imageValue;
-
-
-	//cout << "Vec: " << image.at<Vec>(0,0) << endl;
-
-	//imageValue[0][0] = image.at<uchar>(0,0);
-
-	//cout << "imageValue: " << imageValue[0][0] << endl;
-
+	imwrite("imageWhiteBorder.tiff", *imageWhiteBorder);
+	imwrite("image.tiff", image);
 	return;
 }
 
@@ -139,8 +127,8 @@ void windowing (Mat image, int dpi, Mat *imageWhiteBorder, window** imageWindow)
 	int N, Nx, Ny;
 	int extraX, extraY;
 
-	x = image.rows;
-	y = image.cols;
+	y = image.rows;
+	x = image.cols;
 
 	//para 500 dpi, janelas de 17 x 17, a proporção é de dpi/N = 29
 	//as janelas da última coluna direita e da última linha podem ser um pouco maiores ou menores
