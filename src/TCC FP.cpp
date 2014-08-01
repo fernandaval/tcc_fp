@@ -75,16 +75,12 @@ void windowing (Mat image, int dpi, Mat *window, window** imageWindow) {//, int 
 	extraY = y - Ny*N;
 
 	//teste
-	cout << "x: ";
-	cout << x << endl;
-	cout << "y: ";
-	cout << y << endl;
-	cout << "N: ";
-	cout << N << endl;
-	cout << "Nx: ";
-	cout << Nx << endl;
-	cout << "Ny: ";
-	cout << Ny << endl;
+	cout << "x: " << x << endl;
+	cout << "y: " << y << endl;
+	cout << "N: " << N << endl;
+	cout << "Nx: " << Nx << endl;
+	cout << "Ny: " << Ny << endl;
+	cout << "extraX" << extraX << endl;
 
 	return;
 }
