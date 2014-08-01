@@ -1,0 +1,106 @@
+%%
+%% Arquivo principal
+%%
+
+\documentclass[letterpaper,12pt,openright,twoside]{book}
+
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{times}
+\usepackage[portuges, brazil]{babel}    % hiphenação em portugues
+\usepackage{indentfirst}        % indenta primeiro parágrafo
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{wasysym}
+\usepackage{pifont}
+\usepackage{textcomp}      % \texttrademark
+\usepackage{nomencl}    % glossario
+\usepackage{url}  
+\usepackage{multirow}  
+%\usepackage[round]{natbib}  % citações tipo  (nome-ano)
+%\usepackage{natbib}  % citações tipo  [nome-ano]
+\usepackage[alf]{abntcite} % citações no formato abnt
+\usepackage{setspace}
+
+%% tamanho do texto e margens
+\headheight 16pt
+\setlength{\topmargin}{-15pt} % extra vert. space + at the top of header: 23pt
+\setlength{\oddsidemargin}{0pt} % extra spc added at the left of odd page: 0pt
+\setlength{\evensidemargin}{-12pt} % ext. spc added at the left of even pg: 59pt
+\setlength{\textheight}{638pt} % height of the body: 592pt
+\setlength{\textwidth}{483pt} % width of the body: 470pt
+
+%% Estilo da página corrente e demais páginas
+\pagestyle{fancyplain}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
+\lhead[\fancyplain{}{\bfseries\thepage}]{\fancyplain{}{\bfseries\rightmark}}
+\rhead[\fancyplain{}{\bfseries\leftmark}]{\fancyplain{}{\bfseries\thepage}}
+\cfoot[\fancyplain{\bfseries\thepage}{}]{\fancyplain{\bfseries\thepage}{}}
+
+% Lista de arquivos a serem processados
+\includeonly{capa,resumos2,Cap1/cap1,ApendiceA/apA}
+
+%% Para a criação do Glossário
+\makenomenclature
+
+%% Comandos para facilitar a edição 
+\newcommand{\cpp}{\texttt{C$++$}}
+\newcommand{\latex}{\LaTeX}
+
+
+%% Inicia o texto
+\begin{document}
+
+%% Abrevia figuras e tabelas
+\def\figurename{Fig.}
+\def\tablename{Tab.}
+
+%% Paginas iniciais (sem numeração)
+\frontmatter
+
+%% Página de rosto
+\include{capa}
+
+%% Resumo/Abstract
+\include{resumos2}
+
+%% Lista de conteúdo (sumário)
+\def\contentsname{Sumário}
+\tableofcontents
+
+%% Lista de figuras (gerada automaticamente)
+\cleardoublepage
+\addcontentsline{toc}{chapter}{Lista de Figuras}
+\listoffigures
+
+%% Lista de tabelas (gerada automaticamente)
+\cleardoublepage
+\addcontentsline{toc}{chapter}{Lista de Tabelas}
+\listoftables
+
+%% Glossário (gerado automaticamente - veja entradas em cap1.tex)
+\cleardoublepage
+\renewcommand{\nomname}{Glossário}
+\markboth{GLOSSÁRIO}{GLOSSÁRIO}
+\addcontentsline{toc}{chapter}{\nomname}
+\printnomenclature
+
+\mainmatter
+
+%% Cap. 1 - Introdução
+\include{Cap1/cap1}
+
+%% Referências bibliogáficas (geradas automaticamente)
+\addcontentsline{toc}{chapter}{Referências bibliográficas}
+%\bibliographystyle{plainnat}  %% nome-ano
+%\bibliographystyle{unsrt}    %% numero
+\bibliographystyle{abnt-alf}  %% nome-ano
+\bibliography{monografia}
+
+\appendix
+%%Apêndice A 
+\include{ApendiceA/apA}
+
+\end{document}
+

@@ -1,0 +1,212 @@
+%%
+%% Capítulo 1: Modelo de Capítulo
+%%
+\chapter{Modelo de capítulo}
+\label{Cap:modelo}
+
+O capítulo deve conter uma introdução e um fecho.
+A introdução fornece ao leitor uma breve descrição
+do que será tratado no capítulo, enquanto o fecho
+apresenta comentários finais sobre o que foi desenvolvido
+no capítulo. 
+
+Capítulos são divididos em seções. O número ideal de
+seções é impossível de se precisar. Entretanto, um
+capítulo com uma única seção provavelmente deve ser
+agregado ao capítulo anterior ou posterior. Um capítulo
+com quinze seções provavelmente deve ser subdividido em
+dois capítulos.
+
+Capítulos, seções e subseções devem ser rotulados para que 
+possam ser  referenciados em qualquer parte do texto. 
+Exemplo: $\ldots$ no capítulo~\ref{Cap:modelo} apresentamos
+um modelo de capítulo de tese.
+
+
+\section{Seções}
+\label{Sec:secoes}  %% labels não devem conter caracteres acentuados
+
+Seções são divisões do conteúdo do capítulo. Esta divisão
+deve ser lógica (temática) e não física (por tamanho).
+Por exemplo, um capítulo que trata de \textit{software}
+de sistema teria seções que tratam de montadores, ligadores,
+carregadores, compiladores e sistemas operacionais.
+
+Tal como capítulos, seções devem ser rotuladas para referência
+em outras partes do texto. Seções são divididas em subseções.
+
+\subsection{Subseções}
+\label{Sec:subsecoes}
+
+Subseções são divisões de seções. No exemplo do texto sobre \textit{software}
+de sistema, a seção re\-fe\-ren\-te a sistema operacional conteria, 
+por exemplo, subseções que tratam de arquivos, processos, memória e 
+entrada/saída. Tal como seções, subseções são divisões temáticas do texto.
+
+
+\subsection*{Subsubseções}
+\label{Sec:subsubsecoes}
+
+Subsubseções são divisões de subseções e não devem ser numeradas no texto.
+O $\ast$ após o comando \textit{subsubsection} instrui o \latex~a não numerar
+a subsubseção.
+
+
+\section{Figuras, tabelas e gráficos}
+\label{Sec:figuras}
+
+Figuras são editadas com editores gráficos capazes de exportar
+a figura em formatos PS (\textit{PostScript}) 
+ou, preferencialmente, EPS (\textit{Encapsulated PostScript}).
+O editor \textit{xfig} é adequado para a maioria dos casos.
+Por exemplo, a figura~\ref{fig:PNO-PrvSrv} foi editada no
+\textit{xfig}. Outra opção é o editor {\texttt dia}, um editor 
+orientado a diagramas (UML, fluxograma, etc.) com capacidade de exportar 
+EPS~\cite{hp-dia03}  Figuras em formato GIF, JPEG e bitmap podem ser
+convetidas para o formato EPS através do aplicativo 
+{\textit xv}. {\textit xv} não lista o formato EPS
+dentre aqueles que é capaz de manipular. Entretanto,
+selecionando-se o formato \textit{PostScript} e fornecendo-se
+a extensão {\textit .eps} ao nome do arquivo, o formato
+EPS é gerado.
+
+
+\begin{figure}[!hbt]
+\centering \includegraphics[width=12cm]{{./Cap1/pno-retl.eps}}
+\caption{Operador de rede - provedor de serviço.}
+\label{fig:PNO-PrvSrv}
+\end{figure}
+
+Tabelas são construídas com comandos próprios do \latex. Por
+exemplo, a tabela~\ref{tab:Cmpt-SessAcss-ArchServ} foi construída desta forma.
+
+\begin{table}[!htb]  \begin{center} 
+\begin{tabular}{|c|c|l|c|} \hline\hline
+\textit{Categoria} & \textit{Domínio} & \textit{Componente} & \textit{Acrônimo}
+ \\ \hline\hline
+\multirow{5}{4cm}{Sessão de Acesso} & \multirow{2}{2cm}{Usuário} &
+ Aplicação do Usuário & asUAP \\ \cline{3-4}
+  & & Agente do Provedor   & PA \\ \cline{2-4}
+  & \multirow{3}{2cm}{Provedor} & Agente do Usuário & UA \\ \cline{3-4}
+  & & Agente de Usuário Especificado & namedUA \\ \cline{3-4}
+  & & Agente de Usuário Anônimo & anonUA \\ \hline\hline
+\end{tabular} 
+\end{center}
+\caption{Componentes da sessão de acesso da arquitetura de serviço TINA.}
+\label{tab:Cmpt-SessAcss-ArchServ}
+\end{table}
+
+
+Gráficos são gerados com aplicativos capazes de exportar
+nos formatos PS ou EPS. A ferramenta \textit{gnuplot} é
+uma das mais utilizadas para a geração de gráficos. 
+Uma vez no formato EPS, gráficos são inseridos no texto
+tal como figuras (vide figura~\ref{fig:PbmDiversos}).
+
+
+\begin{figure}[!hbt]
+\centering \includegraphics[width=.7\linewidth]{./Cap1/PbmDiversos.eps}
+\caption{$P_b$; desvanecimentos arbitrários~\mbox{($M=3$).}}
+\label{fig:PbmDiversos}
+\end{figure}
+
+
+\section{Citações bibliográficas}
+\label{Sec:citacoes}
+
+\latex~utiliza um arquivo em separado para as referências bibliográficas.
+Este arquivo deve possuir o mesmo nome do arquivo mestre com a extensão \textit{bib}.
+Arquivos \textit{bib} possuem os seguintes estilos de referência:
+\begin{itemize} \itemsep -0.5ex
+\item artigos em anais de simpósios~\cite{proc-faina01};
+\item artigos em coletâneas de artigos~\cite{col-pinto00};
+\item capítulos de livros~\cite{inbook-santos00};
+\item anais de simpósios~\cite{proc-sbrc02};
+\item livros~\cite{book-lamport94};
+\item teses de doutorado~\cite{phd-faina01};
+\item teses de mestrado~\cite{msc-santos03};
+\item relatórios técnicos~\cite{rep-omg2000};
+\item manuais técnicos~\cite{man-orbix99};
+\item trabalhos não publicados~\cite{unp-sichman02};
+\item páginas na Internet~\cite{hp-dia03} (utilizar como data a data do último acesso à página);
+\item miscelânea~\cite{misc-cruz03}.
+\end{itemize}
+
+
+\section{Equações}
+\label{Sec:equacoes}
+
+\latex~é insuperável no processamento de equações. Equações
+simples como $2^{n}$ podem ser editadas no próprio texto.
+Equações complexas como
+
+
+\begin{eqnarray} \label{eq:PDF:RSR}
+  p \left( \gamma \right) & = & \frac{1}{2} \sqrt{\frac{M}{\gamma \bar{\gamma}_{b}}} \frac{1}{ \prod_{i=1}^M {\sqrt{\tilde{\gamma}_i}}}
+  \int_0^{\sqrt{M \delta}} \int_0^{\sqrt{M \delta} - r_M } \cdots
+  \int_0^{\sqrt{M \delta} - \sum_{i = 3}^M {r_i } } \nonumber \\
+  & & p \left( {\frac{\sqrt{M \delta} - \sum_{i = 2}^M {r_i }}{\sqrt{\tilde{\gamma}_1}} ,
+  \frac{r_2}{\sqrt{\tilde{\gamma}_2}} , \ldots ,\frac{r_M}{\sqrt{\tilde{\gamma}_M}} } \right)
+  \, dr_2 \cdots dr_{M-1} \, dr_M
+\end{eqnarray}
+
+ou
+
+
+\begin{equation}\label{eq:TrCGI}
+  T(r) = \frac{1}{f_m}
+  \left( \frac{\pi}{2} \sum_{i=1}^M
+  {\tilde{r}_i^2 \dot{\varsigma}_i^2}\right)^{-1/2}
+  \frac
+  {\begin{array}{ll}
+  \int_0^{\rho \sqrt{M}} \int_0^{\rho \sqrt{M} - r_M } \cdots
+  \int_0^{\rho \sqrt{M} - \sum_{i = 3}^M {r_i } } \int_0^{\rho \sqrt{M} -
+  \sum_{i = 2}^M {r_i } }  \\
+  p \left( {\frac{r_1}{\tilde{r}_1} ,
+  \frac{r_2}{\tilde{r}_2} , \ldots ,\frac{r_M}{\tilde{r}_M} } \right)
+  \, dr_1 \, dr_2 \cdots dr_{M-1} \, dr_M \\ \end{array}}
+  {\begin{array}{ll}
+  \int_0^{\rho \sqrt{M}} \int_0^{\rho \sqrt{M} - r_M } \cdots
+  \int_0^{\rho \sqrt{M} - \sum_{i = 3}^M {r_i } } \\
+  p \left( {\frac{\rho \sqrt{M} - \sum_{i = 2}^M {r_i }}{\tilde{r}_1} ,
+  \frac{r_2}{\tilde{r}_2} , \ldots ,\frac{r_M}{\tilde{r}_M} } \right)
+  \, dr_2 \cdots dr_{M-1} \, dr_M \\ \end{array}}
+\end{equation}
+
+\noindent
+são automaticamente numeradas e podem ser referenciadas a partir do
+texto. Por exemplo, a equação~\ref{eq:TrCGI} é trivialmente derivada
+da equação~\ref{eq:PDF:RSR}.
+
+
+
+\section{Glossário}
+\label{Sec:glossario}
+
+\latex~gera automaticamente o glossário. Ao redigir uma sigla pela primeira vez, o
+autor, ao final do parágrafo, gera a entrada para o glossário. Exemplo:
+
+A camada de adaptação tipo 1 (ATM AAL1) das redes digitais de serviços integrados em
+faixa larga (B-ISDN) é especificada pela ITU-T.
+\nomenclature{ATM - }{Asynchronous Transfer Mode}
+\nomenclature{AAL1 - }{ATM Adaptation Layer Type 1}
+\nomenclature{B-ISDN - }{Broadband Integrated Service Digital Network}
+\nomenclature{ITU-T - }{International Telecommunication Union-Telecommunication Standardization Sector}
+
+
+\section{Estilo}
+\label{Sec:estilo}
+
+Recomenda-se espaçamento 1.5 entre as linhas do texto.
+Evite sempre os seguintes recursos (ou melhor, enfeites):
+\begin{itemize}
+\item \textbf{o uso de negrito;}
+\item \textit{o uso de itálico (exceto em palavras em outra língua);}
+\item \texttt{texto em diferente fonte como máquina de escrever;}
+\item \underline{o uso de texto sublinhado;}
+\item o uso excessivo de~\footnote{Notas de rodapé.}.
+\end{itemize}
+
+Lembre-se: um texto ``limpo'' é mais agradável de ler que um texto ``enfeitado''.
+
+
