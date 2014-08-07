@@ -12,6 +12,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#define outputPath "/home/fernanda/Documents/tcc/imagens_teste/Output/"
 
 using namespace cv;
 using namespace std;
@@ -72,6 +73,9 @@ void fillWhiteBorderInImage(Mat image, Mat *imageWhiteBorder, int N, int extraX,
 	//quando extraX ou extraY for ímpar, ex: 5, as bordas lateral esquerda e/ou superior serão preenchidas com
 	//1 branco a menos que as bordas inferior e lateral direita
 
+	String imageWhiteBorderOutputPath;
+	String imageOutputPath;
+
 	imageWhiteBorder->create(y + extraY, x + extraX, image.type());
 
 	cout << "y: " << y << endl;
@@ -119,8 +123,42 @@ void fillWhiteBorderInImage(Mat image, Mat *imageWhiteBorder, int N, int extraX,
 	namedWindow( "Borda branca", WINDOW_AUTOSIZE ); // Create a window to display image
 	imshow( "Borda branca", *imageWhiteBorder); // Show the image inside it
 
-	imwrite("imageWhiteBorder.tiff", *imageWhiteBorder);
-	imwrite("image.tiff", image);
+	imageWhiteBorderOutputPath.append(outputPath);
+	imageWhiteBorderOutputPath.append("imageWhiteBorder.tiff");
+
+	imageOutputPath.append(outputPath);
+	imageOutputPath.append("image.tiff");
+
+	imwrite(imageWhiteBorderOutputPath, *imageWhiteBorder);
+	imwrite(imageOutputPath, image);
+	return;
+}
+
+void equalizeWindows(int N, int col, int row, vector< vector <window*> > *windows) {
+
+	for (int j = 0; j < col/N; j++) {
+		for (int i = 0; i < row/N; i++) {
+			equalizeHist((*windows)[i][j]->imageWindow, (*windows)[i][j]->imageWindow);
+
+			//TESTE
+			//salva a imagem equalizada
+			String equalizedImageoutputPath;
+
+			equalizedImageoutputPath.append(outputPath);
+			equalizedImageoutputPath.append("equalizedWindow_");
+			ostringstream iString;
+			ostringstream jString;
+			iString << i;
+			jString << j;
+			equalizedImageoutputPath.append(iString.str());
+			equalizedImageoutputPath.append("_");
+			equalizedImageoutputPath.append(jString.str());
+			equalizedImageoutputPath.append(".tiff");
+			imwrite(equalizedImageoutputPath, (*windows)[i][j]->imageWindow);
+			//FIM TESTE
+		}
+	}
+
 	return;
 }
 
@@ -134,7 +172,9 @@ void createWindows(Mat imageWhiteBorder, int N, int column, int row, vector< vec
 					(*windows)[i][j]->imageWindow.at<uchar>(l,m) = imageWhiteBorder.at<uchar>(i*N + l, j*N + m);
 				}
 			}
-			string imgName = "/home/fernanda/Documents/tcc/imagens_teste/Output/window_";
+			string imgName;
+			imgName = outputPath;
+			imgName.append("window_");
 
 			ostringstream iString;
 			ostringstream jString;
@@ -220,10 +260,13 @@ int main() {
 	createWindows(imageWhiteBorder, N, col, row, &windows);
 	cout << "janelas criadas" << endl;
 
-	/*
+
+	equalizeWindows(N, col, row, &windows);
+
 	//TESTE
-	//Recriando a imagem com cada uma das janelas para verificar se o janelamento está ok
+	//Recriando a imagem total equalizada
 	Mat recreatedImage;
+	String recreatedImageOutputPath;
 
 	recreatedImage.create(row, col, originalImage.type());
 
@@ -232,15 +275,16 @@ int main() {
 			for (int k = 0; k < N; k++) {
 				for (int l = 0; l < N; l++){
 					recreatedImage.at<uchar>(N*i + k, N*j + l) = windows[i][j]->imageWindow.at<uchar>(k, l);
-					}
 				}
 			}
 		}
 	}
 
-	imshow( "Imagem recriada", recreatedImage); // Show the image inside it
-	imwrite("recreatedImage.tiff", recreatedImage);
-	*/
+	recreatedImageOutputPath.append(outputPath);
+	recreatedImageOutputPath.append("equalizedImage.tiff");
+	imshow( "Imagem equalizada", recreatedImage); // Show the image inside it
+	imwrite(recreatedImageOutputPath, recreatedImage);
+	//FIM TESTE
 
 	waitKey(0);
 
