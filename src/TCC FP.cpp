@@ -24,6 +24,7 @@ class window {
 	double angle;
 	Mat imageWindow;
 
+	//construtor
 	window(int imageRowSize, int imageColSize, int imageType) {
 		quality = -1;
 		frequency = -1;
@@ -32,6 +33,7 @@ class window {
 	}
 };
 
+//lê uma imagem de entrada e altera "image"
 void imageRead (Mat *image, int *dpi, string imagePath) {
 
 	//teste
@@ -71,17 +73,13 @@ void fillWhiteBorderInImage(Mat image, Mat *imageWhiteBorder, int N, int extraX,
 	//1 branco a menos que as bordas inferior e lateral direita
 
 	imageWhiteBorder->create(y + extraY, x + extraX, image.type());
-	//imageWhiteBorder->create(extraX/2, y, image.type());
 
 	cout << "y: " << y << endl;
-	cout << "colunas: " << image.cols << endl;
-	cout << "x: " << x << endl;
 	cout << "linhas: " << image.rows << endl;
-
-	//image.at<uchar>(0,0) = 0;
+	cout << "x: " << x << endl;
+	cout << "colunas: " << image.cols << endl;
 
 	//preenche borda superior
-	cout << "preenche borda superior" << endl;
 	for (int i =0; i < extraY/2; i++){
 		for (int j = 0; j < x + extraX; j++) {
 			imageWhiteBorder->at<uchar>(i,j) = 255;
@@ -89,7 +87,6 @@ void fillWhiteBorderInImage(Mat image, Mat *imageWhiteBorder, int N, int extraX,
 	}
 
 	//preenche lateral esquerda
-	cout << "preenche lateral esquerda" << endl;
 	for (int i = extraY/2; i < y + extraY/2; i++){
 		for (int j = 0; j < extraX/2; j++) {
 			imageWhiteBorder->at<uchar>(i,j) = 255;
@@ -97,7 +94,6 @@ void fillWhiteBorderInImage(Mat image, Mat *imageWhiteBorder, int N, int extraX,
 	}
 
 	//preenche lateral direita
-	cout << "preenche lateral direita" << endl;
 	for (int i = extraY/2; i < y + extraY/2; i++){
 		for (int j = x + extraX/2; j < x + extraX; j++) {
 			imageWhiteBorder->at<uchar>(i,j) = 255;
@@ -105,7 +101,6 @@ void fillWhiteBorderInImage(Mat image, Mat *imageWhiteBorder, int N, int extraX,
 	}
 
 	//preenche borda inferior
-	cout << "preenche borda inferior" << endl;
 	for (int i = y + extraY/2; i < y + extraY; i++){
 		for (int j = 0; j < x + extraX; j++) {
 			imageWhiteBorder->at<uchar>(i,j) = 255;
@@ -113,7 +108,6 @@ void fillWhiteBorderInImage(Mat image, Mat *imageWhiteBorder, int N, int extraX,
 	}
 
 	//preenche imagem na digital no centro
-	cout << "preenche imagem na digital no centro" << endl;
 	for (int i = extraY/2; i < y + extraY/2; i++){
 	//for (int i = extraX/2; i < x; i++){
 		for (int j = extraX/2; j < x + extraX/2; j++){
@@ -130,6 +124,7 @@ void fillWhiteBorderInImage(Mat image, Mat *imageWhiteBorder, int N, int extraX,
 	return;
 }
 
+//Altera a matriz com cada um adas janelas, criando uma por uma (a partir de uma imagem de entrada -> imageWhiteBorder)
 void createWindows(Mat imageWhiteBorder, int N, int column, int row, vector< vector <window*> > *windows) {
 	for (int j = 0; j < column/N; j++) {
 		for (int i = 0; i < row/N; i++){
@@ -139,7 +134,7 @@ void createWindows(Mat imageWhiteBorder, int N, int column, int row, vector< vec
 					(*windows)[i][j]->imageWindow.at<uchar>(l,m) = imageWhiteBorder.at<uchar>(i*N + l, j*N + m);
 				}
 			}
-			string imgName = "window_";
+			string imgName = "/home/fernanda/Documents/tcc/imagens_teste/Output/window_";
 
 			ostringstream iString;
 			ostringstream jString;
@@ -156,6 +151,7 @@ void createWindows(Mat imageWhiteBorder, int N, int column, int row, vector< vec
 	}
 }
 
+//Retorna as medidas da imagem que serão necessárias para realizar o janelamento
 void imageMeasures(Mat image, int dpi, int *N, int *col, int *row) {
 	int x, y, extraX, extraY, Nx, Ny;
 
@@ -202,27 +198,17 @@ int main() {
 	imageMeasures (originalImage, dpi, &N, &col, &row);
 	cout << "medidas da imagem foram tomadas" << endl;
 
-	windows.resize(col/N);
-	for (int i = 0; i < col/N; i++){
-		windows[i].resize((int)row/N);
+	//Dimensiona a matriz com as janelas (i = linhas, j = colunas)
+	windows.resize(row/N);
+	for (int i = 0; i < row/N; i++){
+		windows[i].resize((int)col/N);
 	}
 
 	//inicializando a matriz com as janelas (usando a classe window)
-	for (int i = 0; i < col/N; i++){
-		for (int j = 0; j < row/N;  j++){
+	for (int i = 0; i < row/N; i++){
+		for (int j = 0; j < col/N;  j++){
 			windows[i][j] = new window(N, N, originalImage.type());
-			cout << "i: " << i << "; j: " << j << endl;
-//			window w(N, N, originalImage.type());
-//			cout << "nova window ok" << endl;
-////			windows[i][j] = w;
-//			windows[i][j].angle = w.angle;
-//			cout << "angle" << endl;
-//			windows[i][j].frequency = w.frequency;
-//			cout << "freq" << endl;
-//			windows[i][j].imageWindow = w.imageWindow;
-//			cout << "image" << endl;
-//			windows[i][j].quality = w.quality;
-//			cout << "quality" << endl;
+			//cout << "i: " << i << "; j: " << j << endl;
 		}
 	}
 	cout << "matriz foi inicializada" << endl;
@@ -231,14 +217,35 @@ int main() {
 			row - originalImage.rows, originalImage.cols, originalImage.rows);
 	cout << "imagem preenchida com borda branca" << endl;
 
-
 	createWindows(imageWhiteBorder, N, col, row, &windows);
 	cout << "janelas criadas" << endl;
 
+	/*
+	//TESTE
+	//Recriando a imagem com cada uma das janelas para verificar se o janelamento está ok
+	Mat recreatedImage;
+
+	recreatedImage.create(row, col, originalImage.type());
+
+	for (int i = 0; i < row/N; i++) {
+		for (int j = 0; j < col/N; j++) {
+			for (int k = 0; k < N; k++) {
+				for (int l = 0; l < N; l++){
+					recreatedImage.at<uchar>(N*i + k, N*j + l) = windows[i][j]->imageWindow.at<uchar>(k, l);
+					}
+				}
+			}
+		}
+	}
+
+	imshow( "Imagem recriada", recreatedImage); // Show the image inside it
+	imwrite("recreatedImage.tiff", recreatedImage);
+	*/
 
 	waitKey(0);
 
 	//TODO fazer o delete das windows
+
 
 	return 0;
 }
