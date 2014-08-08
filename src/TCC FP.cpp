@@ -67,6 +67,7 @@ int main() {
 			//cout << "i: " << i << "; j: " << j << endl;
 		}
 	}
+
 	cout << "matriz foi inicializada" << endl;
 
 	fillWhiteBorderInImage(originalImage, &imageWhiteBorder, N, col - originalImage.cols,

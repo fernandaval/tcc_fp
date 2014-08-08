@@ -13,12 +13,15 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include "preProcessing.hpp"
+
 //#define outputPath "/home/fernanda/Documents/tcc/imagens_teste/Output/"
 #define outputPath "/home/priscila/Documents/tcc/imagens_teste/Output/"
 
 using namespace cv;
 using namespace std;
 
+/*
 class window {
 	public :
 
@@ -34,7 +37,7 @@ class window {
 		angle = -1;
 		imageWindow.create(imageRowSize, imageColSize, imageType);
 	}
-};
+};*/
 
 
 //lê uma imagem de entrada e altera "image"

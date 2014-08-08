@@ -21,18 +21,18 @@ using namespace std;
 class window {
 	public :
 
-	int quality;
-	double frequency;
-	double angle;
-	Mat imageWindow;
+		int quality;
+		double frequency;
+		double angle;
+		Mat imageWindow;
 
-	//construtor
-	window(int imageRowSize, int imageColSize, int imageType) {
-		quality = -1;
-		frequency = -1;
-		angle = -1;
-		imageWindow.create(imageRowSize, imageColSize, imageType);
-	}
+		//construtor
+		window(int imageRowSize, int imageColSize, int imageType) {
+			quality = -1;
+			frequency = -1;
+			angle = -1;
+			imageWindow.create(imageRowSize, imageColSize, imageType);
+		}
 };
 
 //lê uma imagem de entrada e altera "image"
