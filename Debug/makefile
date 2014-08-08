@@ -44,7 +44,7 @@ all: TCC\ FP
 TCC\ FP: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: Cross G++ Linker'
-	g++ -L/home/fernanda/Documents/tcc/opencv-2.4.9/build/lib -o "TCC FP" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -L/home/fernanda/Documents/tcc/opencv-2.4.9/build/lib -L/home/priscila/Desktop/opencv/opencv-2.4.9/build/lib -o "TCC FP" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
