@@ -51,7 +51,7 @@ int main() {
 
 	//faz o janelamento da imagem de acordo com a definição em dpis
 
-	imageMeasures (originalImage, dpi, &N, &col, &row);
+	imageMeasures (originalImage, dpi, &N, &col, &row); //retorna coluna e linha da imagem final com borda
 	cout << "medidas da imagem foram tomadas" << endl;
 
 	//Dimensiona a matriz com as janelas (i = linhas, j = colunas)
@@ -92,6 +92,8 @@ int main() {
 			for (int k = 0; k < N; k++) {
 				for (int l = 0; l < N; l++){
 					//recreatedImage.at<uchar>(N*i + k, N*j + l) = windows[i][j]->imageWindow.at<uchar>(k, l);
+					vector[] temp = windows[i];
+					suajanela = temp[j];
 				}
 			}
 		}

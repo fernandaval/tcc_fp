@@ -30,7 +30,7 @@ void minutiaeExtract()
 {
 	//EXTRAÇÃO DE MINÚCIAS COM MINDTCT
 	char *my_env[] = {NULL};
-	char *newargv_mindtct[] = {"mindtct", "/home/priscila/Rel_4.2.0/mindtct/bin/101_1.jpg", "/home/priscila/Rel_4.2.0/mindtct/bin/101_1", NULL};
+	char *newargv_mindtct[] = {"mindtct", "/home/priscila/BDs_imagens_de_digitais/2000/DB2/101_1.jpg", "/home/priscila/Rel_4.2.0/mindtct/bin/101_1", NULL};
 
 	pid_t pid = fork();
 
