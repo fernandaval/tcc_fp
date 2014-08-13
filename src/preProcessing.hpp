@@ -14,26 +14,13 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include "window.hpp"
+
+#define outputPath "/home/fernanda/Documents/tcc/imagens_teste/Output/"
+//#define outputPath "/home/priscila/Documents/tcc/imagens_teste/Output/"
 
 using namespace cv;
 using namespace std;
-
-class window {
-	public :
-
-		int quality;
-		double frequency;
-		double angle;
-		Mat imageWindow;
-
-		//construtor
-		window(int imageRowSize, int imageColSize, int imageType) {
-			quality = -1;
-			frequency = -1;
-			angle = -1;
-			imageWindow.create(imageRowSize, imageColSize, imageType);
-		}
-};
 
 //lê uma imagem de entrada e altera "image"
 void imageRead (Mat *image, int *dpi, string imagePath);
@@ -48,5 +35,13 @@ void createWindows(Mat imageWhiteBorder, int N, int column, int row, vector< vec
 
 //Retorna as medidas da imagem que serão necessárias para realizar o janelamento
 void imageMeasures(Mat image, int dpi, int *N, int *col, int *row);
+
+void recreateImage(vector < vector <window*> > windows, int row, int col, int N, String imageName);
+
+void thinningIteration(cv::Mat& im, int iter);
+
+void thinning(cv::Mat& im);
+
+void thinningWindows (vector < vector <window*> > *windows, int row, int col, int N);
 
 #endif /* PREPROCESSING_HPP_ */

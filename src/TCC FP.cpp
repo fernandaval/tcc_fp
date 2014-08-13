@@ -30,9 +30,10 @@
 #include "preProcessing.hpp"
 #include "minutiaeExtraction.hpp"
 #include "matching.hpp"
+#include "window.hpp"
 
 //#define outputPath "/home/fernanda/Documents/tcc/imagens_teste/Output/"
-#define outputPath "/home/priscila/Documents/tcc/imagens_teste/Output/"
+//#define outputPath "/home/priscila/Documents/tcc/imagens_teste/Output/"
 
 using namespace cv;
 using namespace std;
@@ -80,12 +81,9 @@ int main() {
 
 	equalizeWindows(N, col, row, &windows);
 
-	//TESTE
-	//Recriando a imagem total equalizada
-	Mat recreatedImage;
-	String recreatedImageOutputPath;
+	recreateImage(windows, row, col, N, "imagem equalizada");
 
-	recreatedImage.create(row, col, originalImage.type());
+	thinningWindows(&windows, row, col, N);
 
 	for (int i = 0; i < row/N; i++) {
 		for (int j = 0; j < col/N; j++) {
@@ -99,14 +97,11 @@ int main() {
 		}
 	}
 
-	recreatedImageOutputPath.append(outputPath);
-	recreatedImageOutputPath.append("equalizedImage.tiff");
-	imshow( "Imagem equalizada", recreatedImage); // Show the image inside it
-	imwrite(recreatedImageOutputPath, recreatedImage);
-	//FIM TESTE
+	recreateImage(windows, row, col, N, "imagem afinada");
 
-	minutiaeExtract();
-	matching();
+
+	//minutiaeExtract();
+	//matching();
 
 	waitKey(0);
 

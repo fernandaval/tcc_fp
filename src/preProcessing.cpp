@@ -6,38 +6,11 @@
 // Description : Fingerprint Identification Algorithm
 //============================================================================
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-
 #include "preProcessing.hpp"
 
-//#define outputPath "/home/fernanda/Documents/tcc/imagens_teste/Output/"
-#define outputPath "/home/priscila/Documents/tcc/imagens_teste/Output/"
 
 using namespace cv;
 using namespace std;
-
-/*
-class window {
-	public :
-
-	int quality;
-	double frequency;
-	double angle;
-	Mat imageWindow;
-
-	//construtor
-	window(int imageRowSize, int imageColSize, int imageType) {
-		quality = -1;
-		frequency = -1;
-		angle = -1;
-		imageWindow.create(imageRowSize, imageColSize, imageType);
-	}
-};*/
 
 
 //lê uma imagem de entrada e altera "image"
@@ -45,8 +18,8 @@ void imageRead (Mat *image, int *dpi, string imagePath) {
 
 	//teste
 	*dpi = 500;
-	//imagePath = "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/101_1.tif";
-	imagePath = "/home/priscila/Rel_4.2.0/mindtct/bin/101_1.jpg";
+	imagePath = "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/101_1.tif";
+	//imagePath = "/home/priscila/Rel_4.2.0/mindtct/bin/101_1.jpg";
 
 	cout << "Quantos DPIs tem sua imagem? "; // prints !!!Hello World!!!
 	//cin >> *dpi;
@@ -145,7 +118,8 @@ void equalizeWindows(int N, int col, int row, vector< vector <window*> > *window
 
 	for (int j = 0; j < col/N; j++) {
 		for (int i = 0; i < row/N; i++) {
-			equalizeHist((*windows)[i][j]->imageWindow, (*windows)[i][j]->imageWindow);
+			equalizeHist((*windows)[i][j]->getImageWindow(), (*windows)[i][j]->getImageWindow());
+			//->get_imageWindow(), (*windows)[i][j]->get_imageWindow());
 
 			//TESTE
 			//salva a imagem equalizada
@@ -161,14 +135,16 @@ void equalizeWindows(int N, int col, int row, vector< vector <window*> > *window
 			equalizedImageoutputPath.append("_");
 			equalizedImageoutputPath.append(jString.str());
 			equalizedImageoutputPath.append(".tiff");
-			imwrite(equalizedImageoutputPath, (*windows)[i][j]->imageWindow);
+			imwrite(equalizedImageoutputPath, (*windows)[i][j]->getImageWindow());
 			//FIM TESTE
 		}
 	}
 
 	return;
 }
-
+//N = param
+//int *p;
+//p= &i;
 //Altera a matriz com cada um adas janelas, criando uma por uma (a partir de uma imagem de entrada -> imageWhiteBorder)
 void createWindows(Mat imageWhiteBorder, int N, int column, int row, vector< vector <window*> > *windows) {
 	for (int j = 0; j < column/N; j++) {
@@ -176,7 +152,7 @@ void createWindows(Mat imageWhiteBorder, int N, int column, int row, vector< vec
 			//preenche cada pixel da janela de acordo com a leitura da imagem completa com a borda branca
 			for (int l = 0; l < N; l++) {
 				for (int m = 0; m < N; m++) {
-					(*windows)[i][j]->imageWindow.at<uchar>(l,m) = imageWhiteBorder.at<uchar>(i*N + l, j*N + m);
+					(*windows)[i][j]->getImageWindow().at<uchar>(l,m) = imageWhiteBorder.at<uchar>(i*N + l, j*N + m);
 				}
 			}
 			string imgName;
@@ -192,7 +168,7 @@ void createWindows(Mat imageWhiteBorder, int N, int column, int row, vector< vec
 			imgName.append(jString.str());
 			imgName.append(".tiff");
 
-			imwrite(imgName, (*windows)[i][j]->imageWindow);
+			imwrite(imgName, (*windows)[i][j]->getImageWindow());
 
 		}
 	}
@@ -226,4 +202,94 @@ void imageMeasures(Mat image, int dpi, int *N, int *col, int *row) {
 	(*row) = y + extraY;
 
 	return;
+}
+
+//Recria a imagem a partir das janelas e exibe em uma janela e a armazena com o nome passado em imageName
+//Obs: imageName é concatenado a outputPath
+void recreateImage(vector< vector <window*> > windows, int row, int col, int N, String imageName) {
+	Mat recreatedImage;
+	String recreatedImageOutputPath;
+
+	recreatedImage.create(row, col, windows[0][0]->getImageWindow().type());
+
+	for (int i = 0; i < row/N; i++) {
+		for (int j = 0; j < col/N; j++) {
+			for (int k = 0; k < N; k++) {
+				for (int l = 0; l < N; l++){
+					recreatedImage.at<uchar>(N*i + k, N*j + l) = windows[i][j]->getImageWindow().at<uchar>(k, l);
+				}
+			}
+		}
+	}
+
+	recreatedImageOutputPath.append(outputPath);
+	recreatedImageOutputPath.append(imageName);
+	recreatedImageOutputPath.append(".tiff");
+	imshow( imageName, recreatedImage);
+	imwrite(recreatedImageOutputPath, recreatedImage);
+
+	return;
+}
+
+void thinningIteration(cv::Mat& im, int iter) {
+    cv::Mat marker = cv::Mat::zeros(im.size(), CV_8UC1);
+
+    for (int i = 1; i < im.rows-1; i++)
+    {
+        for (int j = 1; j < im.cols-1; j++)
+        {
+            uchar p2 = im.at<uchar>(i-1, j);
+            uchar p3 = im.at<uchar>(i-1, j+1);
+            uchar p4 = im.at<uchar>(i, j+1);
+            uchar p5 = im.at<uchar>(i+1, j+1);
+            uchar p6 = im.at<uchar>(i+1, j);
+            uchar p7 = im.at<uchar>(i+1, j-1);
+            uchar p8 = im.at<uchar>(i, j-1);
+            uchar p9 = im.at<uchar>(i-1, j-1);
+
+            int A  = (p2 == 0 && p3 == 1) + (p3 == 0 && p4 == 1) +
+                     (p4 == 0 && p5 == 1) + (p5 == 0 && p6 == 1) +
+                     (p6 == 0 && p7 == 1) + (p7 == 0 && p8 == 1) +
+                     (p8 == 0 && p9 == 1) + (p9 == 0 && p2 == 1);
+            int B  = p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9;
+            int m1 = iter == 0 ? (p2 * p4 * p6) : (p2 * p4 * p8);
+            int m2 = iter == 0 ? (p4 * p6 * p8) : (p2 * p6 * p8);
+
+            if (A == 1 && (B >= 2 && B <= 6) && m1 == 0 && m2 == 0)
+                marker.at<uchar>(i,j) = 1;
+        }
+    }
+
+    im &= ~marker;
+}
+
+/**
+ * Function for thinning the given binary image
+ *
+ * @param  im  Binary image with range = 0-255
+ */
+void thinning(cv::Mat& im) {
+    im /= 255;
+
+    cv::Mat prev = cv::Mat::zeros(im.size(), CV_8UC1);
+    cv::Mat diff;
+
+    do {
+        thinningIteration(im, 0);
+        thinningIteration(im, 1);
+        cv::absdiff(im, prev, diff);
+        im.copyTo(prev);
+    }
+    while (cv::countNonZero(diff) > 0);
+
+    im *= 255;
+    im = 255 - im;
+}
+
+void thinningWindows (vector < vector <window*> > *windows, int row, int col, int N) {
+	for (int i = 0; i < row/N; i++) {
+		for (int j = 0; j <  col/N; j++) {
+			thinning((*windows)[i][j]->imageWindow);
+		}
+	}
 }
