@@ -24,9 +24,11 @@ private:
 	int quality;
 	double frequency;
 	double angle;
-	Mat imageWindow;
 
 public:
+	Mat imageWindow;
+
+//public:
 	//construtor
 	window(int imageRowSize, int imageColSize, int imageType);
 

@@ -83,8 +83,13 @@ int main() {
 
 	recreateImage(windows, row, col, N, "imagem equalizada");
 
-	minutiaeExtract();
-	matching();
+	thinningWindows(&windows, row, col, N);
+
+	recreateImage(windows, row, col, N, "imagem afinada");
+
+
+	//minutiaeExtract();
+	//matching();
 
 	waitKey(0);
 
