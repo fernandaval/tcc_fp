@@ -48,12 +48,8 @@ int main() {
 
 	//Leitura da imagem de entrada
 	imageRead(&originalImage, &dpi, imagePath);
-	cout << "imagem de entrada foi lida" << endl;
-
-	//faz o janelamento da imagem de acordo com a definição em dpis
 
 	imageMeasures (originalImage, dpi, &N, &col, &row);
-	cout << "medidas da imagem foram tomadas" << endl;
 
 	//Dimensiona a matriz com as janelas (i = linhas, j = colunas)
 	windows.resize(row/N);
@@ -65,28 +61,31 @@ int main() {
 	for (int i = 0; i < row/N; i++){
 		for (int j = 0; j < col/N;  j++){
 			windows[i][j] = new window(N, N, originalImage.type());
-			//cout << "i: " << i << "; j: " << j << endl;
 		}
 	}
 
-	cout << "matriz foi inicializada" << endl;
-
 	fillWhiteBorderInImage(originalImage, &imageWhiteBorder, N, col - originalImage.cols,
 			row - originalImage.rows, originalImage.cols, originalImage.rows);
-	cout << "imagem preenchida com borda branca" << endl;
 
 	createWindows(imageWhiteBorder, N, col, row, &windows);
-	cout << "janelas criadas" << endl;
-
 
 	equalizeWindows(N, col, row, &windows);
 
 	recreateImage(windows, row, col, N, "imagem equalizada");
 
+	orientationMap(&windows, row, col, N);
+
+	//ṔRI, COLOCAR A GERAÇÃO DA FREQUÊNCIA DE CRISTAS AQUI
+	//(CADA JANELA TEMA  FREQUÊNCIA ARMAZENADA NO ATRIBUTO FREQUENCY DA CLASSE WINDOW)
+
+
+	gaborFilter (&windows, row, col, N);
+
+	recreateImage(windows, row, col, N, "Gabor");
+
 	thinningWindows(&windows, row, col, N);
 
 	recreateImage(windows, row, col, N, "imagem afinada");
-
 
 	//minutiaeExtract();
 	//matching();

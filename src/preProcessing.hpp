@@ -15,6 +15,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include "window.hpp"
+#include <math.h>
 
 #define outputPath "/home/fernanda/Documents/tcc/imagens_teste/Output/"
 //#define outputPath "/home/priscila/Documents/tcc/imagens_teste/Output/"
@@ -43,5 +44,9 @@ void thinningIteration(cv::Mat& im, int iter);
 void thinning(cv::Mat& im);
 
 void thinningWindows (vector < vector <window*> > *windows, int row, int col, int N);
+
+void orientationMap (vector < vector <window*> > *windows, int row, int col, int N);
+
+void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N);
 
 #endif /* PREPROCESSING_HPP_ */

@@ -293,3 +293,53 @@ void thinningWindows (vector < vector <window*> > *windows, int row, int col, in
 		}
 	}
 }
+
+//Seta o ângulo de orientação de cada uma das janelas da imagem
+//**** O ângulo setado é em RADIANOS
+void orientationMap (vector < vector <window*> > *windows, int row, int col, int N){
+	for (int i = 0; i < row/N; i++) {
+		for (int j = 0; j <  col/N; j++) {
+			Mat Gx, Gy;
+			//No sobel, parâmetros de entrada:
+			//1º: imagem de entrada
+			//2º: imagem de saída
+			//3º: ddepth: profundidade da imagem (=-1 quer dizer que é equivalente à profundidade da imagem de entrada)
+			//4º: dx: se é ordem de X =1 , se não =0
+			//5º: dy: se é ordem de Y =1 , se não =0
+			//6º: dimensão da matriz de sobel
+			Sobel((*windows)[i][j]->getImageWindow()/255, Gx, -1, 1, 0, 3);
+			Sobel((*windows)[i][j]->getImageWindow()/255, Gy, -1, 0, 1, 3);
+
+			int Vx, Vy;
+			Vx = 0;
+			Vy = 0;
+			for (int k = 0; k < N; k++) {
+				for (int l = 0; l < N; l++) {
+					Vx = Vx + 2 * Gx.at<uchar>(k, l) * Gy.at<uchar>(k, l);//[k][l] * Gy[k][l];
+					Vy = Vy + Gx.at<uchar>(k, l) * Gx.at<uchar>(k, l) * Gy.at<uchar>(k, l) * Gy.at<uchar>(k, l);
+				}
+			}
+
+			//Grava o ângulo da janela na variável "angle", atributo da classe window
+			if (Vx == 0) {	//a tangente de um valor dividido por zero é 90º = PI/2
+				(*windows)[i][j]->setAngle( (double)M_PI * 0.5);
+			}
+			else {
+				(*windows)[i][j]->setAngle( (double)0.5 * atan((double) Vy / Vx));
+			}
+			//cout << "Ângulo janela (em graus) " << i << ", " << j << ": " << ((double)(180 / M_PI) * (*windows)[i][j]->getAngle());// << endl;
+			//cout << "; Ângulo janela (em radianos) " << i << ", " << j << ": " << (*windows)[i][j]->getAngle() << endl;
+		}
+	}
+	return;
+}
+
+void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N) {
+	for (int i = 0; i < row/N; i++) {
+		for (int j = 0; j <  col/N; j++) {
+			Mat gaborKernel = getGaborKernel( Size(N,N) , 4, (*windows)[i][j]->getAngle(), (*windows)[i][j]->getFrequency(), 1, 0, CV_32F );
+			filter2D((*windows)[i][j]->getImageWindow(), (*windows)[i][j]->imageWindow, -1, gaborKernel);
+		}
+	}
+
+}
