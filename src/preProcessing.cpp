@@ -19,7 +19,8 @@ void imageRead (Mat *image, int *dpi, string imagePath) {
 	//teste
 	*dpi = 500;
 	//imagePath = "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/101_1.tif";
-	imagePath = "/home/priscila/Rel_4.2.0/mindtct/bin/101_1.jpg";
+	imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/101_1.tif";
+	//imagePath = "/home/priscila/Rel_4.2.0/mindtct/bin/101_1.jpg";
 
 	cout << "Quantos DPIs tem sua imagem? "; // prints !!!Hello World!!!
 	//cin >> *dpi;
@@ -293,3 +294,138 @@ void thinningWindows (vector < vector <window*> > *windows, int row, int col, in
 		}
 	}
 }
+
+//Seta o ângulo de orientação de cada uma das janelas da imagem
+//**** O ângulo setado é em RADIANOS
+void orientationMap (vector < vector <window*> > *windows, int row, int col, int N){
+	for (int i = 0; i < row/N; i++) {
+		for (int j = 0; j <  col/N; j++) {
+			Mat Gx, Gy;
+			//No sobel, parâmetros de entrada:
+			//1º: imagem de entrada
+			//2º: imagem de saída
+			//3º: ddepth: profundidade da imagem (=-1 quer dizer que é equivalente à profundidade da imagem de entrada)
+			//4º: dx: se é ordem de X =1 , se não =0
+			//5º: dy: se é ordem de Y =1 , se não =0
+			//6º: dimensão da matriz de sobel
+			Sobel((*windows)[i][j]->getImageWindow()/255, Gx, -1, 1, 0, 3);
+			Sobel((*windows)[i][j]->getImageWindow()/255, Gy, -1, 0, 1, 3);
+
+			int Vx, Vy;
+			Vx = 0;
+			Vy = 0;
+			for (int k = 0; k < N; k++) {
+				for (int l = 0; l < N; l++) {
+					Vx = Vx + 2 * Gx.at<uchar>(k, l) * Gy.at<uchar>(k, l);//[k][l] * Gy[k][l];
+					Vy = Vy + Gx.at<uchar>(k, l) * Gx.at<uchar>(k, l) * Gy.at<uchar>(k, l) * Gy.at<uchar>(k, l);
+				}
+			}
+
+			//Grava o ângulo da janela na variável "angle", atributo da classe window
+			if (Vx == 0) {	//a tangente de um valor dividido por zero é 90º = PI/2
+				(*windows)[i][j]->setAngle( (double)M_PI * 0.5);
+			}
+			else {
+				(*windows)[i][j]->setAngle( (double)0.5 * atan((double) Vy / Vx));
+			}
+			//cout << "Ângulo janela (em graus) " << i << ", " << j << ": " << ((double)(180 / M_PI) * (*windows)[i][j]->getAngle());// << endl;
+			//cout << "; Ângulo janela (em radianos) " << i << ", " << j << ": " << (*windows)[i][j]->getAngle() << endl;
+		}
+	}
+	return;
+}
+
+void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N) {
+	for (int i = 0; i < row/N; i++) {
+		for (int j = 0; j <  col/N; j++) {
+			Mat gaborKernel = getGaborKernel( Size(N,N) , 4, (*windows)[i][j]->getAngle(), (*windows)[i][j]->getFrequency(), 1, 0, CV_32F );
+			filter2D((*windows)[i][j]->getImageWindow(), (*windows)[i][j]->imageWindow, -1, gaborKernel);
+		}
+	}
+
+}
+
+Mat do_FFT(Mat padded)
+{
+	Mat planes[] = { Mat_<float>(padded), Mat::zeros(padded.size(), CV_32F) };
+	Mat complexI;
+	merge(planes, 2, complexI);  // Add to the expanded another plane with zeros
+
+	dft(complexI, complexI); // this way the result may fit in the source matrix
+
+	// compute the magnitude and switch to logarithmic scale
+	// => log(1 + sqrt(Re(DFT(I))^2 + Im(DFT(I))^2))
+	split(complexI, planes);    // planes[0] = Re(DFT(I), planes[1] = Im(DFT(I))
+	magnitude(planes[0], planes[1], planes[0]);         // planes[0] = magnitude
+	Mat magI = planes[0];
+
+	// crop the spectrum, if it has an odd number of rows or columns
+	magI = magI(Rect(0, 0, magI.cols & -2, magI.rows & -2));
+
+	// rearrange the quadrants of Fourier image  so that the origin is at the image center
+	int cx = magI.cols / 2;
+	int cy = magI.rows / 2;
+
+	Mat q0(magI, Rect(0, 0, cx, cy));   // Top-Left - Create a ROI per quadrant
+	Mat q1(magI, Rect(cx, 0, cx, cy));  // Top-Right
+	Mat q2(magI, Rect(0, cy, cx, cy));  // Bottom-Left
+	Mat q3(magI, Rect(cx, cy, cx, cy)); // Bottom-Right
+
+	Mat tmp;                      // swap quadrants (Top-Left with Bottom-Right)
+	q0.copyTo(tmp);
+	q3.copyTo(q0);
+	tmp.copyTo(q3);
+
+	q1.copyTo(tmp);                // swap quadrant (Top-Right with Bottom-Left)
+	q2.copyTo(q1);
+	tmp.copyTo(q2);
+
+	//magI.at<float>(QUAD/2,QUAD/2)=0;
+
+	normalize(magI, magI, 0, 1, CV_MINMAX); // Transform the matrix with float values into a
+	// viewable image form (float between values 0 and 1).
+
+	return magI;
+}
+
+void get_lambda(Mat& in, float& lambda)
+{
+	const int npontos=4;
+	const int meio=in.rows/2;
+
+	in.at<float>(in.rows/2,in.cols/2)=0;
+
+	vector<Point3f> pontos;
+	for (int i=0;i<npontos;i++)
+		pontos.push_back(Point3f(0,0,-1));
+
+	for (int i=0;i<in.rows;i++)
+		for (int j=0;j<in.rows;j++)
+		{
+			if (in.at<float>(i,j) >= pontos[3].z)
+			{
+				pontos.push_back(Point3f(i,j,in.at<float>(i,j)));
+				std::sort (pontos.begin(), pontos.end(), comparar);
+				pontos.erase(pontos.begin()); //apaga o primeiro elemento, o menor
+			}
+		}
+
+	float x2=0;
+	float xy=0;
+	for (int i=0; i<npontos; i++)
+	{
+		in.at<float>(pontos[i].x,pontos[i].y)=1;
+		x2+=(pontos[i].x-meio)*(pontos[i].x-meio);
+		xy+=(pontos[i].x-meio)*(pontos[i].y-meio);
+	}
+	in.at<float>(in.rows/2,in.cols/2)=1;
+
+	vector<float> dist;
+	for (int i=0;i<npontos;i++)
+		dist.push_back((pontos[i].x-meio)*(pontos[i].x-meio)+(pontos[i].y-meio)*(pontos[i].y-meio));
+	std::sort(dist.begin(),dist.end());
+
+	lambda=dist[0];
+}
+
+bool comparar (Point3f i,Point3f j) { return (i.z<j.z); }

@@ -45,13 +45,10 @@ int main() {
 	Mat imageWhiteBorder;
 	int N, col, row;
 	vector < vector <window*> > windows;
-	vector <float> pixels;
+	Mat FFT_Result;
 
 	//Leitura da imagem de entrada
 	imageRead(&originalImage, &dpi, imagePath);
-	cout << "imagem de entrada foi lida" << endl;
-
-	//faz o janelamento da imagem de acordo com a definição em dpis
 
 	imageMeasures (originalImage, dpi, &N, &col, &row); //retorna coluna e linha da imagem final com borda
 	cout << "medidas da imagem foram tomadas" << endl;
@@ -66,23 +63,37 @@ int main() {
 	for (int i = 0; i < row/N; i++){
 		for (int j = 0; j < col/N;  j++){
 			windows[i][j] = new window(N, N, originalImage.type());
-			//cout << "i: " << i << "; j: " << j << endl;
 		}
 	}
 
-	cout << "matriz foi inicializada" << endl;
-
 	fillWhiteBorderInImage(originalImage, &imageWhiteBorder, N, col - originalImage.cols,
 			row - originalImage.rows, originalImage.cols, originalImage.rows);
-	cout << "imagem preenchida com borda branca" << endl;
 
 	createWindows(imageWhiteBorder, N, col, row, &windows);
-	cout << "janelas criadas" << endl;
-
 
 	equalizeWindows(N, col, row, &windows);
 
 	recreateImage(windows, row, col, N, "imagem equalizada");
+
+	orientationMap(&windows, row, col, N);
+
+	//ṔRI, COLOCAR A GERAÇÃO DA FREQUÊNCIA DE CRISTAS AQUI
+	//(CADA JANELA TEMA  FREQUÊNCIA ARMAZENADA NO ATRIBUTO FREQUENCY DA CLASSE WINDOW)
+	/*for (int i = 0; i < row/N; i++){
+		for (int j = 0; j < col/N;  j++){
+
+			float lambda=0;
+			Mat I = (windows)[i][j]->getImageWindow();
+			FFT_Result=do_FFT(I(Rect(j,i,N,N)));
+			get_lambda(FFT_Result,lambda);
+			(windows)[i][j]->setFrequency(lambda);
+		}
+	}*/
+
+
+	gaborFilter (&windows, row, col, N);
+
+	recreateImage(windows, row, col, N, "Gabor");
 
 	thinningWindows(&windows, row, col, N);
 
@@ -99,14 +110,6 @@ int main() {
 	}
 
 	recreateImage(windows, row, col, N, "imagem afinada");
-
-	cout << "vetor com os pixels" << endl;
-	for (int l=0; l < N; l++){
-		pixels[l] = windows[0][0]->imageWindow.at<uchar>(8, l);
-		cout << pixels[l] << endl;
-	}
-	dft(pixels,pixels);
-
 
 	//minutiaeExtract();
 	//matching();
