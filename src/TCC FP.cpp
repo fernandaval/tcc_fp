@@ -79,16 +79,18 @@ int main() {
 
 	//ṔRI, COLOCAR A GERAÇÃO DA FREQUÊNCIA DE CRISTAS AQUI
 	//(CADA JANELA TEMA  FREQUÊNCIA ARMAZENADA NO ATRIBUTO FREQUENCY DA CLASSE WINDOW)
-	/*for (int i = 0; i < row/N; i++){
+	float lambda=0;
+	Mat I;
+	for (int i = 0; i < row/N; i++){
 		for (int j = 0; j < col/N;  j++){
-
-			float lambda=0;
-			Mat I = (windows)[i][j]->getImageWindow();
-			FFT_Result=do_FFT(I(Rect(j,i,N,N)));
+			I = (windows)[i][j]->getImageWindow();
+			FFT_Result=do_FFT(I);
 			get_lambda(FFT_Result,lambda);
-			(windows)[i][j]->setFrequency(lambda);
+			(windows)[i][j]->setFrequency((double)lambda);
+			//cout << "Lambda:" << endl;
+			//cout << lambda << endl;
 		}
-	}*/
+	}
 
 
 	gaborFilter (&windows, row, col, N);
