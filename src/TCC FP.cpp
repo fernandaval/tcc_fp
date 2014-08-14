@@ -45,6 +45,7 @@ int main() {
 	Mat imageWhiteBorder;
 	int N, col, row;
 	vector < vector <window*> > windows;
+	vector <float> pixels;
 
 	//Leitura da imagem de entrada
 	imageRead(&originalImage, &dpi, imagePath);
@@ -90,14 +91,21 @@ int main() {
 			for (int k = 0; k < N; k++) {
 				for (int l = 0; l < N; l++){
 					//recreatedImage.at<uchar>(N*i + k, N*j + l) = windows[i][j]->imageWindow.at<uchar>(k, l);
-					vector[] temp = windows[i];
-					suajanela = temp[j];
+					//vector[] temp = windows[i];
+					//suajanela = temp[j];
 				}
 			}
 		}
 	}
 
 	recreateImage(windows, row, col, N, "imagem afinada");
+
+	cout << "vetor com os pixels" << endl;
+	for (int l=0; l < N; l++){
+		pixels[l] = windows[0][0]->imageWindow.at<uchar>(8, l);
+		cout << pixels[l] << endl;
+	}
+	dft(pixels,pixels);
 
 
 	//minutiaeExtract();
