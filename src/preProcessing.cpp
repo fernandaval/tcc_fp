@@ -300,7 +300,7 @@ void binarization (vector < vector <window*> > *windows, int row, int col, int N
 		for (int j = 0; j <  col/N; j++) {
 			for (int k = 0; k < N; k++) {
 				for (int l = 0; l < N; l++) {
-					if ((*windows)[i][j]->getImageWindow().at<uchar>(k,l) <= 152) {
+					if ((*windows)[i][j]->getImageWindow().at<uchar>(k,l) <= 127) {
 						(*windows)[i][j]->getImageWindow().at<uchar>(k,l) = 0;
 					}
 					else {
