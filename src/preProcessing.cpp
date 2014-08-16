@@ -295,6 +295,39 @@ void thinningWindows (vector < vector <window*> > *windows, int row, int col, in
 	}
 }
 
+void binarization (vector < vector <window*> > *windows, int row, int col, int N) {
+	for (int i = 0; i < row/N; i++) {
+		for (int j = 0; j <  col/N; j++) {
+			for (int k = 0; k < N; k++) {
+				for (int l = 0; l < N; l++) {
+					if ((*windows)[i][j]->getImageWindow().at<uchar>(k,l) <= 152) {
+						(*windows)[i][j]->getImageWindow().at<uchar>(k,l) = 0;
+					}
+					else {
+						(*windows)[i][j]->getImageWindow().at<uchar>(k,l) = 255;
+					}
+				}
+			}
+		}
+	}
+}
+
+void frequencyMap (vector < vector <window*> > *windows, int row, int col, int N){
+	float lambda=0;
+	Mat I;
+	Mat FFT_Result;
+	for (int i = 0; i < row/N; i++){
+		for (int j = 0; j < col/N;  j++){
+			I = (*windows)[i][j]->getImageWindow();
+			FFT_Result=do_FFT(I);
+			get_lambda(FFT_Result,lambda);
+			(*windows)[i][j]->setFrequency((double)lambda);
+			//cout << "Lambda:" << endl;
+			//cout << lambda << endl;
+		}
+	}
+}
+
 //Seta o ângulo de orientação de cada uma das janelas da imagem
 //**** O ângulo setado é em RADIANOS
 void orientationMap (vector < vector <window*> > *windows, int row, int col, int N){

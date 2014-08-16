@@ -45,6 +45,10 @@ void thinning(cv::Mat& im);
 
 void thinningWindows (vector < vector <window*> > *windows, int row, int col, int N);
 
+void binarization (vector < vector <window*> > *windows, int row, int col, int N);
+
+void frequencyMap (vector < vector <window*> > *windows, int row, int col, int N);
+
 void orientationMap (vector < vector <window*> > *windows, int row, int col, int N);
 
 void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N);
