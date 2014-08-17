@@ -27,7 +27,7 @@
 #define FALSE 0
 
 //MATCHING COM BOZORTH
-void matching()
+bool matching()
 {
 	char *my_env[] = {NULL};
 	char *newargv_bozorth[] = {"bozorth3", "/home/priscila/Rel_4.2.0/mindtct/bin/101_1.xyt", "/home/priscila/Rel_4.2.0/mindtct/bin/101_1.xyt", NULL};
@@ -55,5 +55,6 @@ void matching()
 	*/
 	else{
 		//fprintf(stdout, "Bozorth - PAI EXECUTANDO\n");
+		return 1;
 	}
 }

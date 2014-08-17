@@ -103,6 +103,7 @@ int main() {
 	recreateImage(windows, row, col, N, "imagem afinada");
 
 	//minutiaeExtract();
+	//minutiaePlot(&windows, row, col, N);
 	//matching();
 
 	waitKey(0);

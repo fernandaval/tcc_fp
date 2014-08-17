@@ -22,9 +22,15 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include "preProcessing.hpp"
+
 #define mindtctPath "/home/priscila/Rel_4.2.0/mindtct/bin/mindtct"
 #define TRUE 1
 #define FALSE 0
+
+void minutiaePlot(vector < vector <window*> > *windows, int row, int col, int N) {
+	//TO DO
+}
 
 void minutiaeExtract()
 {

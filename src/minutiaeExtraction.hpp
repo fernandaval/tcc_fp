@@ -10,4 +10,6 @@
 
 void minutiaeExtract();
 
+void minutiaePlot(vector < vector <window*> > *windows, int row, int col, int N);
+
 #endif /* MINUTIAEEXTRACTION_HPP_ */
