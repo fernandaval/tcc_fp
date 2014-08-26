@@ -18,8 +18,8 @@ void imageRead (Mat *image, int *dpi, string imagePath) {
 
 	//teste
 	*dpi = 500;
-	//imagePath = "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/101_1.tif";
-	imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/101_1.tif";
+	imagePath = "/home/fernanda/Documents/tcc/imagens_teste/teste.jpg";
+	//imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/101_1.tif";
 	//imagePath = "/home/priscila/Rel_4.2.0/mindtct/bin/101_1.jpg";
 
 	cout << "Quantos DPIs tem sua imagem? "; // prints !!!Hello World!!!
@@ -104,6 +104,7 @@ void fillWhiteBorderInImage(Mat image, Mat *imageWhiteBorder, int N, int extraX,
 	namedWindow( "Borda branca", WINDOW_AUTOSIZE ); // Create a window to display image
 	imshow( "Borda branca", *imageWhiteBorder); // Show the image inside it
 
+	/*
 	imageWhiteBorderOutputPath.append(outputPath);
 	imageWhiteBorderOutputPath.append("imageWhiteBorder.tiff");
 
@@ -112,6 +113,7 @@ void fillWhiteBorderInImage(Mat image, Mat *imageWhiteBorder, int N, int extraX,
 
 	imwrite(imageWhiteBorderOutputPath, *imageWhiteBorder);
 	imwrite(imageOutputPath, image);
+	*/
 	return;
 }
 
@@ -124,6 +126,7 @@ void equalizeWindows(int N, int col, int row, vector< vector <window*> > *window
 
 			//TESTE
 			//salva a imagem equalizada
+			/*
 			String equalizedImageoutputPath;
 
 			equalizedImageoutputPath.append(outputPath);
@@ -135,17 +138,19 @@ void equalizeWindows(int N, int col, int row, vector< vector <window*> > *window
 			equalizedImageoutputPath.append(iString.str());
 			equalizedImageoutputPath.append("_");
 			equalizedImageoutputPath.append(jString.str());
-			equalizedImageoutputPath.append(".tiff");
+			equalizedImageoutputPath.append(".tif");
 			imwrite(equalizedImageoutputPath, (*windows)[i][j]->getImageWindow());
+			*/
 			//FIM TESTE
 		}
 	}
 
 	return;
 }
+
 //N = param
-//int *p;
-//p= &i;
+//int *p
+//p= &i
 //Altera a matriz com cada um adas janelas, criando uma por uma (a partir de uma imagem de entrada -> imageWhiteBorder)
 void createWindows(Mat imageWhiteBorder, int N, int column, int row, vector< vector <window*> > *windows) {
 	for (int j = 0; j < column/N; j++) {
@@ -156,6 +161,7 @@ void createWindows(Mat imageWhiteBorder, int N, int column, int row, vector< vec
 					(*windows)[i][j]->getImageWindow().at<uchar>(l,m) = imageWhiteBorder.at<uchar>(i*N + l, j*N + m);
 				}
 			}
+			/*
 			string imgName;
 			imgName = outputPath;
 			imgName.append("window_");
@@ -170,9 +176,10 @@ void createWindows(Mat imageWhiteBorder, int N, int column, int row, vector< vec
 			imgName.append(".tiff");
 
 			imwrite(imgName, (*windows)[i][j]->getImageWindow());
-
+			*/
 		}
 	}
+	return;
 }
 
 //Retorna as medidas da imagem que serão necessárias para realizar o janelamento
@@ -225,7 +232,7 @@ void recreateImage(vector< vector <window*> > windows, int row, int col, int N, 
 
 	recreatedImageOutputPath.append(outputPath);
 	recreatedImageOutputPath.append(imageName);
-	recreatedImageOutputPath.append(".tiff");
+	recreatedImageOutputPath.append(".jpg");
 	imshow( imageName, recreatedImage);
 	imwrite(recreatedImageOutputPath, recreatedImage);
 
@@ -262,6 +269,7 @@ void thinningIteration(cv::Mat& im, int iter) {
     }
 
     im &= ~marker;
+    return;
 }
 
 /**
@@ -285,6 +293,8 @@ void thinning(cv::Mat& im) {
 
     im *= 255;
     im = 255 - im;
+
+    return;
 }
 
 void thinningWindows (vector < vector <window*> > *windows, int row, int col, int N) {
@@ -293,6 +303,7 @@ void thinningWindows (vector < vector <window*> > *windows, int row, int col, in
 			thinning((*windows)[i][j]->imageWindow);
 		}
 	}
+	return;
 }
 
 void binarization (vector < vector <window*> > *windows, int row, int col, int N) {
@@ -310,6 +321,7 @@ void binarization (vector < vector <window*> > *windows, int row, int col, int N
 			}
 		}
 	}
+	return;
 }
 
 void frequencyMap (vector < vector <window*> > *windows, int row, int col, int N){
@@ -326,6 +338,7 @@ void frequencyMap (vector < vector <window*> > *windows, int row, int col, int N
 			//cout << lambda << endl;
 		}
 	}
+	return;
 }
 
 //Seta o ângulo de orientação de cada uma das janelas da imagem
@@ -361,21 +374,128 @@ void orientationMap (vector < vector <window*> > *windows, int row, int col, int
 			else {
 				(*windows)[i][j]->setAngle( (double)0.5 * atan((double) Vy / Vx));
 			}
-			//cout << "Ângulo janela (em graus) " << i << ", " << j << ": " << ((double)(180 / M_PI) * (*windows)[i][j]->getAngle());// << endl;
-			//cout << "; Ângulo janela (em radianos) " << i << ", " << j << ": " << (*windows)[i][j]->getAngle() << endl;
+			cout << "Ângulo janela (em graus) " << i << ", " << j << ": " << ((double)(180 / M_PI) * (*windows)[i][j]->getAngle());// << endl;
+			cout << "; Ângulo janela (em radianos) " << i << ", " << j << ": " << (*windows)[i][j]->getAngle() << endl;
+		}
+	}
+	return;
+}
+
+//Adiciona 2 pixels de cada lado da imagem (com a imagem das outras bordas, para garantir que o Gabor não terá problema nas bordas
+//neste método, as janelas das bordas não devem ser incluídas
+//Mat *imageWithBorder: imagem que será criada com a adição das bordas à uma imagem de uma janela
+//int N: dimensão da janela original
+//vector < vector <window*> > windows: estrutura com todas as janelas para serem acessadas
+//int i, int j: índices do vetor window para saber qual janela será usada como base
+void getWindowBorder (Mat *imageWithBorder, int N, vector < vector <window*> > windows, int i, int j) {
+
+	imageWithBorder->create(N + 4, N + 4, windows[i][j]->getImageWindow().type());
+
+	//PREENCHE BORDA SUPERIOR ESQUERDA
+	//Para preencher esta borda, precisa acessar a imagem da janela (i-1, j-1)
+	for (int row = 0; row < 2; row++) {
+		for (int col = 0; col < 2; col++) {
+			imageWithBorder->at<uchar>(row, col) = windows[i - 1][j - 1]->getImageWindow().at<uchar>((N - 2 + row), (N - 2 + col));
+		}
+	}
+
+	//PREENCHE BORDA INFERIOR ESQUERDA
+	//Para preencher esta borda, precisa acessar a imagem da janela (i+1, j-1)
+	for (int row = N + 2; row < N + 4; row++) {
+		for (int col = 0; col < 2; col++) {
+			imageWithBorder->at<uchar>(row, col) = windows[i + 1][j - 1]->getImageWindow().at<uchar>((row - (N + 2)), (col + (N - 2)));
+		}
+	}
+
+	//PREENCHE BORDA SUPERIOR DIREITA
+	//Para preencher esta borda, precisa acessar a imagem da janela (i-1, j+1)
+	for (int row = 0 ; row < 2; row++) {
+		for (int col = N + 2; col < N + 4; col++) {
+			imageWithBorder->at<uchar>(row, col) = windows[i - 1][j + 1]->getImageWindow().at<uchar>((N - 2 + row), (col - (N + 2)));
+		}
+	}
+
+	//PREENCHE BORDA INFERIOR DIREITA
+	//Para preencher esta borda, precisa acessar a imagem da janela (i+1, j+1)
+	for (int row = N + 2; row < N + 4; row++) {
+		for (int col = N + 2; col < N + 4; col++) {
+			imageWithBorder->at<uchar>(row, col) = windows[i + 1][j + 1]->getImageWindow().at<uchar>((row - (N + 2)), (col - (N + 2)));
+		}
+	}
+
+	//PREENCHE TOPO
+	//Para preencher esta borda, precisa acessar a imagem da janela (i-1, j)
+	for (int row  = 0; row < 2; row++) {
+		for (int col = 2; col < N + 2; col++) {
+			imageWithBorder->at<uchar>(row, col) = windows[i - 1][j]->getImageWindow().at<uchar>(row + (N - 2), col - 2);
+		}
+	}
+
+	//PREENCHE BASE (BOTTOM)
+	//Para preencher esta borda, precisa acessar a imagem da janela (i+1, j)
+	for (int row  = N + 2; row < N + 4; row++) {
+		for (int col = 2; col < N + 2; col++) {
+			imageWithBorder->at<uchar>(row, col) = windows[i + 1][j]->getImageWindow().at<uchar>(row - (N - 2), col - 2);
+		}
+	}
+
+	//PREENCHE LATERAL ESQUERDA
+	//Para preencher esta borda, precisa acessar a imagem da janela (i, j - 1)
+	for (int row  = 2; row < N + 2; row++) {
+		for (int col = 0; col < 2; col++) {
+			imageWithBorder->at<uchar>(row, col) = windows[i][j - 1]->getImageWindow().at<uchar>(row -  2, col + (N - 2));
+		}
+	}
+
+	//PREENCHE LATERAL DIREITA
+	//Para preencher esta borda, precisa acessar a imagem da janela (i, j - 1)
+	for (int row = 2; row < N + 2; row++) {
+		for (int col = 0; col < 2; col++) {
+			imageWithBorder->at<uchar>(row, col) = windows[i][j - 1]->getImageWindow().at<uchar>(row -  2, col + (N - 2));
+		}
+	}
+
+	//PREENCHE CENTRO
+	//Para preencher esta borda, precisa acessar a imagem da janela (i, j)
+	for (int row = 2; row < N + 2; row++) {
+		for (int col = 2; col < N + 2; col++) {
+			imageWithBorder->at<uchar>(row, col) = windows[i][j]->getImageWindow().at<uchar>(row -  2, col - 2);
+		}
+	}
+
+	return;
+}
+
+//Remove a borda utilizada para uso do Gabor
+//int originalSize: tamanho da imagem com borda
+//int newSize: tamanho da imagem sem bordar
+void removeWindowBorder( Mat *imageWithoutBorder, Mat imageWithBorder, int originalSize, int newSize) {
+	if (newSize > originalSize) {
+		cout << "Erro ao tentar remover borda da imagem: imagem original é menor que o tamanho da imagem sem borda." << endl;
+	}
+	for (int i = 0; i < newSize; i++){
+		for (int j = 0; j < newSize; j++) {
+			imageWithoutBorder->at<uchar>(i, j) = imageWithBorder.at<uchar>((i + (originalSize - newSize)/2), (j + (originalSize - newSize)/2));
 		}
 	}
 	return;
 }
 
 void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N) {
-	for (int i = 0; i < row/N; i++) {
-		for (int j = 0; j <  col/N; j++) {
-			Mat gaborKernel = getGaborKernel( Size(N,N) , 4, (*windows)[i][j]->getAngle(), (*windows)[i][j]->getFrequency(), 1, 0, CV_32F );
-			filter2D((*windows)[i][j]->getImageWindow(), (*windows)[i][j]->imageWindow, -1, gaborKernel);
+	//O "for" não faz a leitura do interior da imagem (eliminando as bordas)
+	for (int i = 1; i < row/N - 1; i++) {
+		for (int j = 1; j <  col/N - 1; j++) {
+			Mat imageWithBorder;
+			getWindowBorder (&imageWithBorder, N, *windows, i, j);
+
+			Mat gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, (*windows)[i][j]->getAngle(), (*windows)[i][j]->getFrequency(), 1, 0, CV_32F );
+			filter2D(imageWithBorder, imageWithBorder, -1, gaborKernel);
+			removeWindowBorder( &(*windows)[i][j]->imageWindow, imageWithBorder, N + 4, N);
+			//filter2D((*windows)[i][j]->getImageWindow(), (*windows)[i][j]->imageWindow, -1, gaborKernel);
 		}
 	}
 
+	return;
 }
 
 Mat do_FFT(Mat padded)

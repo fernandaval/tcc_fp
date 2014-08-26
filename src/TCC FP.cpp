@@ -70,10 +70,6 @@ int main() {
 
 	recreateImage(windows, row, col, N, "imagem equalizada");
 
-	binarization(&windows, row, col, N);
-
-	recreateImage(windows, row, col, N, "imagem binarizada");
-
 	orientationMap(&windows, row, col, N);
 
 	frequencyMap(&windows, row, col, N);
@@ -81,6 +77,10 @@ int main() {
 	gaborFilter (&windows, row, col, N);
 
 	recreateImage(windows, row, col, N, "Gabor");
+
+	binarization(&windows, row, col, N);
+
+	recreateImage(windows, row, col, N, "imagem binarizada");
 
 	thinningWindows(&windows, row, col, N);
 

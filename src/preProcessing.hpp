@@ -51,6 +51,10 @@ void frequencyMap (vector < vector <window*> > *windows, int row, int col, int N
 
 void orientationMap (vector < vector <window*> > *windows, int row, int col, int N);
 
+void getWindowBorder (Mat *imageWithBorder, int N, vector < vector <window*> > windows, int i, int j);
+
+void removeWindowBorder( Mat *imageWithoutBorder, Mat imageWithBorder, int originalSize, int newSize);
+
 void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N);
 
 Mat do_FFT(Mat padded);
