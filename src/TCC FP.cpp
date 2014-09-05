@@ -88,23 +88,15 @@ int main() {
 
 	thinningWindows(&windows, row, col, N);
 
-	for (int i = 0; i < row/N; i++) {
-		for (int j = 0; j < col/N; j++) {
-			for (int k = 0; k < N; k++) {
-				for (int l = 0; l < N; l++){
-					//recreatedImage.at<uchar>(N*i + k, N*j + l) = windows[i][j]->imageWindow.at<uchar>(k, l);
-					//vector[] temp = windows[i];
-					//suajanela = temp[j];
-				}
-			}
-		}
-	}
-
 	recreateImage(windows, row, col, N, "imagem afinada");
 
-	//minutiaeExtract();
+	minutiaeExtract();
 	//minutiaePlot(&windows, row, col, N);
-	//matching();
+	matching();
+
+	int score = 0;
+	if (score > 50) cout << "It's a Matching!" << endl;
+	else cout << "Images don't match." << endl;
 
 	waitKey(0);
 

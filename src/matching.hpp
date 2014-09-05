@@ -8,6 +8,6 @@
 #ifndef MATCHING_HPP_
 #define MATCHING_HPP_
 
-bool matching();
+int matching();
 
 #endif /* MATCHING_HPP_ */
