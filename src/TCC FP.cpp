@@ -65,26 +65,23 @@ int main() {
 			row - originalImage.rows, originalImage.cols, originalImage.rows);
 
 	createWindows(imageWhiteBorder, N, col, row, &windows);
-
 	equalizeWindows(N, col, row, &windows);
-
 	recreateImage(windows, row, col, N, "imagem equalizada");
-
 	orientationMap(&windows, row, col, N);
-
 	frequencyMap(&windows, row, col, N);
-
-	gaborFilter (&windows, row, col, N);
-
-	recreateImage(windows, row, col, N, "Gabor");
-
+	//gaborFilter (&windows, row, col, N);
+	//recreateImage(windows, row, col, N, "Gabor");
 	binarization(&windows, row, col, N);
-
 	recreateImage(windows, row, col, N, "imagem binarizada");
+	//thinningWindows(&windows, row, col, N);
+	//recreateImage(windows, row, col, N, "imagem afinada");
 
-	thinningWindows(&windows, row, col, N);
-
-	recreateImage(windows, row, col, N, "imagem afinada");
+	Mat imageNew;
+	imageNew.create(row, col, originalImage.type());
+	groupImageWindows(&imageNew, windows, row, col, N);
+	imshow("imagem refeita", imageNew);
+	thinning(imageNew);
+	imshow("imagem afinada", imageNew);
 
 	//minutiaeExtract();
 	//minutiaePlot(&windows, row, col, N);

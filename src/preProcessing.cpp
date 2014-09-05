@@ -18,7 +18,7 @@ void imageRead (Mat *image, int *dpi, string imagePath) {
 
 	//teste
 	*dpi = 500;
-	imagePath = "/home/fernanda/Documents/tcc/imagens_teste/teste.jpg";
+	imagePath = "/home/fernanda/Documents/tcc/imagens_teste/teste.tif";
 	//imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/101_1.tif";
 	//imagePath = "/home/priscila/Rel_4.2.0/mindtct/bin/101_1.jpg";
 
@@ -298,11 +298,81 @@ void thinning(cv::Mat& im) {
 }
 
 void thinningWindows (vector < vector <window*> > *windows, int row, int col, int N) {
-	for (int i = 0; i < row/N; i++) {
-		for (int j = 0; j <  col/N; j++) {
-			thinning((*windows)[i][j]->imageWindow);
+
+	vector < vector <window*> > aux;
+	//Dimensiona a matriz com as janelas (i = linhas, j = colunas)
+	aux.resize(row/N);
+	for (int i = 0; i < row/N; i++){
+		aux[i].resize((int)col/N);
+	}
+
+	//inicializando a matriz com as janelas (usando a classe window)
+	for (int i = 0; i < row/N; i++){
+		for (int j = 0; j < col/N;  j++){
+			aux[i][j] = new window(N, N, (*windows)[i][j]->imageWindow.type());
 		}
 	}
+
+	//CRIA CÓPIA DA IMAGEM DAS JANELAS
+	/*for (int i = 0; i < row/N; i++) {
+		for (int j = 0; j < col/N; j++) {
+			aux[i][j]->imageWindow = (*windows)[i][j]->imageWindow;
+		}
+	}*/
+	for (int i = 0; i < row/N; i++) {
+		aux[i][0]->imageWindow = (*windows)[i][0]->imageWindow;
+		aux[i][col/N - 1]->imageWindow = (*windows)[i][col/N - 1]->imageWindow;
+	}
+	for (int j = 0; j < col/N; j++) {
+		aux[0][j]->imageWindow = (*windows)[0][j]->imageWindow;
+		aux[row/N - 1][j]->imageWindow = (*windows)[row/N - 1][j]->imageWindow;
+	}
+
+	for (int i = 0; i < row/N; i++) {
+		for (int j = 0; j <  col/N; j++) {
+			if (i == 0 || i == row/N - 1 || j == 0 || j == col/N - 1) {
+				thinning(aux[i][j]->imageWindow);
+			}
+			else {
+				Mat imageWithBorder;
+				getWindowBorder (&imageWithBorder, N, *windows, i, j);
+				thinning(imageWithBorder);
+				removeWindowBorder(&(aux[i][j]->imageWindow), imageWithBorder, N + 4, N);
+			}
+		}
+	}
+
+	recreateImage(aux, row, col, N, "imagem aux");
+
+	for (int i = 0; i < row/N; i++) {
+		for (int j = 0; j <  col/N; j++) {
+			(*windows)[i][j]->imageWindow = aux[i][j]->imageWindow;
+
+			/*
+			String output;
+			output.append(outputPath);
+			output.append("thinnedWindow_");
+			ostringstream iString;
+			ostringstream jString;
+			iString << i;
+			jString << j;
+			output.append(iString.str());
+			output.append("_");
+			output.append(jString.str());
+			output.append(".jpg");
+			imwrite(output, (*windows)[i][j]->getImageWindow());
+			*/
+		}
+	}
+	/*
+	for (int i = 1; i < row/N - 1; i++) {
+		for (int j = 1; j <  col/N - 1; j++) {
+			Mat imageWithBorder;
+			getWindowBorder (&imageWithBorder, N, *windows, i, j);
+			thinning(imageWithBorder);
+			removeWindowBorder(&((*windows)[i][j]->imageWindow), imageWithBorder, N + 4, N);
+		}
+	}*/
 	return;
 }
 
@@ -341,6 +411,20 @@ void frequencyMap (vector < vector <window*> > *windows, int row, int col, int N
 	return;
 }
 
+void tempFrequencyMap (vector < vector <window*> > windows, int row, int col, int N, Mat *temp){
+	Mat I;
+	Mat FFT_Result;
+	for (int i = 0; i < row/N; i++){
+		for (int j = 0; j < col/N;  j++){
+			I = windows[i][j]->getImageWindow();
+			FFT_Result=do_FFT(I);
+			//get_lambda(FFT_Result,lambda);
+			//(*windows)[i][j]->setFrequency((double)lambda);
+		}
+	}
+	return;
+}
+
 //Seta o ângulo de orientação de cada uma das janelas da imagem
 //**** O ângulo setado é em RADIANOS
 void orientationMap (vector < vector <window*> > *windows, int row, int col, int N){
@@ -354,8 +438,8 @@ void orientationMap (vector < vector <window*> > *windows, int row, int col, int
 			//4º: dx: se é ordem de X =1 , se não =0
 			//5º: dy: se é ordem de Y =1 , se não =0
 			//6º: dimensão da matriz de sobel
-			Sobel((*windows)[i][j]->getImageWindow()/255, Gx, -1, 1, 0, 3);
-			Sobel((*windows)[i][j]->getImageWindow()/255, Gy, -1, 0, 1, 3);
+			Sobel((*windows)[i][j]->getImageWindow()/255, Gx, -1, 1, 0, 3, 1, 0, BORDER_DEFAULT);
+			Sobel((*windows)[i][j]->getImageWindow()/255, Gy, -1, 0, 1, 3, 1, 0, BORDER_DEFAULT);
 
 			int Vx, Vy;
 			Vx = 0;
@@ -374,6 +458,9 @@ void orientationMap (vector < vector <window*> > *windows, int row, int col, int
 			else {
 				(*windows)[i][j]->setAngle( (double)0.5 * atan((double) Vy / Vx));
 			}
+
+			//(*windows)[i][j]->setAngle(0.785398163); //45º em rad
+
 			cout << "Ângulo janela (em graus) " << i << ", " << j << ": " << ((double)(180 / M_PI) * (*windows)[i][j]->getAngle());// << endl;
 			cout << "; Ângulo janela (em radianos) " << i << ", " << j << ": " << (*windows)[i][j]->getAngle() << endl;
 		}
@@ -482,13 +569,15 @@ void removeWindowBorder( Mat *imageWithoutBorder, Mat imageWithBorder, int origi
 }
 
 void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N) {
-	//O "for" não faz a leitura do interior da imagem (eliminando as bordas)
 	for (int i = 1; i < row/N - 1; i++) {
 		for (int j = 1; j <  col/N - 1; j++) {
 			Mat imageWithBorder;
 			getWindowBorder (&imageWithBorder, N, *windows, i, j);
-
-			Mat gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, (*windows)[i][j]->getAngle(), (*windows)[i][j]->getFrequency(), 1, 0, CV_32F );
+//			cout << "i: " << i << "; j: " << j << " - Frequencia: " << (*windows)[i][j]->getFrequency() << endl;
+//			Mat gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, (*windows)[i][j]->getAngle()+ M_PI/2, (*windows)[i][j]->getFrequency(), 1, 0, CV_32F );
+			Mat gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, (*windows)[i][j]->getAngle()+ M_PI/2, 3.5, 1, 0, CV_32F );
+//			Mat gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, (*windows)[i][j]->getAngle(), (*windows)[i][j]->getFrequency(), 1, 0, CV_32F );
+//			Mat gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, (*windows)[i][j]->getAngle(), 3.9, 1, 0, CV_32F );
 			filter2D(imageWithBorder, imageWithBorder, -1, gaborKernel);
 			removeWindowBorder( &(*windows)[i][j]->imageWindow, imageWithBorder, N + 4, N);
 			//filter2D((*windows)[i][j]->getImageWindow(), (*windows)[i][j]->imageWindow, -1, gaborKernel);
@@ -497,6 +586,7 @@ void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N)
 
 	return;
 }
+
 
 Mat do_FFT(Mat padded)
 {
@@ -582,3 +672,17 @@ void get_lambda(Mat& in, float& lambda)
 }
 
 bool comparar (Point3f i,Point3f j) { return (i.z<j.z); }
+
+void groupImageWindows(Mat *imageNew, vector < vector <window*> > windows, int row, int col, int N) {
+
+	for (int i = 0; i < row/N; i++) {
+		for (int j = 0; j < col/N; j++) {
+			for (int k = 0; k < N; k++) {
+				for (int l = 0; l < N; l++){
+					imageNew->at<uchar>(N*i + k, N*j + l) = windows[i][j]->getImageWindow().at<uchar>(k, l);
+				}
+			}
+		}
+	}
+	return;
+}

@@ -63,4 +63,8 @@ void get_lambda(Mat& in, float& lambda);
 
 bool comparar (Point3f i,Point3f j);
 
+void tempFrequencyMap (vector < vector <window*> > windows, int row, int col, int N, Mat *temp);
+
+void groupImageWindows(Mat *imageNew, vector < vector <window*> > windows, int row, int col, int N);
+
 #endif /* PREPROCESSING_HPP_ */
