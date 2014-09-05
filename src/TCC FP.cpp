@@ -92,10 +92,9 @@ int main() {
 
 	minutiaeExtract();
 	//minutiaePlot(&windows, row, col, N);
-	matching();
+	bool resultado = matching();
 
-	int score = 0;
-	if (score > 50) cout << "It's a Matching!" << endl;
+	if (resultado == true) cout << "It's a Matching!" << endl;
 	else cout << "Images don't match." << endl;
 
 	waitKey(0);

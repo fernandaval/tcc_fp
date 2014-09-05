@@ -27,11 +27,12 @@
 #define bozorthPath "/home/priscila/Rel_4.2.0/bozorth3/bin/bozorth3"
 #define TRUE 1
 #define FALSE 0
+#define MINIMUMSCORE 60
 
 using namespace std;
 
 //MATCHING COM BOZORTH
-int matching()
+bool matching()
 {
 	char *my_env[] = {NULL};
 	char *newargv_bozorth[] = {"bozorth3", "/home/priscila/Rel_4.2.0/mindtct/bin/101_1.xyt", "/home/priscila/Rel_4.2.0/mindtct/bin/101_1.xyt", NULL};
@@ -72,12 +73,18 @@ int matching()
 			dup2(fd[0], 0);
 			close(fd[1]);
 			read(fd[0], line, 255);
-			fprintf(stdout, "%s", line);
 			close(fd[0]);
-			string resultado(line);
-			//TODO
+			char * temp;
+			temp = strtok(line," ");
+			string digito1, digito2, digito3;
+			digito1 = temp[17];
+			digito2 = temp[18];
+			digito3 = temp[19];
+			string resultado = digito1 + digito2 + digito3;
+			int score = atoi(resultado.c_str());
+			if (score >= MINIMUMSCORE) return true;
+			else return false;
 		}
-
-		return 0;
 	}
+	return false;
 }
