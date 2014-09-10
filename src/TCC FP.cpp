@@ -69,8 +69,8 @@ int main() {
 	recreateImage(windows, row, col, N, "imagem equalizada");
 	orientationMap(&windows, row, col, N);
 	frequencyMap(&windows, row, col, N);
-	//gaborFilter (&windows, row, col, N);
-	//recreateImage(windows, row, col, N, "Gabor");
+	gaborFilter (&windows, row, col, N);
+	recreateImage(windows, row, col, N, "Gabor");
 	binarization(&windows, row, col, N);
 	recreateImage(windows, row, col, N, "imagem binarizada");
 	//thinningWindows(&windows, row, col, N);
@@ -80,8 +80,9 @@ int main() {
 	imageNew.create(row, col, originalImage.type());
 	groupImageWindows(&imageNew, windows, row, col, N);
 	imshow("imagem refeita", imageNew);
-	thinning(imageNew);
+	/*thinning(imageNew);
 	imshow("imagem afinada", imageNew);
+	*/
 
 	//minutiaeExtract();
 	//minutiaePlot(&windows, row, col, N);

@@ -18,7 +18,7 @@ void imageRead (Mat *image, int *dpi, string imagePath) {
 
 	//teste
 	*dpi = 500;
-	imagePath = "/home/fernanda/Documents/tcc/imagens_teste/teste.tif";
+	imagePath = "/home/fernanda/Documents/tcc/imagens_teste/teste.jpg";
 	//imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/101_1.tif";
 	//imagePath = "/home/priscila/Rel_4.2.0/mindtct/bin/101_1.jpg";
 
@@ -573,11 +573,12 @@ void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N)
 		for (int j = 1; j <  col/N - 1; j++) {
 			Mat imageWithBorder;
 			getWindowBorder (&imageWithBorder, N, *windows, i, j);
-//			cout << "i: " << i << "; j: " << j << " - Frequencia: " << (*windows)[i][j]->getFrequency() << endl;
+
 //			Mat gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, (*windows)[i][j]->getAngle()+ M_PI/2, (*windows)[i][j]->getFrequency(), 1, 0, CV_32F );
-			Mat gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, (*windows)[i][j]->getAngle()+ M_PI/2, 3.5, 1, 0, CV_32F );
-//			Mat gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, (*windows)[i][j]->getAngle(), (*windows)[i][j]->getFrequency(), 1, 0, CV_32F );
-//			Mat gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, (*windows)[i][j]->getAngle(), 3.9, 1, 0, CV_32F );
+
+			//DE ACORDO COM A TEORIA, A ORIENTAÇÃO DA JANELA DEVERIA SER UM ÂNGULO (EM RADIANOS), NORMAL À ORIENTAÇÃO REAL
+			//APESAR DISSO, DE ACORDO COM OS TESTE REALIZADOS, ISSO NÃO OCORRE. O ÂNGULO DEVE SER A ORIENTAÇÃO NATURAL DA JANELA
+			Mat gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, (*windows)[i][j]->getAngle(), 5.8, 1, 0, CV_32F );
 			filter2D(imageWithBorder, imageWithBorder, -1, gaborKernel);
 			removeWindowBorder( &(*windows)[i][j]->imageWindow, imageWithBorder, N + 4, N);
 			//filter2D((*windows)[i][j]->getImageWindow(), (*windows)[i][j]->imageWindow, -1, gaborKernel);
