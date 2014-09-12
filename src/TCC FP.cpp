@@ -84,9 +84,9 @@ int main() {
 	imshow("imagem afinada", imageNew);
 	*/
 
-	//minutiaeExtract();
-	//minutiaePlot(&windows, row, col, N);
-	//matching();
+	minutiaeExtract();
+	minutiaePlot(&windows, row, col, N);
+	matching();
 
 	waitKey(0);
 
