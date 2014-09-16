@@ -77,7 +77,7 @@ int main() {
 	//recreateImage(windows, row, col, N, "imagem afinada");
 
 	Mat imageNew;
-	imageNew.create(row, col, originalImage.type());
+	imageNew.create(row, col, CV_8UC3);
 	groupImageWindows(&imageNew, windows, row, col, N);
 	imshow("imagem refeita", imageNew);
 	/*thinning(imageNew);
@@ -85,7 +85,7 @@ int main() {
 	*/
 
 	minutiaeExtract();
-	minutiaePlot(&windows, row, col, N);
+	minutiaePlot(&windows, row, col, N, imageNew);
 	matching();
 
 	waitKey(0);

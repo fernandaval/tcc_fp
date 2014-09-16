@@ -12,7 +12,7 @@
 
 #define mindtctPath "/home/priscila/Rel_4.2.0/mindtct/bin/mindtct"
 
-void minutiaePlot(vector < vector <window*> > *windows, int row, int col, int N) {
+void minutiaePlot(vector < vector <window*> > *windows, int row, int col, int N, Mat minutiaeImage) {
 	//"/home/fernanda/Documents/tcc/nbis/Rel_4.2.0/mindtct/bin/101_1.xyt"
 	 vector <minutia*> minutiae;
 	 ifstream myReadFile;
@@ -51,17 +51,20 @@ void minutiaePlot(vector < vector <window*> > *windows, int row, int col, int N)
 	}
 	myReadFile.close();
 
-	Mat minutiaesImage;
-	minutiaesImage.create(row, col, (*windows)[0][0]->getImageWindow().type());
+	/*Mat minutiaesImage;
+	minutiaesImage.create(row, col, CV_8UC3);//(*windows)[0][0]->getImageWindow().type());
+	groupImageWindows(&minutiaesImage, *windows, row, col, N);*/
+
 	for (int i = 0; i < aux; i++) {
-		minutiaesImage.at<uchar>(minutiae[i]->getX(), minutiae[i]->getY()) = 255;
+		//PREENCHER CONTORNO
+		minutiaeImage.at<Vec3b>(minutiae[i]->getX(), minutiae[i]->getY()).val[0] = 0;
+		minutiaeImage.at<Vec3b>(minutiae[i]->getX(), minutiae[i]->getY()).val[1] = 0;
+		minutiaeImage.at<Vec3b>(minutiae[i]->getX(), minutiae[i]->getY()).val[2] = 255;
+		//minutiaesImage.at<uchar>(minutiae[i]->getX(), minutiae[i]->getY()) = 255;
 	}
 	cout << "aux: " << aux << endl;
-	imshow("Minúcias extraídas", minutiaesImage);
-	imwrite("/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2000/DB2/minucias.jpg", minutiaesImage);
-	/*thinning(imageNew);
-	imshow("imagem afinada", imageNew);
-	*/
+	imshow("Minúcias extraídas", minutiaeImage);
+	imwrite("/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2000/DB2/minucias.jpg", minutiaeImage);
 
 	return;
 }

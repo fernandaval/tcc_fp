@@ -37,6 +37,6 @@
 
 void minutiaeExtract();
 
-void minutiaePlot(vector < vector <window*> > *windows, int row, int col, int N);
+void minutiaePlot(vector < vector <window*> > *windows, int row, int col, int N, Mat minutiaeImage);
 
 #endif /* MINUTIAEEXTRACTION_HPP_ */
