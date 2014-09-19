@@ -84,18 +84,12 @@ int main() {
 	imshow("imagem afinada", imageNew);
 	*/
 
-<<<<<<< HEAD
 	minutiaeExtract(imageNew);
-	//minutiaePlot(&windows, row, col, N);
+	minutiaePlot(&windows, row, col, N, imageNew);
 	bool resultado = matching();
 
 	if (resultado == true) cout << "It's a Matching!" << endl;
 	else cout << "Images don't match." << endl;
-=======
-	minutiaeExtract();
-	minutiaePlot(&windows, row, col, N, imageNew);
-	matching();
->>>>>>> 514ff8407828fed3c58cdc3215ae695dc0e10f8c
 
 	waitKey(0);
 

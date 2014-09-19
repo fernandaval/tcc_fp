@@ -71,9 +71,5 @@ bool matching()
 			else return false;
 		}
 	}
-<<<<<<< HEAD
 	return false;
-=======
-	return FALSE;
->>>>>>> 514ff8407828fed3c58cdc3215ae695dc0e10f8c
 }

@@ -9,7 +9,7 @@
 #include "minutiaeExtraction.hpp"
 
 #define mindtctPath "/home/priscila/Rel_4.2.0/mindtct/bin/mindtct"
-#define outputPath "/home/priscila/tcc_fp/minutiae"
+#define imagePath "/home/priscila/tcc_fp/minutiae"
 #define TRUE 1
 #define FALSE 0
 
@@ -70,22 +70,40 @@ void minutiaePlot(vector < vector <window*> > *windows, int row, int col, int N,
 	return;
 }
 
+void printType(Mat &mat) {
+         if(mat.depth() == CV_8U)  printf("unsigned char(%d)", mat.channels());
+    else if(mat.depth() == CV_8S)  printf("signed char(%d)", mat.channels());
+    else if(mat.depth() == CV_16U) printf("unsigned short(%d)", mat.channels());
+    else if(mat.depth() == CV_16S) printf("signed short(%d)", mat.channels());
+    else if(mat.depth() == CV_32S) printf("signed int(%d)", mat.channels());
+    else if(mat.depth() == CV_32F) printf("float(%d)", mat.channels());
+    else if(mat.depth() == CV_64F) printf("double(%d)", mat.channels());
+    else                           printf("unknown(%d)", mat.channels());
+}
+
 void minutiaeExtract(Mat image)
 {
 	//EXTRAÇÃO DE MINÚCIAS COM MINDTCT
 	char *my_env[] = {NULL};
 
-	string path = outputPath;
-	imwrite(path.append("/image.jpg"), image);
-	string input = path.append("/image.jpg");
-	string output = path.append("/minutiae");
-	cout << path << endl;
+	Mat gray_image;
+	cvtColor(image, gray_image, COLOR_BGR2GRAY);
+
+	string input = imagePath;
+	imwrite(input.append("/image.jpg"), gray_image);
+	//cout << input << endl;
+
+	string output = imagePath;
+	output.append("/minutiae");
+	//cout << output << endl;
 
 	char * parameter1 = new char[input.length() + 1];
 	strcpy(parameter1,input.c_str());
+	//cout << parameter1 << endl;
 
 	char * parameter2 = new char[output.length() + 1];
 	strcpy(parameter2,output.c_str());
+	//cout << parameter2 << endl;
 
 	//char *newargv_mindtct[] = {"mindtct", "/home/priscila/BDs_imagens_de_digitais/2000/DB2/101_1.jpg", "/home/priscila/Rel_4.2.0/mindtct/bin/minutiae", NULL};
 	char *newargv_mindtct[] = {"mindtct", parameter1, parameter2, NULL};
@@ -102,12 +120,7 @@ void minutiaeExtract(Mat image)
 	*/
 	if(!pid){
 		//fprintf(stdout, "Mindtct - FILHO EXECUTANDO!\n");
-<<<<<<< HEAD
 		if(execve(mindtctPath, newargv_mindtct, my_env) == -1){
-=======
-		//if(execve("/home/priscila/Rel_4.2.0/mindtct/bin/mindtct", newargv_mindtct, my_env) == -1){
-		if(execve("/home/fernanda/Documents/tcc/nbis/Rel_4.2.0/mindtct/bin/mindtct", newargv_mindtct, my_env) == -1){
->>>>>>> 514ff8407828fed3c58cdc3215ae695dc0e10f8c
 			fprintf(stderr, "%s\n", strerror(errno));
 			exit(1);
 		}
