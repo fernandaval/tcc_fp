@@ -26,6 +26,7 @@
 #include "preProcessing.hpp"
 
 #define mindtctPath "/home/priscila/Rel_4.2.0/mindtct/bin/mindtct"
+#define outputPath "/home/priscila/tcc_fp/minutiae"
 #define TRUE 1
 #define FALSE 0
 
@@ -33,11 +34,25 @@ void minutiaePlot(vector < vector <window*> > *windows, int row, int col, int N)
 	//TO DO
 }
 
-void minutiaeExtract()
+void minutiaeExtract(Mat image)
 {
 	//EXTRAÇÃO DE MINÚCIAS COM MINDTCT
 	char *my_env[] = {NULL};
-	char *newargv_mindtct[] = {"mindtct", "/home/priscila/BDs_imagens_de_digitais/2000/DB2/101_1.jpg", "/home/priscila/Rel_4.2.0/mindtct/bin/101_1", NULL};
+
+	string path = outputPath;
+	imwrite(path.append("/image.jpg"), image);
+	string input = path.append("/image.jpg");
+	string output = path.append("/minutiae");
+	cout << path << endl;
+
+	char * parameter1 = new char[input.length() + 1];
+	strcpy(parameter1,input.c_str());
+
+	char * parameter2 = new char[output.length() + 1];
+	strcpy(parameter2,output.c_str());
+
+	//char *newargv_mindtct[] = {"mindtct", "/home/priscila/BDs_imagens_de_digitais/2000/DB2/101_1.jpg", "/home/priscila/Rel_4.2.0/mindtct/bin/minutiae", NULL};
+	char *newargv_mindtct[] = {"mindtct", parameter1, parameter2, NULL};
 
 	pid_t pid = fork();
 
@@ -51,7 +66,7 @@ void minutiaeExtract()
 	*/
 	if(!pid){
 		//fprintf(stdout, "Mindtct - FILHO EXECUTANDO!\n");
-		if(execve("/home/priscila/Rel_4.2.0/mindtct/bin/mindtct", newargv_mindtct, my_env) == -1){
+		if(execve(mindtctPath, newargv_mindtct, my_env) == -1){
 			fprintf(stderr, "%s\n", strerror(errno));
 			exit(1);
 		}

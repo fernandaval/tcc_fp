@@ -32,9 +32,6 @@
 #include "matching.hpp"
 #include "window.hpp"
 
-//#define outputPath "/home/fernanda/Documents/tcc/imagens_teste/Output/"
-//#define outputPath "/home/priscila/Documents/tcc/imagens_teste/Output/"
-
 using namespace cv;
 using namespace std;
 
@@ -50,7 +47,6 @@ int main() {
 	imageRead(&originalImage, &dpi, imagePath);
 
 	imageMeasures (originalImage, dpi, &N, &col, &row); //retorna coluna e linha da imagem final com borda
-	cout << "medidas da imagem foram tomadas" << endl;
 
 	//Dimensiona a matriz com as janelas (i = linhas, j = colunas)
 	windows.resize(row/N);
@@ -69,28 +65,26 @@ int main() {
 			row - originalImage.rows, originalImage.cols, originalImage.rows);
 
 	createWindows(imageWhiteBorder, N, col, row, &windows);
-
 	equalizeWindows(N, col, row, &windows);
-
 	recreateImage(windows, row, col, N, "imagem equalizada");
-
-	binarization(&windows, row, col, N);
-
-	recreateImage(windows, row, col, N, "imagem binarizada");
-
 	orientationMap(&windows, row, col, N);
-
 	frequencyMap(&windows, row, col, N);
-
 	gaborFilter (&windows, row, col, N);
-
 	recreateImage(windows, row, col, N, "Gabor");
+	binarization(&windows, row, col, N);
+	recreateImage(windows, row, col, N, "imagem binarizada");
+	//thinningWindows(&windows, row, col, N);
+	//recreateImage(windows, row, col, N, "imagem afinada");
 
-	thinningWindows(&windows, row, col, N);
+	Mat imageNew;
+	imageNew.create(row, col, originalImage.type());
+	groupImageWindows(&imageNew, windows, row, col, N);
+	imshow("imagem refeita", imageNew);
+	/*thinning(imageNew);
+	imshow("imagem afinada", imageNew);
+	*/
 
-	recreateImage(windows, row, col, N, "imagem afinada");
-
-	minutiaeExtract();
+	minutiaeExtract(imageNew);
 	//minutiaePlot(&windows, row, col, N);
 	bool resultado = matching();
 

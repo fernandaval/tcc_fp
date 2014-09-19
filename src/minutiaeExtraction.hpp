@@ -8,7 +8,7 @@
 #ifndef MINUTIAEEXTRACTION_HPP_
 #define MINUTIAEEXTRACTION_HPP_
 
-void minutiaeExtract();
+void minutiaeExtract(Mat image);
 
 void minutiaePlot(vector < vector <window*> > *windows, int row, int col, int N);
 
