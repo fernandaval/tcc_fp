@@ -10,8 +10,11 @@
 
 #define mindtctPath "/home/priscila/Rel_4.2.0/mindtct/bin/mindtct"
 #define imagePath "/home/priscila/tcc_fp/minutiae"
+#define xytPath "/home/priscila/tcc_fp/minutiae/minutiae.xyt"
 #define TRUE 1
 #define FALSE 0
+
+using namespace std;
 
 void minutiaePlot(vector < vector <window*> > *windows, int row, int col, int N, Mat minutiaeImage) {
 	//"/home/fernanda/Documents/tcc/nbis/Rel_4.2.0/mindtct/bin/101_1.xyt"
@@ -81,6 +84,19 @@ void printType(Mat &mat) {
     else                           printf("unknown(%d)", mat.channels());
 }
 
+//salva minucias recem-extraidas no BD
+void saveMinutiae()
+{
+	string data;
+
+	ofstream xytfile;
+	xytfile.open(xytPath);
+	while (!xytfile.eof()) {
+		//getline(xytfile,data);
+	}
+	xytfile.close();
+}
+
 void minutiaeExtract(Mat image)
 {
 	//EXTRAÇÃO DE MINÚCIAS COM MINDTCT
@@ -132,5 +148,7 @@ void minutiaeExtract(Mat image)
 		//fprintf(stdout, "Mindtct - PAI EXECUTANDO\n");
 	}
 	fprintf(stdout, "minucias extraidas\n");
+
+	saveMinutiae();
 }
 

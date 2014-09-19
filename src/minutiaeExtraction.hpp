@@ -14,6 +14,7 @@
 #include <fcntl.h>
 #include <cstdio>
 #include <cstdlib>
+#include <stdio.h>
 #include <cerrno>
 #include <unistd.h>
 #include <sys/types.h>
@@ -25,8 +26,8 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include<iostream>
-#include<fstream>
+#include <iostream>
+#include <fstream>
 
 #include "window.hpp"
 #include "preProcessing.hpp"

@@ -9,6 +9,7 @@
 
 #define bozorthPath "/home/priscila/Rel_4.2.0/bozorth3/bin/bozorth3"
 #define bdpath "/home/priscila/tcc_fp/fingerprint.db"
+#define xytpath "/home/priscila/tcc_fp/minutiae/minutiae_ref.xyt"
 #define TRUE 1
 #define FALSE 0
 #define MINIMUMSCORE 60
@@ -18,9 +19,16 @@ using namespace std;
 static int callback(void *data, int argc, char **argv, char **azColName){
    int i;
    fprintf(stderr, "%s: ", (const char*)data);
+
+   ofstream xytfile;
+   xytfile.open(xytpath);
+
    for(i=0; i<argc; i++){
       printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+      //xytfile << argv[i]; TODO
    }
+
+   xytfile.close();
    printf("\n");
    return 0;
 }
@@ -41,14 +49,14 @@ void generateXYT()
 	  exit(0);
    }
 
-   sql = "SELECT * FROM minutia";
+   sql = "SELECT * FROM teste";
 
    rc = sqlite3_exec(db, sql, callback, (void*)data, &zErrMsg);
    if( rc != SQLITE_OK ){
 	   fprintf(stderr, "SQL error: %s\n", zErrMsg);
        sqlite3_free(zErrMsg);
    } else {
-       fprintf(stdout, "Operation done successfully\n");
+       //fprintf(stdout, "Operation done successfully\n");
    }
 
    sqlite3_close(db);
