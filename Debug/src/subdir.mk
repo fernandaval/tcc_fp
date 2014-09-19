@@ -6,6 +6,7 @@
 CPP_SRCS += \
 ../src/TCC\ FP.cpp \
 ../src/matching.cpp \
+../src/minutia.cpp \
 ../src/minutiaeExtraction.cpp \
 ../src/preProcessing.cpp \
 ../src/window.cpp 
@@ -13,6 +14,7 @@ CPP_SRCS += \
 OBJS += \
 ./src/TCC\ FP.o \
 ./src/matching.o \
+./src/minutia.o \
 ./src/minutiaeExtraction.o \
 ./src/preProcessing.o \
 ./src/window.o 
@@ -20,6 +22,7 @@ OBJS += \
 CPP_DEPS += \
 ./src/TCC\ FP.d \
 ./src/matching.d \
+./src/minutia.d \
 ./src/minutiaeExtraction.d \
 ./src/preProcessing.d \
 ./src/window.d 

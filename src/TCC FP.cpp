@@ -77,19 +77,25 @@ int main() {
 	//recreateImage(windows, row, col, N, "imagem afinada");
 
 	Mat imageNew;
-	imageNew.create(row, col, originalImage.type());
+	imageNew.create(row, col, CV_8UC3);
 	groupImageWindows(&imageNew, windows, row, col, N);
 	imshow("imagem refeita", imageNew);
 	/*thinning(imageNew);
 	imshow("imagem afinada", imageNew);
 	*/
 
+<<<<<<< HEAD
 	minutiaeExtract(imageNew);
 	//minutiaePlot(&windows, row, col, N);
 	bool resultado = matching();
 
 	if (resultado == true) cout << "It's a Matching!" << endl;
 	else cout << "Images don't match." << endl;
+=======
+	minutiaeExtract();
+	minutiaePlot(&windows, row, col, N, imageNew);
+	matching();
+>>>>>>> 514ff8407828fed3c58cdc3215ae695dc0e10f8c
 
 	waitKey(0);
 
