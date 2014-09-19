@@ -11,6 +11,7 @@
 #define mindtctPath "/home/priscila/Rel_4.2.0/mindtct/bin/mindtct"
 #define imagePath "/home/priscila/tcc_fp/minutiae"
 #define xytPath "/home/priscila/tcc_fp/minutiae/minutiae.xyt"
+#define bdPath "/home/priscila/tcc_fp/fingerprint.db"
 #define TRUE 1
 #define FALSE 0
 
@@ -24,7 +25,7 @@ void minutiaePlot(vector < vector <window*> > *windows, int row, int col, int N,
 	 int count = 0;
 	 int aux = 0;
 
-	 myReadFile.open("/home/fernanda/Documents/tcc/nbis/Rel_4.2.0/mindtct/bin/101_1.xyt");
+	 myReadFile.open(xytPath);
 
 	 minutiae.resize(col*row);
 	 for (int i = 0; i < col*row; i++) {
@@ -84,17 +85,92 @@ void printType(Mat &mat) {
     else                           printf("unknown(%d)", mat.channels());
 }
 
+static int callback(void *NotUsed, int argc, char **argv, char **azColName){
+   int i;
+   for(i=0; i<argc; i++){
+      printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+   }
+   printf("\n");
+   return 0;
+}
+
 //salva minucias recem-extraidas no BD
 void saveMinutiae()
 {
-	string data;
+	 vector <minutia*> minutiae;
+	 ifstream myReadFile;
+	 char output[100];
+	 int count = 0;
+	 int aux = 0;
+	 minutiae[aux] = new minutia();
 
-	ofstream xytfile;
-	xytfile.open(xytPath);
-	while (!xytfile.eof()) {
-		//getline(xytfile,data);
+	 myReadFile.open(xytPath);
+
+	 if (myReadFile.is_open()) {
+		 while (!myReadFile.eof()) {
+
+			 count ++;
+			 myReadFile >> output;
+
+			 if (count == 1) { // TODO debugar, não ta funcionando
+				 cout << "teste" << endl;
+				 minutiae[aux]->setX(atoi(output));
+			 }
+			 else if (count == 2) {
+				 minutiae[aux]->setY(atoi(output));
+			 }
+			 else if (count == 3) {
+				 minutiae[aux]->setTheta(atoi(output));
+			 }
+			 else if (count == 4) {
+				 minutiae[aux]->setQuality(atoi(output));
+				 count = 0;
+				 aux ++;
+				 minutiae[aux] = new minutia();
+			 }
+		 }
 	}
-	xytfile.close();
+
+	myReadFile.close();
+
+	sqlite3 *db;
+	char *zErrMsg = 0;
+	int rc;
+	string sqlstr;
+
+	/* Open database */
+	rc = sqlite3_open(bdPath, &db);
+	if( rc ){
+		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+	    exit(0);
+	}
+
+	for (int i = 0; i < aux; i++) {
+		sqlstr = "INSERT INTO minutiatemp2 (x,y,theta,quality) VALUES (";
+		int x = minutiae[aux]->getX();
+		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << x) )->str());
+		sqlstr.append(", ");
+		int y = minutiae[aux]->getY();
+		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << y) )->str());
+		sqlstr.append(", ");
+		int theta = minutiae[aux]->getTheta();
+		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << theta) )->str());
+		sqlstr.append(", ");
+		int quality = minutiae[aux]->getQuality();
+		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << quality) )->str());
+		sqlstr.append(");");
+
+		const char * sql = sqlstr.c_str();
+
+		rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+	    if( rc != SQLITE_OK ){
+		  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		  sqlite3_free(zErrMsg);
+	    }
+	}
+
+	sqlite3_close(db);
+
 }
 
 void minutiaeExtract(Mat image)

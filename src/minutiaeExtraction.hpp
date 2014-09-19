@@ -28,6 +28,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <iostream>
 #include <fstream>
+#include <sqlite3.h>
 
 #include "window.hpp"
 #include "preProcessing.hpp"
