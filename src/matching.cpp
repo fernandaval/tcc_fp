@@ -8,28 +8,28 @@
 #include "matching.hpp"
 
 #define bozorthPath "/home/priscila/Rel_4.2.0/bozorth3/bin/bozorth3"
-#define bdpath "/home/priscila/tcc_fp/fingerprint.db"
-#define xytpath "/home/priscila/tcc_fp/minutiae/minutiae_ref.xyt"
+//#define bozorthPath "/home/fernanda/Documents/tcc/nbis/Rel_4.2.0/bozorth3/bin/bozorth3"
+#define bdPath "/home/priscila/tcc_fp/fingerprint.db"
+#define xytPath "/home/priscila/tcc_fp/minutiae/minutiae_ref.xyt"
+//#define xytPath "/home/fernanda/Documents/tcc/nbis/Rel_4.2.0/mindtct/bin/101_1.xyt"
 #define TRUE 1
 #define FALSE 0
 #define MINIMUMSCORE 60
 
 using namespace std;
 
+char *result_columns[100];
+char *result_values[100];
+
 static int callback(void *data, int argc, char **argv, char **azColName){
-   int i;
-   fprintf(stderr, "%s: ", (const char*)data);
+    int i;
+    fprintf(stderr, "%s: ", (const char*)data);
 
-   ofstream xytfile;
-   xytfile.open(xytpath);
+    for(i=0; i<argc; i++){
+       result_columns[i] = azColName[i];
+       result_columns[i] = argv[i];
+    }
 
-   for(i=0; i<argc; i++){
-      printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-      //xytfile << argv[i]; TODO
-   }
-
-   xytfile.close();
-   printf("\n");
    return 0;
 }
 
@@ -42,14 +42,14 @@ void generateXYT()
    char *sql;
    const char* data = "Callback function called";
 
-   rc = sqlite3_open(bdpath, &db);
+   rc = sqlite3_open(bdPath, &db);
 
    if( rc ){
 	  fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
 	  exit(0);
    }
 
-   sql = "SELECT * FROM teste";
+   sql = "SELECT id FROM template";
 
    rc = sqlite3_exec(db, sql, callback, (void*)data, &zErrMsg);
    if( rc != SQLITE_OK ){
@@ -58,6 +58,25 @@ void generateXYT()
    } else {
        //fprintf(stdout, "Operation done successfully\n");
    }
+
+   fprintf(stdout,"resultados: %s", result_columns);
+
+   ofstream xytfile;
+   xytfile.open(xytPath);
+
+   /*int idTemplate = argv[i];
+
+	string sqlstr = "SELECT * FROM minutia WHERE idTemplate = ";
+	sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << idTemplate) )->str());
+	sqlstr.append(";");
+
+	const char * sql = sqlstr.c_str();
+
+	rc = sqlite3_exec(db, sql, callback, (void*)data, &zErrMsg);
+	if( rc != SQLITE_OK ){
+	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		 sqlite3_free(zErrMsg);
+	}*/
 
    sqlite3_close(db);
 
@@ -69,8 +88,7 @@ bool matching()
 	generateXYT();
 
 	char *my_env[] = {NULL};
-	//char *newargv_bozorth[] = {"bozorth3", "/home/priscila/Rel_4.2.0/mindtct/bin/101_1.xyt", "/home/priscila/Rel_4.2.0/mindtct/bin/101_1.xyt", NULL};
-	char *newargv_bozorth[] = {"bozorth3", "/home/fernanda/Documents/tcc/nbis/Rel_4.2.0/mindtct/bin/101_1.xyt", "/home/fernanda/Documents/tcc/nbis/Rel_4.2.0/mindtct/bin/101_1.xyt", NULL};
+	char *newargv_bozorth[] = {"bozorth3", xytPath, xytPath, NULL};
 
 	int fd[2];
 	if(pipe(fd) == -1){
@@ -92,8 +110,7 @@ bool matching()
 		dup2(fd[1], 1);
 		close(fd[0]);
 		fprintf(stdout, "Matching score: \n");
-		//if(execve("/home/priscila/Rel_4.2.0/bozorth3/bin/bozorth3", newargv_bozorth, my_env) == -1){
-		if(execve("/home/fernanda/Documents/tcc/nbis/Rel_4.2.0/bozorth3/bin/bozorth3", newargv_bozorth, my_env) == -1){
+		if(execve(bozorthPath, newargv_bozorth, my_env) == -1){
 			fprintf(stderr, "%s\n", strerror(errno));
 			exit(1);
 		}

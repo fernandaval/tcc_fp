@@ -102,18 +102,20 @@ void saveMinutiae()
 	 char output[100];
 	 int count = 0;
 	 int aux = 0;
+
+	 minutiae.resize(aux+1);
 	 minutiae[aux] = new minutia();
 
 	 myReadFile.open(xytPath);
 
 	 if (myReadFile.is_open()) {
+
 		 while (!myReadFile.eof()) {
 
 			 count ++;
 			 myReadFile >> output;
 
-			 if (count == 1) { // TODO debugar, não ta funcionando
-				 cout << "teste" << endl;
+			 if (count == 1) {
 				 minutiae[aux]->setX(atoi(output));
 			 }
 			 else if (count == 2) {
@@ -126,6 +128,7 @@ void saveMinutiae()
 				 minutiae[aux]->setQuality(atoi(output));
 				 count = 0;
 				 aux ++;
+				 minutiae.resize(aux+1);
 				 minutiae[aux] = new minutia();
 			 }
 		 }
@@ -146,17 +149,19 @@ void saveMinutiae()
 	}
 
 	for (int i = 0; i < aux; i++) {
-		sqlstr = "INSERT INTO minutiatemp2 (x,y,theta,quality) VALUES (";
-		int x = minutiae[aux]->getX();
+		sqlstr = "INSERT INTO minutia (id,idTemplate,x,y,theta,quality) VALUES (";
+		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << i) )->str());
+		sqlstr.append(",1,");
+		int x = minutiae[i]->getX();
 		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << x) )->str());
-		sqlstr.append(", ");
-		int y = minutiae[aux]->getY();
+		sqlstr.append(",");
+		int y = minutiae[i]->getY();
 		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << y) )->str());
-		sqlstr.append(", ");
-		int theta = minutiae[aux]->getTheta();
+		sqlstr.append(",");
+		int theta = minutiae[i]->getTheta();
 		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << theta) )->str());
-		sqlstr.append(", ");
-		int quality = minutiae[aux]->getQuality();
+		sqlstr.append(",");
+		int quality = minutiae[i]->getQuality();
 		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << quality) )->str());
 		sqlstr.append(");");
 

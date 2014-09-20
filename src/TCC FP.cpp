@@ -86,6 +86,7 @@ int main() {
 
 	minutiaeExtract(imageNew);
 	minutiaePlot(&windows, row, col, N, imageNew);
+
 	bool resultado = matching();
 
 	if (resultado == true) cout << "It's a Matching!" << endl;
