@@ -85,17 +85,22 @@ void printType(Mat &mat) {
     else                           printf("unknown(%d)", mat.channels());
 }
 
+char *result_column[100];
+char *result_value[100];
+
 static int callback(void *NotUsed, int argc, char **argv, char **azColName){
    int i;
    for(i=0; i<argc; i++){
-      printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+      //printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+	  result_column[i] = azColName[i];
+      result_value[i] = argv[i];
    }
    printf("\n");
    return 0;
 }
 
 //salva minucias recem-extraidas no BD
-void saveMinutiae()
+void saveMinutiae(int idUsuario)
 {
 	 vector <minutia*> minutiae;
 	 ifstream myReadFile;
@@ -148,10 +153,23 @@ void saveMinutiae()
 	    exit(0);
 	}
 
+	sqlstr = "INSERT INTO template (idUser,registerDate,quality,type) VALUES (";
+	sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << idUsuario) )->str());
+	sqlstr.append(",'','','');");
+	const char * sql = sqlstr.c_str();
+	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+	if( rc != SQLITE_OK ){
+	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+	  sqlite3_free(zErrMsg);
+	}
+	int idTemplate = (int) sqlite3_last_insert_rowid(db);
+
+	if (result_column[0] == "id") idTemplate = atoi(result_value[0]);
+
 	for (int i = 0; i < aux; i++) {
-		sqlstr = "INSERT INTO minutia (id,idTemplate,x,y,theta,quality) VALUES (";
-		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << i) )->str());
-		sqlstr.append(",1,");
+		sqlstr = "INSERT INTO minutia (idTemplate,x,y,theta,quality) VALUES (";
+		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << idTemplate) )->str());
+		sqlstr.append(",");
 		int x = minutiae[i]->getX();
 		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << x) )->str());
 		sqlstr.append(",");
@@ -165,7 +183,7 @@ void saveMinutiae()
 		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << quality) )->str());
 		sqlstr.append(");");
 
-		const char * sql = sqlstr.c_str();
+		sql = sqlstr.c_str();
 
 		rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
 	    if( rc != SQLITE_OK ){
@@ -230,6 +248,7 @@ void minutiaeExtract(Mat image)
 	}
 	fprintf(stdout, "minucias extraidas\n");
 
-	saveMinutiae();
+	int idUsuario = 1;
+	saveMinutiae(idUsuario);
 }
 
