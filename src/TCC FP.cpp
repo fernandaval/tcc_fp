@@ -89,8 +89,8 @@ int main() {
 
 	bool resultado = matching();
 
-	if (resultado == true) cout << "It's a Matching!" << endl;
-	else cout << "Images don't match." << endl;
+	if (resultado == true) cout << "Access accepted!" << endl;
+	else cout << "Access denied." << endl;
 
 	waitKey(0);
 

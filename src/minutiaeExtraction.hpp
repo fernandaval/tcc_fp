@@ -29,6 +29,7 @@
 #include <iostream>
 #include <fstream>
 #include <sqlite3.h>
+#include <time.h>
 
 #include "window.hpp"
 #include "preProcessing.hpp"

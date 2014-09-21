@@ -29,6 +29,8 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <sqlite3.h>
+#include <iostream>
+#include <fstream>
 
 #define TRUE 1
 #define FALSE 0

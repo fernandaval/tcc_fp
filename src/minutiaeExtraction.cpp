@@ -12,13 +12,14 @@
 #define imagePath "/home/priscila/tcc_fp/minutiae"
 #define xytPath "/home/priscila/tcc_fp/minutiae/minutiae.xyt"
 #define bdPath "/home/priscila/tcc_fp/fingerprint.db"
+#define outputPath "/home/priscila/tcc_fp/minutiae/minucias.jpg"
+//#define outputPath "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2000/DB2/minucias.jpg"
 #define TRUE 1
 #define FALSE 0
 
 using namespace std;
 
 void minutiaePlot(vector < vector <window*> > *windows, int row, int col, int N, Mat minutiaeImage) {
-	//"/home/fernanda/Documents/tcc/nbis/Rel_4.2.0/mindtct/bin/101_1.xyt"
 	 vector <minutia*> minutiae;
 	 ifstream myReadFile;
 	 char output[100];
@@ -69,7 +70,7 @@ void minutiaePlot(vector < vector <window*> > *windows, int row, int col, int N,
 	}
 	cout << "aux: " << aux << endl;
 	imshow("Minúcias extraídas", minutiaeImage);
-	imwrite("/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2000/DB2/minucias.jpg", minutiaeImage);
+	imwrite(outputPath, minutiaeImage);
 
 	return;
 }
@@ -85,15 +86,11 @@ void printType(Mat &mat) {
     else                           printf("unknown(%d)", mat.channels());
 }
 
-char *result_column[100];
-char *result_value[100];
-
 static int callback(void *NotUsed, int argc, char **argv, char **azColName){
    int i;
    for(i=0; i<argc; i++){
       //printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-	  result_column[i] = azColName[i];
-      result_value[i] = argv[i];
+
    }
    printf("\n");
    return 0;
@@ -155,7 +152,9 @@ void saveMinutiae(int idUsuario)
 
 	sqlstr = "INSERT INTO template (idUser,registerDate,quality,type) VALUES (";
 	sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << idUsuario) )->str());
-	sqlstr.append(",'','','');");
+	sqlstr.append(",'");
+	sqlstr.append(__DATE__);
+	sqlstr.append("','','');");
 	const char * sql = sqlstr.c_str();
 	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
 	if( rc != SQLITE_OK ){
@@ -164,7 +163,7 @@ void saveMinutiae(int idUsuario)
 	}
 	int idTemplate = (int) sqlite3_last_insert_rowid(db);
 
-	if (result_column[0] == "id") idTemplate = atoi(result_value[0]);
+	int totalQualityTemplate = 0;
 
 	for (int i = 0; i < aux; i++) {
 		sqlstr = "INSERT INTO minutia (idTemplate,x,y,theta,quality) VALUES (";
@@ -180,6 +179,7 @@ void saveMinutiae(int idUsuario)
 		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << theta) )->str());
 		sqlstr.append(",");
 		int quality = minutiae[i]->getQuality();
+		totalQualityTemplate = totalQualityTemplate + quality;
 		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << quality) )->str());
 		sqlstr.append(");");
 
@@ -190,6 +190,21 @@ void saveMinutiae(int idUsuario)
 		  fprintf(stderr, "SQL error: %s\n", zErrMsg);
 		  sqlite3_free(zErrMsg);
 	    }
+	}
+
+	int averageQualityTemplate = totalQualityTemplate/aux;
+	sqlstr = "UPDATE template SET quality = ";
+	sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << averageQualityTemplate) )->str());
+	sqlstr.append(" WHERE id=");
+	sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << idTemplate) )->str());
+	sqlstr.append(";");
+
+	sql = sqlstr.c_str();
+
+	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+	if( rc != SQLITE_OK ){
+	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+	  sqlite3_free(zErrMsg);
 	}
 
 	sqlite3_close(db);

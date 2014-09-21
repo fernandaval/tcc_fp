@@ -11,6 +11,7 @@
 //#define bozorthPath "/home/fernanda/Documents/tcc/nbis/Rel_4.2.0/bozorth3/bin/bozorth3"
 #define bdPath "/home/priscila/tcc_fp/fingerprint.db"
 #define xytPath "/home/priscila/tcc_fp/minutiae/minutiae_ref.xyt"
+#define inputPath "/home/priscila/tcc_fp/minutiae/minutiae.xyt"
 //#define xytPath "/home/fernanda/Documents/tcc/nbis/Rel_4.2.0/mindtct/bin/101_1.xyt"
 #define TRUE 1
 #define FALSE 0
@@ -18,77 +19,48 @@
 
 using namespace std;
 
-char *result_columns[100];
-char *result_values[100];
+//vector <char> result_columns;
+vector <int> results_id;
+vector <int> results_x;
+vector <int> results_y;
+vector <int> results_theta;
+vector <int> results_quality;
 
-static int callback(void *data, int argc, char **argv, char **azColName){
+static int callbackTemplate(void *data, int argc, char **argv, char **azColName){
     int i;
-    fprintf(stderr, "%s: ", (const char*)data);
+    //fprintf(stderr, "%s: ", (const char*)data);
 
     for(i=0; i<argc; i++){
-       result_columns[i] = azColName[i];
-       result_columns[i] = argv[i];
+    	//result_columns.push_back(*azColName[i]);
+    	const char * temp = argv[i];
+    	string column = azColName[i];
+    	if (column == "id") results_id.push_back(atoi(temp));
     }
 
    return 0;
 }
 
-//converte templates de minucias do BD para arquivos .xyt que serão passados para o Bozorth
-void generateXYT()
-{
-   sqlite3 *db;
-   char *zErrMsg = 0;
-   int rc;
-   char *sql;
-   const char* data = "Callback function called";
+static int callbackMinutia(void *data, int argc, char **argv, char **azColName){
+    int i;
+    //fprintf(stderr, "%s: ", (const char*)data);
 
-   rc = sqlite3_open(bdPath, &db);
+    for(i=0; i<argc; i++){
+    	//result_columns.push_back(*azColName[i]);
+    	const char * temp = argv[i];
+    	string column = azColName[i];
+    	if (column == "x") results_x.push_back(atoi(temp));
+    	if (column == "y") results_y.push_back(atoi(temp));
+    	if (column == "theta") results_theta.push_back(atoi(temp));
+    	if (column == "quality") results_quality.push_back(atoi(temp));
+    }
 
-   if( rc ){
-	  fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-	  exit(0);
-   }
-
-   sql = "SELECT id FROM template";
-
-   rc = sqlite3_exec(db, sql, callback, (void*)data, &zErrMsg);
-   if( rc != SQLITE_OK ){
-	   fprintf(stderr, "SQL error: %s\n", zErrMsg);
-       sqlite3_free(zErrMsg);
-   } else {
-       //fprintf(stdout, "Operation done successfully\n");
-   }
-
-   fprintf(stdout,"resultados: %s", result_columns);
-
-   ofstream xytfile;
-   xytfile.open(xytPath);
-
-   /*int idTemplate = argv[i];
-
-	string sqlstr = "SELECT * FROM minutia WHERE idTemplate = ";
-	sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << idTemplate) )->str());
-	sqlstr.append(";");
-
-	const char * sql = sqlstr.c_str();
-
-	rc = sqlite3_exec(db, sql, callback, (void*)data, &zErrMsg);
-	if( rc != SQLITE_OK ){
-	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
-		 sqlite3_free(zErrMsg);
-	}*/
-
-   sqlite3_close(db);
-
+   return 0;
 }
 
-//MATCHING COM BOZORTH
-bool matching()
+bool bozorth()
 {
-	generateXYT();
-
 	char *my_env[] = {NULL};
-	char *newargv_bozorth[] = {"bozorth3", xytPath, xytPath, NULL};
+	char *newargv_bozorth[] = {"bozorth3", inputPath, xytPath, NULL};
 
 	int fd[2];
 	if(pipe(fd) == -1){
@@ -140,4 +112,65 @@ bool matching()
 		}
 	}
 	return false;
+}
+
+//converte os templates do BD para arquivo .xyt e chama o Bozorth
+bool matching()
+{
+   sqlite3 *db;
+   char *zErrMsg = 0;
+   int rc;
+   const char* data = "Callback function called";
+
+   rc = sqlite3_open(bdPath, &db);
+
+   if( rc ){
+	  fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+	  exit(0);
+   }
+
+   const char * sql = "SELECT id FROM template;";
+
+   rc = sqlite3_exec(db, sql, callbackTemplate, (void*)data, &zErrMsg);
+   if( rc != SQLITE_OK ){
+   	   fprintf(stderr, "SQL error: %s\n", zErrMsg);
+       sqlite3_free(zErrMsg);
+   }
+
+   string sqlstr;
+   bool approval = false;
+   for(int k=0; k<results_id.size(); k++){
+	   sqlstr = "SELECT * FROM minutia WHERE idTemplate = ";
+	   sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << results_id[k]) )->str());
+	   sqlstr.append(";");
+
+	   sql = sqlstr.c_str();
+
+	   rc = sqlite3_exec(db, sql, callbackMinutia, (void*)data, &zErrMsg);
+	   if( rc != SQLITE_OK ){
+		   fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		   sqlite3_free(zErrMsg);
+	   }
+
+	   ofstream myfile;
+	   myfile.open(xytPath);
+	   if (myfile.is_open()) {
+		   for(int a=0; a<results_x.size(); a++){
+			   myfile << results_x[a] << " " << results_y[a] << " " << results_theta[a] << " " << results_quality[a] << "\n";
+		   }
+	   }
+	   myfile.close();
+	   if (bozorth()==true){
+		   cout << "Matching com template " << results_id[k] << "!\n";
+		   approval = true;
+	   }
+	   else {
+		   cout << "Sem similaridade com template " << results_id[k] << "\n";
+	   }
+   }
+
+   return approval;
+
+   sqlite3_close(db);
+
 }
