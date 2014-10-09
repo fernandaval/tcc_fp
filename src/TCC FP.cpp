@@ -84,13 +84,23 @@ int main() {
 	imshow("imagem afinada", imageNew);
 	*/
 
-	minutiaeExtract(imageNew);
+	int option = 2;
+	cout << "O que você deseja fazer com a imagem: 1- cadastrar no BD 2- autenticar no sistema" << endl;
+	cin >> option;
+	int id = 0;
+	if (option == 1) {
+		cout << "Para qual usuário você deseja cadastrar essa imagem? Digite a ID" << endl;
+		cin >> id;
+	}
+	minutiaeExtract(imageNew,option,id);
 	minutiaePlot(&windows, row, col, N, imageNew);
 
-	bool resultado = matching();
+	if (option == 2) {
+		bool resultado = matching();
 
-	if (resultado == true) cout << "Access accepted!" << endl;
-	else cout << "Access denied." << endl;
+		if (resultado == true) cout << "Access accepted!" << endl;
+		else cout << "Access denied." << endl;
+	}
 
 	waitKey(0);
 

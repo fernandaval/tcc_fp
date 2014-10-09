@@ -25,6 +25,18 @@ vector <int> results_x;
 vector <int> results_y;
 vector <int> results_theta;
 vector <int> results_quality;
+string minutiae;
+
+static int callback(void *data, int argc, char **argv, char **azColName){
+	int i;
+
+	for(i=0; i<argc; i++){
+		const char * temp = argv[i];
+		string column = azColName[i];
+		if (column == "minutiae") minutiae = temp;
+	}
+	return 0;
+}
 
 static int callbackTemplate(void *data, int argc, char **argv, char **azColName){
     int i;
@@ -78,8 +90,9 @@ bool bozorth()
 	*	FILHO
 	*/
 	if(!pid){
-		//fprintf(stdout, "Bozorth - FILHO EXECUTANDO!\n");
-		dup2(fd[1], 1);
+
+		dup2(fd[1], 1); //TODO: Essa linha está dando erro!
+
 		close(fd[0]);
 		fprintf(stdout, "Matching score: \n");
 		if(execve(bozorthPath, newargv_bozorth, my_env) == -1){
@@ -93,6 +106,7 @@ bool bozorth()
 	else{
 		//fprintf(stdout, "Bozorth - PAI EXECUTANDO\n");
 		int status;
+
 		if (waitpid(pid,&status,0) > 0) {
 			char line[255];
 			dup2(fd[0], 0);
@@ -115,7 +129,7 @@ bool bozorth()
 }
 
 //converte os templates do BD para arquivo .xyt e chama o Bozorth
-bool matching()
+bool matching2()
 {
    sqlite3 *db;
    char *zErrMsg = 0;
@@ -172,5 +186,65 @@ bool matching()
    return approval;
 
    sqlite3_close(db);
+
+}
+
+//converte os templates do BD para arquivo .xyt e chama o Bozorth
+bool matching()
+{
+   sqlite3 *db;
+   char *zErrMsg = 0;
+   int rc;
+   const char* data = "Callback function called";
+
+   rc = sqlite3_open(bdPath, &db);
+
+   if( rc ){
+	  fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+	  exit(0);
+   }
+
+   const char * sql = "SELECT id FROM template;";
+
+   rc = sqlite3_exec(db, sql, callbackTemplate, (void*)data, &zErrMsg);
+   if( rc != SQLITE_OK ){
+   	   fprintf(stderr, "SQL error: %s\n", zErrMsg);
+       sqlite3_free(zErrMsg);
+   }
+
+   string sqlstr;
+   bool approval = false;
+   for(int k=0; k<results_id.size(); k++){
+	   sqlstr = "SELECT minutiae FROM template WHERE id = ";
+	   sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << results_id[k]) )->str());
+	   sqlstr.append(";");
+
+	   sql = sqlstr.c_str();
+
+	   rc = sqlite3_exec(db, sql, callback, (void*)data, &zErrMsg);
+	   if( rc != SQLITE_OK ){
+		   fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		   sqlite3_free(zErrMsg);
+	   }
+
+	   ofstream myfile;
+	   myfile.open(xytPath);
+	   if (myfile.is_open()) {
+		   myfile << minutiae;
+	   }
+	   myfile.close();
+
+	   if (bozorth()==true){
+		   cout << "Matching com template " << results_id[k] << "!\n";
+		   approval = true;
+	   }
+	   else {
+		   cout << "Sem similaridade com template " << results_id[k] << "\n";
+	   }
+   }
+
+   sqlite3_close(db);
+
+   return approval;
 
 }

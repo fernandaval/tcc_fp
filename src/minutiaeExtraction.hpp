@@ -38,7 +38,7 @@
 #define TRUE 1
 #define FALSE 0
 
-void minutiaeExtract(Mat image);
+void minutiaeExtract(Mat image, int option, int id);
 
 void minutiaePlot(vector < vector <window*> > *windows, int row, int col, int N, Mat minutiaeImage);
 
