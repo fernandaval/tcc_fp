@@ -8,12 +8,18 @@
 
 #include "minutiaeExtraction.hpp"
 
-#define mindtctPath "/home/priscila/Rel_4.2.0/mindtct/bin/mindtct"
-#define imagePath "/home/priscila/tcc_fp/minutiae"
-#define xytPath "/home/priscila/tcc_fp/minutiae/minutiae.xyt"
-#define bdPath "/home/priscila/tcc_fp/fingerprint.db"
-#define outputPath "/home/priscila/tcc_fp/minutiae/minucias.jpg"
-//#define outputPath "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2000/DB2/minucias.jpg"
+//#define mindtctPath "/home/priscila/Rel_4.2.0/mindtct/bin/mindtct"
+#define mindtctPath "/home/fernanda/Documents/tcc/nbis/Rel_4.2.0/mindtct/bin/mindtct"
+//#define imagePath "/home/priscila/tcc_fp/minutiae"
+#define imagePath "/home/fernanda/workspace/c/TCC FP/minutiae"
+//#define xytPath "/home/priscila/tcc_fp/minutiae/minutiae.xyt"
+#define xytPath "/home/fernanda/workspace/c/TCC FP/minutiae/minutiae_ref.xyt"
+//#define bdPath "/home/priscila/tcc_fp/fingerprint.db"
+#define bdPath "/home/fernanda/workspace/c/TCC FP/fingerprint.db"
+//#define outputPath "/home/priscila/tcc_fp/minutiae/minucias.jpg"
+#define outputPath "/home/fernanda/workspace/c/TCC FP/minutiae/minucias.jpg"
+
+
 #define TRUE 1
 #define FALSE 0
 

@@ -17,8 +17,6 @@
 #include "window.hpp"
 #include <math.h>
 
-#define outputPath "/home/fernanda/Documents/tcc/imagens_teste/Output/"
-//#define outputPath "/home/priscila/Documents/tcc/imagens_teste/Output/"
 
 using namespace cv;
 using namespace std;
