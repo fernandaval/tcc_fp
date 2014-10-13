@@ -31,11 +31,12 @@
 #include "minutiaeExtraction.hpp"
 #include "matching.hpp"
 #include "window.hpp"
+#include "TCC FP.hpp"
 
 using namespace cv;
 using namespace std;
 
-int main() {
+void Main::execute() {
 	int dpi;			//resolução da imagem em dpi's
 	string imagePath;	//endereço da imagem de entrada
 	Mat originalImage;	//imagem de entrada (no formato lido pelo opencv)
@@ -96,5 +97,4 @@ int main() {
 
 	//TODO fazer o delete das windows
 
-	return 0;
 }
