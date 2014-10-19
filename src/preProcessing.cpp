@@ -465,8 +465,8 @@ void orientationMap (vector < vector <window*> > *windows, int row, int col, int
 
 			//(*windows)[i][j]->setAngle(0.785398163); //45º em rad
 
-			cout << "Ângulo janela (em graus) " << i << ", " << j << ": " << ((double)(180 / M_PI) * (*windows)[i][j]->getAngle());// << endl;
-			cout << "; Ângulo janela (em radianos) " << i << ", " << j << ": " << (*windows)[i][j]->getAngle() << endl;
+			//cout << "Ângulo janela (em graus) " << i << ", " << j << ": " << ((double)(180 / M_PI) * (*windows)[i][j]->getAngle());// << endl;
+			//cout << "; Ângulo janela (em radianos) " << i << ", " << j << ": " << (*windows)[i][j]->getAngle() << endl;
 		}
 	}
 	return;
