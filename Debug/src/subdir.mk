@@ -5,6 +5,7 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../src/TCC\ FP.cpp \
+../src/VInterfaceDTO.cpp \
 ../src/matching.cpp \
 ../src/minutia.cpp \
 ../src/minutiaeExtraction.cpp \
@@ -13,6 +14,7 @@ CPP_SRCS += \
 
 OBJS += \
 ./src/TCC\ FP.o \
+./src/VInterfaceDTO.o \
 ./src/matching.o \
 ./src/minutia.o \
 ./src/minutiaeExtraction.o \
@@ -21,6 +23,7 @@ OBJS += \
 
 CPP_DEPS += \
 ./src/TCC\ FP.d \
+./src/VInterfaceDTO.d \
 ./src/matching.d \
 ./src/minutia.d \
 ./src/minutiaeExtraction.d \

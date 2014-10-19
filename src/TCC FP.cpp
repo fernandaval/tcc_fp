@@ -37,6 +37,10 @@
 using namespace cv;
 using namespace std;
 
+VInterfaceDTO Main::getVInterfaceDTO(void){
+	return this->vInterfaceDTO;
+}
+
 void Main::execute() {
 	int dpi;			//resolução da imagem em dpi's
 	string imagePath;	//endereço da imagem de entrada
@@ -72,6 +76,7 @@ void Main::execute() {
 	float windowingTime = ((windowingTimeAfter.tv_sec - windowingTimeBefore.tv_sec)
             + (windowingTimeAfter.tv_usec - windowingTimeBefore.tv_usec)/(float)1000000);
 	cout << "windowingTime: " << windowingTime << " segundos" << endl;
+	this->vInterfaceDTO.setWindowingTime(windowingTime);
 	//cria as janelas após adicionar bordas brancas
 	createWindows(imageWhiteBorder, N, col, row, &windows);
 
@@ -83,6 +88,7 @@ void Main::execute() {
 	float equalizationTime = ((equalizationTimeAfter.tv_sec - equalizationTimeBefore.tv_sec)
 	            + (equalizationTimeAfter.tv_usec - equalizationTimeBefore.tv_usec)/(float)1000000);
 	cout << "equalizationTime: " << equalizationTime << " segundos" << endl;
+	this->vInterfaceDTO.setEqualizationTime(equalizationTime);
 	recreateImage(windows, row, col, N, "imagem equalizada");
 
 	//GABOR (including Orientation Map and Frequency Map)
@@ -95,6 +101,7 @@ void Main::execute() {
 	float gaborFilterTime = ((gaborFilterTimeAfter.tv_sec - gaborFilterTimeBefore.tv_sec)
 	            + (gaborFilterTimeAfter.tv_usec - gaborFilterTimeBefore.tv_usec)/(float)1000000);
 	cout << "gaborFilterTime: " << gaborFilterTime << " segundos" << endl;
+	this->vInterfaceDTO.setGaborFilterTime(gaborFilterTime);
 	recreateImage(windows, row, col, N, "Gabor");
 
 	//BINARIZATION
@@ -105,6 +112,7 @@ void Main::execute() {
 	float binarizationTime = ((binarizationTimeAfter.tv_sec - binarizationTimeBefore.tv_sec)
 	            + (binarizationTimeAfter.tv_usec - binarizationTimeBefore.tv_usec)/(float)1000000);
 	cout << "binarizationTime: " << binarizationTime << " segundos" << endl;
+	this->vInterfaceDTO.setBinarizationTime(binarizationTime);
 	recreateImage(windows, row, col, N, "imagem binarizada");
 
 	//THINNING
@@ -135,6 +143,7 @@ void Main::execute() {
 	float minutiaeExtractionTime = ((minutiaeExtractionTimeAfter.tv_sec - minutiaeExtractionTimeBefore.tv_sec)
 	            + (minutiaeExtractionTimeAfter.tv_usec - minutiaeExtractionTimeBefore.tv_usec)/(float)1000000);
 	cout << "minutiaeExtractionTime: " << minutiaeExtractionTime << " segundos" << endl;
+	this->vInterfaceDTO.setMinutiaeExtractionTime(minutiaeExtractionTime);
 	//Plota as minúcias extraídas em uma nova imagem
 	minutiaePlot(&windows, row, col, N, imageNew);
 
@@ -146,6 +155,7 @@ void Main::execute() {
 	float matchingTime = ((matchingTimeAfter.tv_sec - matchingTimeBefore.tv_sec)
 	            + (matchingTimeAfter.tv_usec - matchingTimeBefore.tv_usec)/(float)1000000);
 	cout << "matchingTime: " << matchingTime << " segundos" << endl;
+	this->vInterfaceDTO.setMatchingTime(matchingTime);
 
 	if (resultado == true) cout << "Access accepted!" << endl;
 	else cout << "Access denied." << endl;
