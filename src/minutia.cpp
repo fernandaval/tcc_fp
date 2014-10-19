@@ -5,7 +5,7 @@
  *      Author: fernanda
  */
 
-#include <minutia.hpp>
+#include "minutia.hpp"
 
 using namespace std;
 

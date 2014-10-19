@@ -10,11 +10,11 @@
 //#define bozorthPath "/home/priscila/Rel_4.2.0/bozorth3/bin/bozorth3"
 #define bozorthPath "/home/fernanda/Documents/tcc/nbis/Rel_4.2.0/bozorth3/bin/bozorth3"
 //#define bdPath "/home/priscila/tcc_fp/fingerprint.db"
-#define bdPath "/home/fernanda/workspace/c/TCC FP/fingerprint.db"
+#define bdPath "/home/fernanda/workspace/c/tcc_fp/fingerprint.db"
 //#define xytPath "/home/priscila/tcc_fp/minutiae/minutiae_ref.xyt"
-#define xytPath "/home/fernanda/workspace/c/TCC FP/minutiae/minutiae_ref.xyt"
+#define xytPath "/home/fernanda/workspace/c/tcc_fp/minutiae/minutiae_ref.xyt"
 //#define inputPath "/home/priscila/tcc_fp/minutiae/minutiae.xyt"
-#define inputPath "/home/fernanda/workspace/c/TCC FP/minutiae/minutiae.xyt"
+#define inputPath "/home/fernanda/workspace/c/tcc_fp/minutiae/minutiae.xyt"
 #define TRUE 1
 #define FALSE 0
 #define MINIMUMSCORE 60
