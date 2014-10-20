@@ -91,8 +91,7 @@ bool bozorth()
 	*/
 	if(!pid){
 
-		dup2(fd[1], 1); //TODO: Essa linha está dando erro!
-
+		dup2(fd[1], 1);
 		close(fd[0]);
 		fprintf(stdout, "Matching score: \n");
 		if(execve(bozorthPath, newargv_bozorth, my_env) == -1){
@@ -107,14 +106,24 @@ bool bozorth()
 		//fprintf(stdout, "Bozorth - PAI EXECUTANDO\n");
 		int status;
 
-		if (waitpid(pid,&status,0) > 0) {
+		if (wait(NULL) == -1)
+		{
+			cout << "erro no wait" << endl;
+		}
+		else
+		{
+			cout << "wait funcionou" << endl;
+		}
+		//if (waitpid(pid,&status,0) > 0) {
 			char line[255];
 			dup2(fd[0], 0);
 			close(fd[1]);
 			read(fd[0], line, 255);
+			cout << "line contem: " << line << endl;
 			close(fd[0]);
 			char * temp;
 			temp = strtok(line," ");
+			cout << "temp: " << temp[17] << temp[18] << temp[19] << endl;
 			string digito1, digito2, digito3;
 			digito1 = temp[17];
 			digito2 = temp[18];
@@ -123,9 +132,9 @@ bool bozorth()
 			int score = atoi(resultado.c_str());
 			if (score >= MINIMUMSCORE) return true;
 			else return false;
-		}
+//		}
 	}
-	return false;
+	//return false;
 }
 
 //converte os templates do BD para arquivo .xyt e chama o Bozorth

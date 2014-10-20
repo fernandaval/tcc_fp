@@ -69,8 +69,8 @@ int main() {
 	recreateImage(windows, row, col, N, "imagem equalizada");
 	orientationMap(&windows, row, col, N);
 	frequencyMap(&windows, row, col, N);
-	gaborFilter (&windows, row, col, N);
-	recreateImage(windows, row, col, N, "Gabor");
+	//gaborFilter (&windows, row, col, N);
+	//recreateImage(windows, row, col, N, "Gabor");
 	binarization(&windows, row, col, N);
 	recreateImage(windows, row, col, N, "imagem binarizada");
 	//thinningWindows(&windows, row, col, N);
@@ -98,8 +98,8 @@ int main() {
 	if (option == 2) {
 		bool resultado = matching();
 
-		if (resultado == true) cout << "Access accepted!" << endl;
-		else cout << "Access denied." << endl;
+		if (resultado == true) cout << "Usuario aceito!" << endl;
+		else cout << "Usuario recusado." << endl;
 	}
 
 	waitKey(0);
