@@ -93,7 +93,6 @@ bool bozorth()
 
 		dup2(fd[1], 1);
 		close(fd[0]);
-		fprintf(stdout, "Matching score: \n");
 		if(execve(bozorthPath, newargv_bozorth, my_env) == -1){
 			fprintf(stderr, "%s\n", strerror(errno));
 			exit(1);
@@ -108,31 +107,25 @@ bool bozorth()
 
 		if (wait(NULL) == -1)
 		{
-			cout << "erro no wait" << endl;
+			fprintf(stderr, "Erro no wait");
 		}
 		else
 		{
-			cout << "wait funcionou" << endl;
-		}
+
 		//if (waitpid(pid,&status,0) > 0) {
 			char line[255];
 			dup2(fd[0], 0);
 			close(fd[1]);
 			read(fd[0], line, 255);
-			cout << "line contem: " << line << endl;
 			close(fd[0]);
 			char * temp;
-			temp = strtok(line," ");
-			cout << "temp: " << temp[17] << temp[18] << temp[19] << endl;
-			string digito1, digito2, digito3;
-			digito1 = temp[17];
-			digito2 = temp[18];
-			digito3 = temp[19];
-			string resultado = digito1 + digito2 + digito3;
+			temp = strtok(line,"\n");
+			string resultado = temp;
+			//cout << "resultado contem: " << resultado << endl;
 			int score = atoi(resultado.c_str());
 			if (score >= MINIMUMSCORE) return true;
 			else return false;
-//		}
+		}
 	}
 	//return false;
 }
