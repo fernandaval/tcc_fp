@@ -216,7 +216,8 @@ bool matching()
 
    string sqlstr;
    bool approval = false;
-   for(int k=0; k<results_id.size(); k++){
+   int k = 0;
+   while (k<results_id.size() and approval==false) {
 	   sqlstr = "SELECT minutiae FROM template WHERE id = ";
 	   sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << results_id[k]) )->str());
 	   sqlstr.append(";");
@@ -243,6 +244,7 @@ bool matching()
 	   else {
 		   cout << "Sem similaridade com template " << results_id[k] << "\n";
 	   }
+	   k++;
    }
 
    sqlite3_close(db);
