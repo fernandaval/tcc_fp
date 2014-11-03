@@ -41,7 +41,7 @@ VInterfaceDTO Main::getVInterfaceDTO(void){
 	return this->vInterfaceDTO;
 }
 
-void Main::execute() {
+void Main::execute(HasCallbackClass *_clazz) {
 	int dpi;			//resolução da imagem em dpi's
 	string imagePath;	//endereço da imagem de entrada
 	Mat originalImage;	//imagem de entrada (no formato lido pelo opencv)
@@ -160,6 +160,7 @@ void Main::execute() {
 	if (resultado == true) cout << "Access accepted!" << endl;
 	else cout << "Access denied." << endl;
 
+	_clazz->callback();
 	waitKey(0);
 
 	//TODO fazer o delete das windows

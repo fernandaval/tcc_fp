@@ -8,10 +8,11 @@
 #ifndef TCC_FP_HPP_
 #define TCC_FP_HPP_
 #include "VInterfaceDTO.hpp"
-
+#include "HasCallbackClass.hpp"
+class Core;
 class Main{
 public:
-	void execute();
+	void execute(HasCallbackClass *_clazz);
 	VInterfaceDTO getVInterfaceDTO(void);
 
 private:
