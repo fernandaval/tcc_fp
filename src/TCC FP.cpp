@@ -35,6 +35,72 @@
 using namespace cv;
 using namespace std;
 
+void fillBD() {
+	string imagePath;	//endereço da imagem de entrada
+	Mat originalImage;	//imagem de entrada (no formato lido pelo opencv)
+	Mat imageWhiteBorder;
+	int N, col, row;
+	vector < vector <window*> > windows;
+
+	int a,b,c;
+	b = 1;
+	c = 1;
+	a = 0;
+	while (a <= 1)
+	{
+		while (b <= 9)
+		{
+			while (c<=4)
+			{
+				stringstream stra;
+				stringstream strb;
+				stringstream strc;
+				stra << a;
+				strb << b;
+				strc << c;
+				imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+
+				originalImage = imread(imagePath, CV_LOAD_IMAGE_GRAYSCALE);
+				imageMeasures (originalImage, 500, &N, &col, &row);
+
+				//Dimensiona a matriz com as janelas (i = linhas, j = colunas)
+				windows.resize(row/N);
+				for (int i = 0; i < row/N; i++){
+					windows[i].resize((int)col/N);
+				}
+
+				//inicializando a matriz com as janelas (usando a classe window)
+				for (int i = 0; i < row/N; i++){
+					for (int j = 0; j < col/N;  j++){
+						windows[i][j] = new window(N, N, originalImage.type());
+					}
+				}
+
+				fillWhiteBorderInImage(originalImage, &imageWhiteBorder, N, col - originalImage.cols,
+						row - originalImage.rows, originalImage.cols, originalImage.rows);
+
+				createWindows(imageWhiteBorder, N, col, row, &windows);
+				equalizeWindows(N, col, row, &windows);
+				orientationMap(&windows, row, col, N);
+				binarization(&windows, row, col, N);
+
+				Mat imageNew;
+				imageNew.create(row, col, CV_8UC3);
+				groupImageWindows(&imageNew, windows, row, col, N);
+
+				minutiaeExtract(imageNew,1,(a*10)+b);
+
+				c = c + 1;
+			}
+			b = b + 1;
+			c = 1;
+		}
+		b = 0;
+		a = a + 1;
+	}
+
+}
+
 int main() {
 	int dpi;			//resolução da imagem em dpi's
 	string imagePath;	//endereço da imagem de entrada
