@@ -1,4 +1,15 @@
-46 431 0 91
+drop table system;
+drop table user;
+drop table template;
+drop table minutia;
+
+create table system(id integer not null, falseRejection int, falseAcceptance int, trueRejection int, trueAcceptance int, mode int, primary key (id));
+create table user(id integer not null, idSystem int not null, name varchar(40), rg varchar(15), cpf varchar(11), nusp varchar(10), email varchar(50), falseRejection int, falseAcceptance int, trueRejection int, trueAcceptance int, minimumScore int, primary key (id), foreign key (idSystem) references system(id));
+create table template(id integer not null, idUser int not null, registerDate text, quality int, type int, minutiae clob, primary key (id), foreign key (idUser) references system(id));
+
+insert into system (falseRejection, falseAcceptance, trueRejection, trueAcceptance, mode) values(0,0,0,0,0);
+insert into user (idSystem, name, rg, cpf, nusp, email, falseRejection, falseAcceptance, trueRejection, trueAcceptance, minimumScore) values(1,'Priscila','','','','',0,0,0,0,60);
+insert into template (idUser, registerDate, quality, type, minutiae) values(1,'',0,0,'46 431 0 91
 68 392 0 95
 69 446 0 92
 69 415 0 45
@@ -22,8 +33,8 @@
 83 471 11 8
 83 452 11 46
 86 262 0 48
-86 163 0 46
-86 155 0 46
+');
+insert into template (idUser, registerDate, quality, type, minutiae) values(2,'',0,0,'86 155 0 46
 86 140 0 46
 87 270 0 47
 87 228 0 22
@@ -96,3 +107,4 @@
 145 294 180 91
 150 447 180 91
 156 208 180 95
+');

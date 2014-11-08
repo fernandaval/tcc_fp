@@ -37,9 +37,76 @@
 using namespace cv;
 using namespace std;
 
+
 VInterfaceDTO Main::getVInterfaceDTO(void){
 	return this->vInterfaceDTO;
 }
+
+void Main::fillBD() {
+	string imagePath;	//endereço da imagem de entrada
+	Mat originalImage;	//imagem de entrada (no formato lido pelo opencv)
+	Mat imageWhiteBorder;
+	int N, col, row;
+	vector < vector <window*> > windows;
+
+	int a,b,c;
+	b = 1;
+	c = 1;
+	a = 0;
+	while (a <= 1)
+	{
+		while (b <= 9)
+		{
+			while (c<=4)
+			{
+				stringstream stra;
+				stringstream strb;
+				stringstream strc;
+				stra << a;
+				strb << b;
+				strc << c;
+				imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+
+				originalImage = imread(imagePath, CV_LOAD_IMAGE_GRAYSCALE);
+				imageMeasures (originalImage, 500, &N, &col, &row);
+
+				//Dimensiona a matriz com as janelas (i = linhas, j = colunas)
+				windows.resize(row/N);
+				for (int i = 0; i < row/N; i++){
+					windows[i].resize((int)col/N);
+				}
+
+				//inicializando a matriz com as janelas (usando a classe window)
+				for (int i = 0; i < row/N; i++){
+					for (int j = 0; j < col/N;  j++){
+						windows[i][j] = new window(N, N, originalImage.type());
+					}
+				}
+
+				fillWhiteBorderInImage(originalImage, &imageWhiteBorder, N, col - originalImage.cols,
+						row - originalImage.rows, originalImage.cols, originalImage.rows);
+
+				createWindows(imageWhiteBorder, N, col, row, &windows);
+				equalizeWindows(N, col, row, &windows);
+				orientationMap(&windows, row, col, N);
+				binarization(&windows, row, col, N);
+
+				Mat imageNew;
+				imageNew.create(row, col, CV_8UC3);
+				groupImageWindows(&imageNew, windows, row, col, N);
+
+				minutiaeExtract(imageNew,1,(a*10)+b);
+
+				c = c + 1;
+			}
+			b = b + 1;
+			c = 1;
+		}
+		b = 0;
+		a = a + 1;
+	}
+}
+
 
 void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 	int dpi;			//resolução da imagem em dpi's
@@ -107,6 +174,8 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 	//BINARIZATION
 	struct timeval binarizationTimeBefore, binarizationTimeAfter;  // removed comma
 	gettimeofday (&binarizationTimeBefore, NULL);
+	//gaborFilter (&windows, row, col, N);
+	//recreateImage(windows, row, col, N, "Gabor");
 	binarization(&windows, row, col, N);
 	gettimeofday (&binarizationTimeAfter, NULL);
 	float binarizationTime = ((binarizationTimeAfter.tv_sec - binarizationTimeBefore.tv_sec)
@@ -135,30 +204,65 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 	imshow("imagem afinada", imageNew);
 	*/
 
-	//MINUTIAE EXTRACTION
+//	//MINUTIAE EXTRACTION
+//	struct timeval minutiaeExtractionTimeBefore, minutiaeExtractionTimeAfter;  // removed comma
+//	gettimeofday (&minutiaeExtractionTimeBefore, NULL);
+//	minutiaeExtract(imageNew);
+//	gettimeofday (&minutiaeExtractionTimeAfter, NULL);
+//	float minutiaeExtractionTime = ((minutiaeExtractionTimeAfter.tv_sec - minutiaeExtractionTimeBefore.tv_sec)
+//	            + (minutiaeExtractionTimeAfter.tv_usec - minutiaeExtractionTimeBefore.tv_usec)/(float)1000000);
+//	cout << "minutiaeExtractionTime: " << minutiaeExtractionTime << " segundos" << endl;
+//	this->vInterfaceDTO.setMinutiaeExtractionTime(minutiaeExtractionTime);
+//	//Plota as minúcias extraídas em uma nova imagem
+//	minutiaePlot(&windows, row, col, N, imageNew);
+
+//	//MATCHING
+//	struct timeval matchingTimeBefore, matchingTimeAfter;  // removed comma
+//	gettimeofday (&matchingTimeBefore, NULL);
+//	bool resultado = matching();
+//	gettimeofday (&matchingTimeAfter, NULL);
+//	float matchingTime = ((matchingTimeAfter.tv_sec - matchingTimeBefore.tv_sec)
+//	            + (matchingTimeAfter.tv_usec - matchingTimeBefore.tv_usec)/(float)1000000);
+//	cout << "matchingTime: " << matchingTime << " segundos" << endl;
+//	this->vInterfaceDTO.setMatchingTime(matchingTime);
+
+	int option = 2;
+	cout << "O que você deseja fazer com a imagem: 1- cadastrar no BD 2- autenticar no sistema" << endl;
+	cin >> option;
+	int id = 0;
+	if (option == 1) {
+		cout << "Para qual usuário você deseja cadastrar essa imagem? Digite a ID" << endl;
+		cin >> id;
+	}
+
+	//MINUTIA EXTRACTION
 	struct timeval minutiaeExtractionTimeBefore, minutiaeExtractionTimeAfter;  // removed comma
 	gettimeofday (&minutiaeExtractionTimeBefore, NULL);
-	minutiaeExtract(imageNew);
+	minutiaeExtract(imageNew,option,id);
 	gettimeofday (&minutiaeExtractionTimeAfter, NULL);
 	float minutiaeExtractionTime = ((minutiaeExtractionTimeAfter.tv_sec - minutiaeExtractionTimeBefore.tv_sec)
-	            + (minutiaeExtractionTimeAfter.tv_usec - minutiaeExtractionTimeBefore.tv_usec)/(float)1000000);
+				+ (minutiaeExtractionTimeAfter.tv_usec - minutiaeExtractionTimeBefore.tv_usec)/(float)1000000);
 	cout << "minutiaeExtractionTime: " << minutiaeExtractionTime << " segundos" << endl;
 	this->vInterfaceDTO.setMinutiaeExtractionTime(minutiaeExtractionTime);
-	//Plota as minúcias extraídas em uma nova imagem
+
+
+
 	minutiaePlot(&windows, row, col, N, imageNew);
 
-	//MATCHING
-	struct timeval matchingTimeBefore, matchingTimeAfter;  // removed comma
-	gettimeofday (&matchingTimeBefore, NULL);
-	bool resultado = matching();
-	gettimeofday (&matchingTimeAfter, NULL);
-	float matchingTime = ((matchingTimeAfter.tv_sec - matchingTimeBefore.tv_sec)
-	            + (matchingTimeAfter.tv_usec - matchingTimeBefore.tv_usec)/(float)1000000);
-	cout << "matchingTime: " << matchingTime << " segundos" << endl;
-	this->vInterfaceDTO.setMatchingTime(matchingTime);
+	if (option == 2) {
+		struct timeval matchingTimeBefore, matchingTimeAfter;  // removed comma
+		gettimeofday (&matchingTimeBefore, NULL);
+		bool resultado = matching();
+		gettimeofday (&matchingTimeAfter, NULL);
+		float matchingTime = ((matchingTimeAfter.tv_sec - matchingTimeBefore.tv_sec)
+					+ (matchingTimeAfter.tv_usec - matchingTimeBefore.tv_usec)/(float)1000000);
+		cout << "matchingTime: " << matchingTime << " segundos" << endl;
+		this->vInterfaceDTO.setMatchingTime(matchingTime);
 
-	if (resultado == true) cout << "Access accepted!" << endl;
-	else cout << "Access denied." << endl;
+
+		if (resultado == true) cout << "Usuario aceito!" << endl;
+		else cout << "Usuario recusado." << endl;
+	}
 
 	_clazz->callback();
 	waitKey(0);

@@ -103,7 +103,7 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName){
 }
 
 //salva minucias recem-extraidas no BD
-void saveMinutiae(int idUsuario)
+void saveMinutiae2(int idUsuario)
 {
 	 vector <minutia*> minutiae;
 	 ifstream myReadFile;
@@ -217,7 +217,83 @@ void saveMinutiae(int idUsuario)
 
 }
 
-void minutiaeExtract(Mat image)
+//salva minucias recem-extraidas no BD
+void saveMinutiae(int idUsuario)
+{
+	 ifstream myReadFile;
+	 char output[100];
+	 int count = 0;
+	 int aux = 0;
+	 string minutiae;
+
+	 myReadFile.open(xytPath);
+
+	 int totalQualityTemplate = 0;
+
+	 ifstream file(xytPath);
+	 string str;
+	 while (getline(file, str))
+	 {
+	   aux++;
+
+	   //extraindo a qualidade da minucia e salvando em strquality
+	   istringstream iss(str);
+	   string strquality;
+	   while (getline( iss, strquality, ' ' ) ) {
+	   }
+
+	   //convertendo strquality para int
+	   istringstream temp(strquality);
+	   int quality;
+	   temp >> quality;
+
+	   //somando a qualidade de todas as minucias do template
+	   totalQualityTemplate += quality;
+
+	   minutiae += str;
+	   minutiae.push_back('\n');
+	 }
+
+	float averageQualityTemplate = totalQualityTemplate/aux;
+	ostringstream convert;
+	convert << averageQualityTemplate;
+	string strquality = convert.str();
+
+	myReadFile.close();
+
+	sqlite3 *db;
+	char *zErrMsg = 0;
+	int rc;
+	string sqlstr;
+
+	/* Open database */
+	rc = sqlite3_open(bdPath, &db);
+	if( rc ){
+		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+	    exit(0);
+	}
+
+	sqlstr = "INSERT INTO template (idUser,registerDate,quality,type,minutiae) VALUES (";
+	sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << idUsuario) )->str());
+	sqlstr.append(",'");
+	sqlstr.append(__DATE__);
+	sqlstr.append("',");
+	sqlstr.append(strquality);
+	sqlstr.append(",'','");
+	sqlstr.append(minutiae);
+	sqlstr.append("');");
+	const char * sql = sqlstr.c_str();
+	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+	if( rc != SQLITE_OK ){
+	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+	  sqlite3_free(zErrMsg);
+	}
+
+	sqlite3_close(db);
+
+}
+
+void minutiaeExtract(Mat image, int option, int idUsuario)
 {
 	//EXTRAÇÃO DE MINÚCIAS COM MINDTCT
 	char *my_env[] = {NULL};
@@ -269,7 +345,6 @@ void minutiaeExtract(Mat image)
 	}
 	fprintf(stdout, "minucias extraidas\n");
 
-	int idUsuario = 1;
-	saveMinutiae(idUsuario);
+	if (option == 1) saveMinutiae(idUsuario);
 }
 

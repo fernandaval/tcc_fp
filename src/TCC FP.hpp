@@ -18,7 +18,7 @@ class Main{
 public:
 	void execute(SystemMode mode,  HasCallbackClass *_clazz);
 	VInterfaceDTO getVInterfaceDTO(void);
-
+	void fillBD();
 private:
 	VInterfaceDTO vInterfaceDTO;
 };
