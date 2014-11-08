@@ -32,6 +32,9 @@ public:
 	float getMatchingTime(void);
 	void setMatchingTime(float matchingTime);
 
+	bool getAccepted(void);
+	void setAccepted(bool accepted);
+
 private:
 	float windowingTime;
 	float equalizationTime;
@@ -40,6 +43,7 @@ private:
 	float minutiaeExtractionTime;
 	float matchingTime;
 
+	bool accepted;
 
 };
 

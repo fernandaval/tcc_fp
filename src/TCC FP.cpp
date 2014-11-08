@@ -227,13 +227,14 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 //	this->vInterfaceDTO.setMatchingTime(matchingTime);
 
 	int option = 2;
+	int id = 1;
 	cout << "O que você deseja fazer com a imagem: 1- cadastrar no BD 2- autenticar no sistema" << endl;
-	cin >> option;
-	int id = 0;
-	if (option == 1) {
-		cout << "Para qual usuário você deseja cadastrar essa imagem? Digite a ID" << endl;
-		cin >> id;
-	}
+//	cin >> option;
+//	int id = 0;
+//	if (option == 1) {
+//		cout << "Para qual usuário você deseja cadastrar essa imagem? Digite a ID" << endl;
+//		cin >> id;
+//	}
 
 	//MINUTIA EXTRACTION
 	struct timeval minutiaeExtractionTimeBefore, minutiaeExtractionTimeAfter;  // removed comma
@@ -253,6 +254,8 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 		struct timeval matchingTimeBefore, matchingTimeAfter;  // removed comma
 		gettimeofday (&matchingTimeBefore, NULL);
 		bool resultado = matching();
+		this->vInterfaceDTO.setAccepted(resultado);
+
 		gettimeofday (&matchingTimeAfter, NULL);
 		float matchingTime = ((matchingTimeAfter.tv_sec - matchingTimeBefore.tv_sec)
 					+ (matchingTimeAfter.tv_usec - matchingTimeBefore.tv_usec)/(float)1000000);

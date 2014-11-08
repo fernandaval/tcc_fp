@@ -49,4 +49,12 @@ void VInterfaceDTO::setMatchingTime(float matchingTime){
 	this->matchingTime = matchingTime;
 }
 
+bool VInterfaceDTO::getAccepted(void){
+	return this->accepted;
+}
+
+void VInterfaceDTO::setAccepted(bool accepted){
+	this->accepted = accepted;
+}
+
 
