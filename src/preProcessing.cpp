@@ -9,8 +9,12 @@
 #include "preProcessing.hpp"
 
 
-#define outputPath "/home/fernanda/Documents/tcc/imagens_teste/Output/"
+//#define outputPath "/home/fernanda/Documents/tcc/imagens_teste/Output/"
 //#define outputPath "/home/priscila/Documents/tcc/imagens_teste/Output/"
+
+//RAFAEL
+#define outputPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/Output"
+//RAFAEL
 
 using namespace cv;
 using namespace std;
@@ -21,7 +25,11 @@ void imageRead (Mat *image, int *dpi, string imagePath) {
 
 	//teste
 	*dpi = 500;
-	imagePath = "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/101_1.tif";
+	//RAFAEL
+	imagePath = "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/DB1/101_1.tif";
+	//RAFAEL
+
+//	imagePath = "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/101_1.tif";
 	//imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/101_1.tif";
 	//imagePath = "/home/priscila/teste.jpg";
 	//imagePath = "/home/priscila/Rel_4.2.0/mindtct/bin/101_1.jpg";

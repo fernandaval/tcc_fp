@@ -19,6 +19,14 @@
 //#define outputPath "/home/priscila/tcc_fp/minutiae/minucias.jpg"
 #define outputPath "/home/fernanda/workspace/c/tcc_fp/minutiae/minucias.jpg"
 
+//RAFAEL
+#define mindtctPath "/home/rafael/Desktop/nist/Rel_4.2.0/mindtct/bin/mindtct"
+#define imagePath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/minutiae"
+#define xytPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/minutiae/minutiae_ref.xyt"
+#define bdPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/fingerprint.db"
+#define outputPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/minutiae/minucias.jpg"
+//RAFAEL
+
 
 #define TRUE 1
 #define FALSE 0
