@@ -41,7 +41,7 @@ VInterfaceDTO Main::getVInterfaceDTO(void){
 	return this->vInterfaceDTO;
 }
 
-void Main::execute(HasCallbackClass *_clazz) {
+void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 	int dpi;			//resolução da imagem em dpi's
 	string imagePath;	//endereço da imagem de entrada
 	Mat originalImage;	//imagem de entrada (no formato lido pelo opencv)

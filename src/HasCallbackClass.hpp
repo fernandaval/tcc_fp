@@ -10,8 +10,6 @@
 
 /**
  * 	Classe abstrata (interface) que serve como base para outras classes que precisem do método callback();
- *
- * 	é gambiarra.. o certo seria montar um mecanismo de troca de mensagens descente...
  **/
 class HasCallbackClass{
 public:

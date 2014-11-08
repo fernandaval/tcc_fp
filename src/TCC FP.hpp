@@ -9,10 +9,14 @@
 #define TCC_FP_HPP_
 #include "VInterfaceDTO.hpp"
 #include "HasCallbackClass.hpp"
-class Core;
+
+enum SystemMode{
+	DEFAULT = 0, RIGID = 1, TOLERANT = 2
+};
+
 class Main{
 public:
-	void execute(HasCallbackClass *_clazz);
+	void execute(SystemMode mode,  HasCallbackClass *_clazz);
 	VInterfaceDTO getVInterfaceDTO(void);
 
 private:
