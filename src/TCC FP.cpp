@@ -159,17 +159,17 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 	recreateImage(windows, row, col, N, "imagem equalizada");
 
 	//GABOR (including Orientation Map and Frequency Map)
-	struct timeval gaborFilterTimeBefore, gaborFilterTimeAfter;  // removed comma
-	gettimeofday (&gaborFilterTimeBefore, NULL);
-	orientationMap(&windows, row, col, N);
-	frequencyMap(&windows, row, col, N);
-	gaborFilter (&windows, row, col, N);
-	gettimeofday (&gaborFilterTimeAfter, NULL);
-	float gaborFilterTime = ((gaborFilterTimeAfter.tv_sec - gaborFilterTimeBefore.tv_sec)
-	            + (gaborFilterTimeAfter.tv_usec - gaborFilterTimeBefore.tv_usec)/(float)1000000);
-	cout << "gaborFilterTime: " << gaborFilterTime << " segundos" << endl;
-	this->vInterfaceDTO.setGaborFilterTime(gaborFilterTime);
-	recreateImage(windows, row, col, N, "Gabor");
+//	struct timeval gaborFilterTimeBefore, gaborFilterTimeAfter;  // removed comma
+//	gettimeofday (&gaborFilterTimeBefore, NULL);
+//	orientationMap(&windows, row, col, N);
+//	frequencyMap(&windows, row, col, N);
+//	gaborFilter (&windows, row, col, N);
+//	gettimeofday (&gaborFilterTimeAfter, NULL);
+//	float gaborFilterTime = ((gaborFilterTimeAfter.tv_sec - gaborFilterTimeBefore.tv_sec)
+//	            + (gaborFilterTimeAfter.tv_usec - gaborFilterTimeBefore.tv_usec)/(float)1000000);
+//	cout << "gaborFilterTime: " << gaborFilterTime << " segundos" << endl;
+//	this->vInterfaceDTO.setGaborFilterTime(gaborFilterTime);
+//	recreateImage(windows, row, col, N, "Gabor");
 
 	//BINARIZATION
 	struct timeval binarizationTimeBefore, binarizationTimeAfter;  // removed comma
@@ -196,10 +196,19 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 	recreateImage(windows, row, col, N, "imagem afinada");
 	*/
 
+
+
 	Mat imageNew;
-	imageNew.create(row, col, CV_8UC3);
+	imageNew.create(row, col, CV_8UC1);
+	//imageNew.create(row, col, windows[0][0]->imageWindow.type());
 	groupImageWindows(&imageNew, windows, row, col, N);
-	imshow("imagem refeita", imageNew);
+	imshow("imagem refeita p&b", imageNew);
+
+	//Converte a imagem no formato colorido para que seja possível utilizá-la na hora de exibir as minúcias (em cor)
+	Mat minutiaeImage;
+	cvtColor(imageNew, minutiaeImage, CV_GRAY2RGB);
+	imshow("imagem refeita colorida", imageNew);
+
 	/*thinning(imageNew);
 	imshow("imagem afinada", imageNew);
 	*/
@@ -246,9 +255,7 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 	cout << "minutiaeExtractionTime: " << minutiaeExtractionTime << " segundos" << endl;
 	this->vInterfaceDTO.setMinutiaeExtractionTime(minutiaeExtractionTime);
 
-
-
-	minutiaePlot(&windows, row, col, N, imageNew);
+	minutiaePlot(row, col, N, minutiaeImage);
 
 	if (option == 2) {
 		struct timeval matchingTimeBefore, matchingTimeAfter;  // removed comma

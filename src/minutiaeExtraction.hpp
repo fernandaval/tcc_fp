@@ -27,6 +27,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <iostream>
+#include <opencv2/imgproc/types_c.h>
 #include <fstream>
 #include <sqlite3.h>
 #include <time.h>
@@ -40,6 +41,6 @@
 
 void minutiaeExtract(Mat image, int option, int id);
 
-void minutiaePlot(vector < vector <window*> > *windows, int row, int col, int N, Mat minutiaeImage);
+void minutiaePlot(int row, int col, int N, Mat minutiaeImage);
 
 #endif /* MINUTIAEEXTRACTION_HPP_ */

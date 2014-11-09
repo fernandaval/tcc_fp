@@ -8,12 +8,19 @@
 
 #include "preProcessing.hpp"
 
+//FERNANDA
+#define outputPath "/home/fernanda/Documents/tcc/imagens_teste/Output/"
+#define imagePathAux "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/101_1.tif"
+//FERNANDA
 
-//#define outputPath "/home/fernanda/Documents/tcc/imagens_teste/Output/"
+//PRISCILA
 //#define outputPath "/home/priscila/Documents/tcc/imagens_teste/Output/"
+//#define imagePathAux "/home/priscila/Rel_4.2.0/mindtct/bin/101_1.jpg"
+//PRISCILA
 
 //RAFAEL
-#define outputPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/Output"
+//#define outputPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/Output"
+//#define imagePathAux "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/DB1/101_1.tif"
 //RAFAEL
 
 using namespace cv;
@@ -25,14 +32,8 @@ void imageRead (Mat *image, int *dpi, string imagePath) {
 
 	//teste
 	*dpi = 500;
-	//RAFAEL
-	imagePath = "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/DB1/101_1.tif";
-	//RAFAEL
 
-//	imagePath = "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/101_1.tif";
-	//imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/101_1.tif";
-	//imagePath = "/home/priscila/teste.jpg";
-	//imagePath = "/home/priscila/Rel_4.2.0/mindtct/bin/101_1.jpg";
+	imagePath = imagePathAux;
 
 	cout << "Quantos DPIs tem sua imagem? "; // prints !!!Hello World!!!
 	//cin >> *dpi;
@@ -687,6 +688,22 @@ void get_lambda(Mat& in, float& lambda)
 bool comparar (Point3f i,Point3f j) { return (i.z<j.z); }
 
 void groupImageWindows(Mat *imageNew, vector < vector <window*> > windows, int row, int col, int N) {
+//	//cria cópia da imagem de cada janela
+//	for (int i = 0; i < row/N; i++) {
+////		for (int j = 0; j < col/N; j++) {
+////			Mat temp(windows[i][j]->imageWindow);
+////		}
+////	}
+//	for (int i = 0; i < row/N; i++) {
+//		for (int j = 0; j < col/N; j++) {
+//			Mat temp(windows[i][j]->imageWindow);
+//			for (int k = 0; k < N; k++) {
+//				for (int l = 0; l < N; l++){
+//					imageNew->at<uchar>(N*i + k, N*j + l) = temp.at<uchar>(k, l);
+//				}
+//			}
+//		}
+//	}
 
 	for (int i = 0; i < row/N; i++) {
 		for (int j = 0; j < col/N; j++) {

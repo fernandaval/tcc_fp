@@ -35,14 +35,14 @@ CPP_DEPS += \
 src/TCC\ FP.o: ../src/TCC\ FP.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: Cross G++ Compiler'
-	g++ -I"/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/src" -O0 -g3 -Wall -c -fmessage-length=0 -fpic -MMD -MP -MF"src/TCC FP.d" -MT"src/TCC\ FP.d" -o "$@" "$<"
+	g++ -O0 -g3 -Wall -c -fmessage-length=0 -fpic -std=c++11 -MMD -MP -MF"src/TCC FP.d" -MT"src/TCC\ FP.d" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
 src/%.o: ../src/%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: Cross G++ Compiler'
-	g++ -I"/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/src" -O0 -g3 -Wall -c -fmessage-length=0 -fpic -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
+	g++ -O0 -g3 -Wall -c -fmessage-length=0 -fpic -std=c++11 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

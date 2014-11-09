@@ -8,23 +8,28 @@
 
 #include "minutiaeExtraction.hpp"
 
+//PRISCILA
 //#define mindtctPath "/home/priscila/Rel_4.2.0/mindtct/bin/mindtct"
-#define mindtctPath "/home/fernanda/Documents/tcc/nbis/Rel_4.2.0/mindtct/bin/mindtct"
 //#define imagePath "/home/priscila/tcc_fp/minutiae"
-#define imagePath "/home/fernanda/workspace/c/tcc_fp/minutiae"
 //#define xytPath "/home/priscila/tcc_fp/minutiae/minutiae.xyt"
-#define xytPath "/home/fernanda/workspace/c/tcc_fp/minutiae/minutiae_ref.xyt"
 //#define bdPath "/home/priscila/tcc_fp/fingerprint.db"
-#define bdPath "/home/fernanda/workspace/c/tcc_fp/fingerprint.db"
 //#define outputPath "/home/priscila/tcc_fp/minutiae/minucias.jpg"
+//PRISCILA
+
+//FERNANDA
+#define mindtctPath "/home/fernanda/Documents/tcc/nbis/Rel_4.2.0/mindtct/bin/mindtct"
+#define imagePath "/home/fernanda/workspace/c/tcc_fp/minutiae"
+#define xytPath "/home/fernanda/workspace/c/tcc_fp/minutiae/minutiae.xyt"
+#define bdPath "/home/fernanda/workspace/c/tcc_fp/fingerprint.db"
 #define outputPath "/home/fernanda/workspace/c/tcc_fp/minutiae/minucias.jpg"
+//FERNANDA
 
 //RAFAEL
-#define mindtctPath "/home/rafael/Desktop/nist/Rel_4.2.0/mindtct/bin/mindtct"
-#define imagePath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/minutiae"
-#define xytPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/minutiae/minutiae_ref.xyt"
-#define bdPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/fingerprint.db"
-#define outputPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/minutiae/minucias.jpg"
+//#define mindtctPath "/home/rafael/Desktop/nist/Rel_4.2.0/mindtct/bin/mindtct"
+//#define imagePath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/minutiae"
+//#define xytPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/minutiae/minutiae_ref.xyt"
+//#define bdPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/fingerprint.db"
+//#define outputPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/minutiae/minucias.jpg"
 //RAFAEL
 
 
@@ -33,7 +38,7 @@
 
 using namespace std;
 
-void minutiaePlot(vector < vector <window*> > *windows, int row, int col, int N, Mat minutiaeImage) {
+void minutiaePlot(int row, int col, int N, Mat minutiaeImage) {
 	 vector <minutia*> minutiae;
 	 ifstream myReadFile;
 	 char output[100];
@@ -71,19 +76,20 @@ void minutiaePlot(vector < vector <window*> > *windows, int row, int col, int N,
 	}
 	myReadFile.close();
 
-	/*Mat minutiaesImage;
-	minutiaesImage.create(row, col, CV_8UC3);//(*windows)[0][0]->getImageWindow().type());
-	groupImageWindows(&minutiaesImage, *windows, row, col, N);*/
-
+	Mat minutiaeOnlyImage;
+	minutiaeOnlyImage.create(row, col, minutiaeImage.type());
 	for (int i = 0; i < aux; i++) {
-		//PREENCHER CONTORNO
-		minutiaeImage.at<Vec3b>(minutiae[i]->getX(), minutiae[i]->getY()).val[0] = 0;
-		minutiaeImage.at<Vec3b>(minutiae[i]->getX(), minutiae[i]->getY()).val[1] = 0;
-		minutiaeImage.at<Vec3b>(minutiae[i]->getX(), minutiae[i]->getY()).val[2] = 255;
-		//minutiaesImage.at<uchar>(minutiae[i]->getX(), minutiae[i]->getY()) = 255;
+		//FOI NECESSÁRIO INVERTER X E Y PARA QUE AS MINÚCIAS FOSSEM EXIBIDAS ADEQUADAMENTE
+		circle(minutiaeImage, Point(minutiae[i]->getX(), minutiae[i]->getY()),	3, Scalar( 0, 0, 255 ), -1, 8, 0);
+
+		minutiaeOnlyImage.at<Vec3b>(minutiae[i]->getY(), minutiae[i]->getX()).val[0] = 0;
+		minutiaeOnlyImage.at<Vec3b>(minutiae[i]->getY(), minutiae[i]->getX()).val[1] = 0;
+		minutiaeOnlyImage.at<Vec3b>(minutiae[i]->getY(), minutiae[i]->getX()).val[2] = 255;
+
 	}
 	cout << "aux: " << aux << endl;
 	imshow("Minúcias extraídas", minutiaeImage);
+	imshow("Somente minúcias", minutiaeOnlyImage);
 	imwrite(outputPath, minutiaeImage);
 
 	return;
@@ -306,24 +312,17 @@ void minutiaeExtract(Mat image, int option, int idUsuario)
 	//EXTRAÇÃO DE MINÚCIAS COM MINDTCT
 	char *my_env[] = {NULL};
 
-	Mat gray_image;
-	cvtColor(image, gray_image, COLOR_BGR2GRAY);
-
 	string input = imagePath;
-	imwrite(input.append("/image.jpg"), gray_image);
-	//cout << input << endl;
+	imwrite(input.append("/image.jpg"), image);
 
 	string output = imagePath;
 	output.append("/minutiae");
-	//cout << output << endl;
 
 	char * parameter1 = new char[input.length() + 1];
 	strcpy(parameter1,input.c_str());
-	//cout << parameter1 << endl;
 
 	char * parameter2 = new char[output.length() + 1];
 	strcpy(parameter2,output.c_str());
-	//cout << parameter2 << endl;
 
 	//char *newargv_mindtct[] = {"mindtct", "/home/priscila/BDs_imagens_de_digitais/2000/DB2/101_1.jpg", "/home/priscila/Rel_4.2.0/mindtct/bin/minutiae", NULL};
 	char *newargv_mindtct[] = {"mindtct", parameter1, parameter2, NULL};

@@ -7,20 +7,25 @@
 
 #include "matching.hpp"
 
+//PRISCILA
 //#define bozorthPath "/home/priscila/Rel_4.2.0/bozorth3/bin/bozorth3"
-//#define bozorthPath "/home/fernanda/Documents/tcc/nbis/Rel_4.2.0/bozorth3/bin/bozorth3"
 //#define bdPath "/home/priscila/tcc_fp/fingerprint.db"
-//#define bdPath "/home/fernanda/workspace/c/tcc_fp/fingerprint.db"
 //#define xytPath "/home/priscila/tcc_fp/minutiae/minutiae_ref.xyt"
-//#define xytPath "/home/fernanda/workspace/c/tcc_fp/minutiae/minutiae_ref.xyt"
 //#define inputPath "/home/priscila/tcc_fp/minutiae/minutiae.xyt"
-//#define inputPath "/home/fernanda/workspace/c/tcc_fp/minutiae/minutiae.xyt"
+//PRISCILA
+
+//FERNANDA
+#define bozorthPath "/home/fernanda/Documents/tcc/nbis/Rel_4.2.0/bozorth3/bin/bozorth3"
+#define bdPath "/home/fernanda/workspace/c/tcc_fp/fingerprint.db"
+#define xytPath "/home/fernanda/workspace/c/tcc_fp/minutiae/minutiae_ref.xyt"
+#define inputPath "/home/fernanda/workspace/c/tcc_fp/minutiae/minutiae.xyt"
+//FERNANDA
 
 //RAFAEL
-#define bozorthPath "/home/rafael/Desktop/nist/Rel_4.2.0/bozorth3/bin/bozorth3"
-#define bdPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/fingerprint.db"
-#define xytPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/minutiae/minutiae_ref.xyt"
-#define inputPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/minutiae/minutiae.xyt"
+//#define bozorthPath "/home/rafael/Desktop/nist/Rel_4.2.0/bozorth3/bin/bozorth3"
+//#define bdPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/fingerprint.db"
+//#define xytPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/minutiae/minutiae_ref.xyt"
+//#define inputPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/minutiae/minutiae.xyt"
 //RAFAEL
 
 #define TRUE 1

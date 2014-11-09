@@ -13,23 +13,23 @@ RM := rm -rf
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
-ifneq ($(strip $(CC_DEPS)),)
--include $(CC_DEPS)
-endif
 ifneq ($(strip $(C++_DEPS)),)
 -include $(C++_DEPS)
-endif
-ifneq ($(strip $(C_UPPER_DEPS)),)
--include $(C_UPPER_DEPS)
-endif
-ifneq ($(strip $(CXX_DEPS)),)
--include $(CXX_DEPS)
 endif
 ifneq ($(strip $(C_DEPS)),)
 -include $(C_DEPS)
 endif
+ifneq ($(strip $(CC_DEPS)),)
+-include $(CC_DEPS)
+endif
 ifneq ($(strip $(CPP_DEPS)),)
 -include $(CPP_DEPS)
+endif
+ifneq ($(strip $(CXX_DEPS)),)
+-include $(CXX_DEPS)
+endif
+ifneq ($(strip $(C_UPPER_DEPS)),)
+-include $(C_UPPER_DEPS)
 endif
 endif
 
@@ -38,19 +38,19 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: libTCC\ FP.so
+all: libtcc_fp.so
 
 # Tool invocations
-libTCC\ FP.so: $(OBJS) $(USER_OBJS)
+libtcc_fp.so: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: Cross G++ Linker'
-	g++ -L/home/fernanda/Documents/tcc/opencv-2.4.9/build/lib -L/home/priscila/Desktop/opencv/opencv-2.4.9/build/lib -shared -o "libTCC FP.so" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -L/home/fernanda/Documents/tcc/opencv-2.4.9/build/lib -L/home/priscila/Desktop/opencv/opencv-2.4.9/build/lib -shared -o "libtcc_fp.so" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(LIBRARIES)$(CC_DEPS)$(C++_DEPS)$(OBJS)$(C_UPPER_DEPS)$(CXX_DEPS)$(C_DEPS)$(CPP_DEPS) "libTCC FP.so"
+	-$(RM) $(C++_DEPS)$(OBJS)$(C_DEPS)$(CC_DEPS)$(LIBRARIES)$(CPP_DEPS)$(CXX_DEPS)$(C_UPPER_DEPS) libtcc_fp.so
 	-@echo ' '
 
 .PHONY: all clean dependents
