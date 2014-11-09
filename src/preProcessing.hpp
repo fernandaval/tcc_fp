@@ -65,4 +65,16 @@ void tempFrequencyMap (vector < vector <window*> > windows, int row, int col, in
 
 void groupImageWindows(Mat *imageNew, vector < vector <window*> > windows, int row, int col, int N);
 
+Mat doFFT(Mat padded);
+
+void get_angle_and_lambda(Mat& in, float& angle, float& lambda);
+
+void applyGabor(Mat& in, Mat& out, float theta, float lambda);
+
+void rotate(cv::Mat& src, double angle, cv::Mat& dst);
+
+void gabor(Mat I, int row, int col, int N, Mat *finalImage);
+
+void imageBinarization (Mat *image);
+
 #endif /* PREPROCESSING_HPP_ */

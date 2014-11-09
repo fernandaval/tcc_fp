@@ -171,12 +171,27 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 //	this->vInterfaceDTO.setGaborFilterTime(gaborFilterTime);
 //	recreateImage(windows, row, col, N, "Gabor");
 
+	//GABOR
+	Mat imageNew;
+	imageNew.create(row, col, CV_8UC1);
+	groupImageWindows(&imageNew, windows, row, col, N);
+
+	Mat imageAfterGabor;
+	struct timeval gaborFilterTimeBefore, gaborFilterTimeAfter;  // removed comma
+	gettimeofday (&gaborFilterTimeBefore, NULL);
+	gabor(imageNew, row, col, N, &imageAfterGabor);
+	float gaborFilterTime = ((gaborFilterTimeAfter.tv_sec - gaborFilterTimeBefore.tv_sec)
+				+ (gaborFilterTimeAfter.tv_usec - gaborFilterTimeBefore.tv_usec)/(float)1000000);
+	cout << "gaborFilterTime: " << gaborFilterTime << " segundos" << endl;
+	this->vInterfaceDTO.setGaborFilterTime(gaborFilterTime);
+	imshow("Pós Gabor", imageAfterGabor);
+
+
 	//BINARIZATION
 	struct timeval binarizationTimeBefore, binarizationTimeAfter;  // removed comma
 	gettimeofday (&binarizationTimeBefore, NULL);
-	//gaborFilter (&windows, row, col, N);
-	//recreateImage(windows, row, col, N, "Gabor");
-	binarization(&windows, row, col, N);
+	//binarization(&windows, row, col, N);
+	imageBinarization (&imageAfterGabor);
 	gettimeofday (&binarizationTimeAfter, NULL);
 	float binarizationTime = ((binarizationTimeAfter.tv_sec - binarizationTimeBefore.tv_sec)
 	            + (binarizationTimeAfter.tv_usec - binarizationTimeBefore.tv_usec)/(float)1000000);
@@ -185,55 +200,26 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 	recreateImage(windows, row, col, N, "imagem binarizada");
 
 	//THINNING
-	/*
+
 	struct timeval thinningTimeBefore, thinningTimeAfter;  // removed comma
 	gettimeofday (&thinningTimeBefore, NULL);
-	thinningWindows(&windows, row, col, N);
+
+	//thinning(imageAfterGabor);
+
 	gettimeofday (&thinningTimeAfter, NULL);
 	float thinningTime = ((thinningTimeAfter.tv_sec - thinningTimeBefore.tv_sec)
 	            + (thinningTimeAfter.tv_usec - thinningTimeBefore.tv_usec)/(float)1000000);
 	cout << "thinningTime: " << thinningTime << " segundos" << endl;
-	recreateImage(windows, row, col, N, "imagem afinada");
-	*/
 
-
-
-	Mat imageNew;
-	imageNew.create(row, col, CV_8UC1);
-	//imageNew.create(row, col, windows[0][0]->imageWindow.type());
-	groupImageWindows(&imageNew, windows, row, col, N);
-	imshow("imagem refeita p&b", imageNew);
 
 	//Converte a imagem no formato colorido para que seja possível utilizá-la na hora de exibir as minúcias (em cor)
 	Mat minutiaeImage;
-	cvtColor(imageNew, minutiaeImage, CV_GRAY2RGB);
-	imshow("imagem refeita colorida", imageNew);
+	cvtColor(imageAfterGabor, minutiaeImage, CV_GRAY2RGB);
+	imshow("imagem refeita colorida", imageAfterGabor);
 
 	/*thinning(imageNew);
 	imshow("imagem afinada", imageNew);
 	*/
-
-//	//MINUTIAE EXTRACTION
-//	struct timeval minutiaeExtractionTimeBefore, minutiaeExtractionTimeAfter;  // removed comma
-//	gettimeofday (&minutiaeExtractionTimeBefore, NULL);
-//	minutiaeExtract(imageNew);
-//	gettimeofday (&minutiaeExtractionTimeAfter, NULL);
-//	float minutiaeExtractionTime = ((minutiaeExtractionTimeAfter.tv_sec - minutiaeExtractionTimeBefore.tv_sec)
-//	            + (minutiaeExtractionTimeAfter.tv_usec - minutiaeExtractionTimeBefore.tv_usec)/(float)1000000);
-//	cout << "minutiaeExtractionTime: " << minutiaeExtractionTime << " segundos" << endl;
-//	this->vInterfaceDTO.setMinutiaeExtractionTime(minutiaeExtractionTime);
-//	//Plota as minúcias extraídas em uma nova imagem
-//	minutiaePlot(&windows, row, col, N, imageNew);
-
-//	//MATCHING
-//	struct timeval matchingTimeBefore, matchingTimeAfter;  // removed comma
-//	gettimeofday (&matchingTimeBefore, NULL);
-//	bool resultado = matching();
-//	gettimeofday (&matchingTimeAfter, NULL);
-//	float matchingTime = ((matchingTimeAfter.tv_sec - matchingTimeBefore.tv_sec)
-//	            + (matchingTimeAfter.tv_usec - matchingTimeBefore.tv_usec)/(float)1000000);
-//	cout << "matchingTime: " << matchingTime << " segundos" << endl;
-//	this->vInterfaceDTO.setMatchingTime(matchingTime);
 
 	int option = 2;
 	int id = 1;
@@ -248,7 +234,7 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 	//MINUTIA EXTRACTION
 	struct timeval minutiaeExtractionTimeBefore, minutiaeExtractionTimeAfter;  // removed comma
 	gettimeofday (&minutiaeExtractionTimeBefore, NULL);
-	minutiaeExtract(imageNew,option,id);
+	minutiaeExtract(imageAfterGabor,option,id);
 	gettimeofday (&minutiaeExtractionTimeAfter, NULL);
 	float minutiaeExtractionTime = ((minutiaeExtractionTimeAfter.tv_sec - minutiaeExtractionTimeBefore.tv_sec)
 				+ (minutiaeExtractionTimeAfter.tv_usec - minutiaeExtractionTimeBefore.tv_usec)/(float)1000000);

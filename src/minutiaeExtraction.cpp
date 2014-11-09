@@ -76,20 +76,12 @@ void minutiaePlot(int row, int col, int N, Mat minutiaeImage) {
 	}
 	myReadFile.close();
 
-	Mat minutiaeOnlyImage;
-	minutiaeOnlyImage.create(row, col, minutiaeImage.type());
 	for (int i = 0; i < aux; i++) {
 		//FOI NECESSÁRIO INVERTER X E Y PARA QUE AS MINÚCIAS FOSSEM EXIBIDAS ADEQUADAMENTE
-		circle(minutiaeImage, Point(minutiae[i]->getX(), minutiae[i]->getY()),	3, Scalar( 0, 0, 255 ), -1, 8, 0);
-
-		minutiaeOnlyImage.at<Vec3b>(minutiae[i]->getY(), minutiae[i]->getX()).val[0] = 0;
-		minutiaeOnlyImage.at<Vec3b>(minutiae[i]->getY(), minutiae[i]->getX()).val[1] = 0;
-		minutiaeOnlyImage.at<Vec3b>(minutiae[i]->getY(), minutiae[i]->getX()).val[2] = 255;
-
+		//ALÉM DISSO, USA  AFUNÇÃO "CIRCLE" PARA QUE SEJAM BEM VISÍVEIS AS MINÚCIAS EXTRAÍDAS
+		circle(minutiaeImage, Point(minutiae[i]->getX(), row - minutiae[i]->getY()), 3, Scalar( 0, 0, 255 ), -1, 8, 0);
 	}
-	cout << "aux: " << aux << endl;
 	imshow("Minúcias extraídas", minutiaeImage);
-	imshow("Somente minúcias", minutiaeOnlyImage);
 	imwrite(outputPath, minutiaeImage);
 
 	return;

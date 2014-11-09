@@ -10,7 +10,7 @@
 
 //FERNANDA
 #define outputPath "/home/fernanda/Documents/tcc/imagens_teste/Output/"
-#define imagePathAux "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/101_1.tif"
+#define imagePathAux "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/103_1.tif"
 //FERNANDA
 
 //PRISCILA
@@ -291,7 +291,8 @@ void thinningIteration(cv::Mat& im, int iter) {
  * @param  im  Binary image with range = 0-255
  */
 void thinning(cv::Mat& im) {
-    im /= 255;
+    bitwise_not(im, im);
+	im /= 255;
 
     cv::Mat prev = cv::Mat::zeros(im.size(), CV_8UC1);
     cv::Mat diff;
@@ -401,6 +402,20 @@ void binarization (vector < vector <window*> > *windows, int row, int col, int N
 						(*windows)[i][j]->getImageWindow().at<uchar>(k,l) = 255;
 					}
 				}
+			}
+		}
+	}
+	return;
+}
+
+void imageBinarization (Mat *image) {
+	for (int i = 0; i < image->rows; i ++) {
+		for (int j = 0; j < image->cols; j++) {
+			if (image->at<uchar>(i, j) <= 127) {
+				image->at<uchar>(i, j) = 0;
+			}
+			else {
+				image->at<uchar>(i, j) = 255;
 			}
 		}
 	}
@@ -714,5 +729,164 @@ void groupImageWindows(Mat *imageNew, vector < vector <window*> > windows, int r
 			}
 		}
 	}
+	return;
+}
+
+
+
+Mat doFFT(Mat padded)
+{
+	Mat planes[] = { Mat_<float>(padded), Mat::zeros(padded.size(), CV_32F) };
+	Mat complexI;
+	merge(planes, 2, complexI);  // Add to the expanded another plane with zeros
+
+	dft(complexI, complexI); // this way the result may fit in the source matrix
+
+	// compute the magnitude and switch to logarithmic scale
+	// => log(1 + sqrt(Re(DFT(I))^2 + Im(DFT(I))^2))
+	split(complexI, planes);    // planes[0] = Re(DFT(I), planes[1] = Im(DFT(I))
+	magnitude(planes[0], planes[1], planes[0]);         // planes[0] = magnitude
+	Mat magI = planes[0];
+
+	//magI += Scalar::all(1);                    // switch to logarithmic scale
+	//log(magI, magI);
+
+	// crop the spectrum, if it has an odd number of rows or columns
+	magI = magI(Rect(0, 0, magI.cols & -2, magI.rows & -2));
+
+	// rearrange the quadrants of Fourier image  so that the origin is at the image center
+	int cx = magI.cols / 2;
+	int cy = magI.rows / 2;
+
+	Mat q0(magI, Rect(0, 0, cx, cy));   // Top-Left - Create a ROI per quadrant
+	Mat q1(magI, Rect(cx, 0, cx, cy));  // Top-Right
+	Mat q2(magI, Rect(0, cy, cx, cy));  // Bottom-Left
+	Mat q3(magI, Rect(cx, cy, cx, cy)); // Bottom-Right
+
+	Mat tmp;                      // swap quadrants (Top-Left with Bottom-Right)
+	q0.copyTo(tmp);
+	q3.copyTo(q0);
+	tmp.copyTo(q3);
+
+	q1.copyTo(tmp);                // swap quadrant (Top-Right with Bottom-Left)
+	q2.copyTo(q1);
+	tmp.copyTo(q2);
+
+	//magI.at<float>(QUAD/2,QUAD/2)=0;
+
+	normalize(magI, magI, 0, 1, CV_MINMAX); // Transform the matrix with float values into a
+	// viewable image form (float between values 0 and 1).
+
+	return magI;
+}
+
+
+void get_angle_and_lambda(Mat& in, float& angle, float& lambda)
+{
+	const int npontos=4;
+	const int meio=in.rows/2;
+
+	in.at<float>(in.rows/2,in.cols/2)=0;
+
+	vector<Point3f> pontos;
+	for (int i=0;i<npontos;i++)
+		pontos.push_back(Point3f(0,0,-1));
+
+	for (int i=0;i<in.rows;i++)
+		for (int j=0;j<in.rows;j++)
+		{
+			if (in.at<float>(i,j) >= pontos[3].z)
+			{
+				pontos.push_back(Point3f(i,j,in.at<float>(i,j)));
+				std::sort (pontos.begin(), pontos.end(), comparar);
+				pontos.erase(pontos.begin()); //apaga o primeiro elemento, o menor
+			}
+		}
+
+	float x2=0;
+	float xy=0;
+	for (int i=0; i<npontos; i++)
+	{
+		in.at<float>(pontos[i].x,pontos[i].y)=1;
+		x2+=(pontos[i].x-meio)*(pontos[i].x-meio);
+		xy+=(pontos[i].x-meio)*(pontos[i].y-meio);
+	}
+	in.at<float>(in.rows/2,in.cols/2)=1;
+
+	angle=atan2(xy,x2);
+
+	//Vamos achar lambda agora
+	vector<float> dist;
+	for (int i=0;i<npontos;i++)
+		dist.push_back((pontos[i].x-meio)*(pontos[i].x-meio)+(pontos[i].y-meio)*(pontos[i].y-meio));
+	std::sort(dist.begin(),dist.end());
+
+	//lambda=dist[0];
+	lambda=10;
+	cout << "L:" << lambda << endl;
+}
+
+
+void applyGabor(Mat& in, Mat& out, float theta, float lambda)
+{
+	//imshow("TESTE",in);
+	//waitKey(0);
+
+	Mat gaborKernel = getGaborKernel( cv::Size(17,17) , 4, -theta+CV_PI/2, lambda, 1, 0, CV_32F );
+	filter2D(in,out,-1,gaborKernel);
+}
+
+void rotate(cv::Mat& src, double angle, cv::Mat& dst)
+{
+    int len = std::max(src.cols, src.rows);
+    cv::Point2f pt(len/2., len/2.);
+    cv::Mat r = cv::getRotationMatrix2D(pt, angle, 1.0);
+
+    cv::warpAffine(src, dst, r, cv::Size(len, len));
+}
+
+void gabor(Mat I, int row, int col, int N, Mat *finalImage) {
+//	Mat I;
+//	I.create(row, col, windows[0][0]->getImageWindow().type());
+//
+//	//recria a imagem das windows na imagem I
+//	for (int i = 0; i < row/N; i++) {
+//		for (int j = 0; j < col/N; j++) {
+//			for (int k = 0; k < N; k++) {
+//				for (int l = 0; l < N; l++){
+//					I.at<uchar>(N*i + k, N*j + l) = windows[i][j]->getImageWindow().at<uchar>(k, l);
+//				}
+//			}
+//		}
+//	}
+
+	Mat FFT_Result;
+	Mat Final_Result = Mat::zeros(I.rows,I.cols,CV_8U);
+	Mat FFT_Final_Result = Mat::zeros(I.rows,I.cols,CV_32F);
+	Mat dst_roi;
+	Mat ttt;
+
+	for (int i = 0; i < I.rows - N; i = i + N) {
+		for (int j = 0; j < I.cols - N; j = j + N) {
+
+			float angulo=0,lambda=0;
+
+			FFT_Result=doFFT(I(Rect(j,i,N,N)));
+			get_angle_and_lambda(FFT_Result,angulo,lambda);
+			dst_roi = FFT_Final_Result(Rect(j, i, N, N));
+			FFT_Result.copyTo(dst_roi);
+			applyGabor(I,ttt,angulo,lambda);
+
+			Mat temp=Mat::zeros(N,N,CV_8U);
+			Mat temp2=Mat::zeros(N,N,CV_8U);
+			line(temp,Point(0,N/2),Point(N,N/2),Scalar(255,255,255),1);
+			rotate(temp,angulo*180/3.141592653589,temp2);
+
+			dst_roi = Final_Result(Rect(j, i, N, N));
+			ttt(Rect(j,i,N,N)).copyTo(dst_roi);
+		}
+	}
+
+	ttt.copyTo(*finalImage);
 	return;
 }
