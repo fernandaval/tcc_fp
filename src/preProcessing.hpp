@@ -29,6 +29,8 @@ void fillWhiteBorderInImage(Mat image, Mat *imageWhiteBorder, int N, int extraX,
 
 void equalizeWindows(int N, int col, int row, vector< vector <window*> > *windows);
 
+void equalize(Mat *imageBefore, Mat *imageAfter);
+
 //Altera a matriz com cada um adas janelas, criando uma por uma (a partir de uma imagem de entrada -> imageWhiteBorder)
 void createWindows(Mat imageWhiteBorder, int N, int column, int row, vector< vector <window*> > *windows);
 

@@ -107,8 +107,169 @@ void Main::fillBD() {
 	}
 }
 
+void Main::runSystem1() {
 
-void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
+	int dpi;			//resolução da imagem em dpi's
+	string imagePath;	//endereço da imagem de entrada
+	Mat originalImage;	//imagem de entrada (no formato lido pelo opencv)
+	int N, col, row;
+
+	//Leitura da imagem de entrada
+	imageRead(&originalImage, &dpi, imagePath);
+
+	imageMeasures (originalImage, dpi, &N, &col, &row); //retorna coluna e linha da imagem final com borda
+
+	//Converte a imagem no formato colorido para que seja possível utilizá-la na hora de exibir as minúcias (em cor)
+	Mat minutiaeImage;
+	cvtColor(originalImage, minutiaeImage, CV_GRAY2RGB);
+	imshow("imagem refeita colorida (1)", originalImage);
+
+	int option = 2;
+	int id = 1;
+	cout << "O que você deseja fazer com a imagem: 1- cadastrar no BD 2- autenticar no sistema" << endl;
+//	cin >> option;
+//	int id = 0;
+//	if (option == 1) {
+//		cout << "Para qual usuário você deseja cadastrar essa imagem? Digite a ID" << endl;
+//		cin >> id;
+//	}
+
+	//MINUTIA EXTRACTION
+	struct timeval minutiaeExtractionTimeBefore, minutiaeExtractionTimeAfter;  // removed comma
+	gettimeofday (&minutiaeExtractionTimeBefore, NULL);
+	minutiaeExtract(originalImage,option,id);
+	gettimeofday (&minutiaeExtractionTimeAfter, NULL);
+	float minutiaeExtractionTime = ((minutiaeExtractionTimeAfter.tv_sec - minutiaeExtractionTimeBefore.tv_sec)
+				+ (minutiaeExtractionTimeAfter.tv_usec - minutiaeExtractionTimeBefore.tv_usec)/(float)1000000);
+	cout << "minutiaeExtractionTime(1): " << minutiaeExtractionTime << " segundos" << endl;
+	this->vInterfaceDTO.setMinutiaeExtractionTime1(minutiaeExtractionTime);
+
+	minutiaePlot(row, col, N, minutiaeImage);
+
+	if (option == 2) {
+		struct timeval matchingTimeBefore, matchingTimeAfter;  // removed comma
+		gettimeofday (&matchingTimeBefore, NULL);
+		bool resultado = matching();
+		this->vInterfaceDTO.setAccepted1(resultado);
+
+		gettimeofday (&matchingTimeAfter, NULL);
+		float matchingTime = ((matchingTimeAfter.tv_sec - matchingTimeBefore.tv_sec)
+					+ (matchingTimeAfter.tv_usec - matchingTimeBefore.tv_usec)/(float)1000000);
+		cout << "matchingTime(1): " << matchingTime << " segundos" << endl;
+		this->vInterfaceDTO.setMatchingTime1(matchingTime);
+
+
+		if (resultado == true) cout << "Usuario aceito!(1)" << endl;
+		else cout << "Usuario recusado.(1)" << endl;
+	}
+
+}
+
+void Main::runSystem2() {
+
+	int dpi;			//resolução da imagem em dpi's
+	string imagePath;	//endereço da imagem de entrada
+	Mat originalImage;	//imagem de entrada (no formato lido pelo opencv)
+	Mat imageWhiteBorder;
+	int N, col, row;
+	vector < vector <window*> > windows;
+
+	//Leitura da imagem de entrada
+	imageRead(&originalImage, &dpi, imagePath);
+
+	imageMeasures (originalImage, dpi, &N, &col, &row); //retorna coluna e linha da imagem final com borda
+
+	//WINDOWING
+	fillWhiteBorderInImage(originalImage, &imageWhiteBorder, N, col - originalImage.cols,
+			row - originalImage.rows, originalImage.cols, originalImage.rows);
+
+	Mat equalizedImage;
+	//EQUALIZATION
+	struct timeval equalizationTimeBefore, equalizationTimeAfter;  // removed comma
+	gettimeofday (&equalizationTimeBefore, NULL);
+	equalize(&imageWhiteBorder,&equalizedImage);
+	gettimeofday (&equalizationTimeAfter, NULL);
+	float equalizationTime = ((equalizationTimeAfter.tv_sec - equalizationTimeBefore.tv_sec)
+				+ (equalizationTimeAfter.tv_usec - equalizationTimeBefore.tv_usec)/(float)1000000);
+	cout << "equalizationTime(2): " << equalizationTime << " segundos" << endl;
+	this->vInterfaceDTO.setEqualizationTime2(equalizationTime);
+
+	//BINARIZATION
+	struct timeval binarizationTimeBefore, binarizationTimeAfter;  // removed comma
+	gettimeofday (&binarizationTimeBefore, NULL);
+	//binarization(&windows, row, col, N);
+	imageBinarization (&equalizedImage);
+	gettimeofday (&binarizationTimeAfter, NULL);
+	float binarizationTime = ((binarizationTimeAfter.tv_sec - binarizationTimeBefore.tv_sec)
+				+ (binarizationTimeAfter.tv_usec - binarizationTimeBefore.tv_usec)/(float)1000000);
+	cout << "binarizationTime(2): " << binarizationTime << " segundos" << endl;
+	this->vInterfaceDTO.setBinarizationTime2(binarizationTime);
+
+	//THINNING
+
+	struct timeval thinningTimeBefore, thinningTimeAfter;  // removed comma
+	gettimeofday (&thinningTimeBefore, NULL);
+
+	//thinning(imageAfterGabor);
+
+	gettimeofday (&thinningTimeAfter, NULL);
+	float thinningTime = ((thinningTimeAfter.tv_sec - thinningTimeBefore.tv_sec)
+				+ (thinningTimeAfter.tv_usec - thinningTimeBefore.tv_usec)/(float)1000000);
+	cout << "thinningTime(2): " << thinningTime << " segundos" << endl;
+
+
+	//Converte a imagem no formato colorido para que seja possível utilizá-la na hora de exibir as minúcias (em cor)
+	Mat minutiaeImage;
+	cvtColor(equalizedImage, minutiaeImage, CV_GRAY2RGB);
+	imshow("imagem refeita colorida(2)", equalizedImage);
+
+	/*thinning(imageNew);
+	imshow("imagem afinada", imageNew);
+	*/
+
+	int option = 2;
+	int id = 1;
+	cout << "O que você deseja fazer com a imagem: 1- cadastrar no BD 2- autenticar no sistema" << endl;
+//	cin >> option;
+//	int id = 0;
+//	if (option == 1) {
+//		cout << "Para qual usuário você deseja cadastrar essa imagem? Digite a ID" << endl;
+//		cin >> id;
+//	}
+
+	//MINUTIA EXTRACTION
+	struct timeval minutiaeExtractionTimeBefore, minutiaeExtractionTimeAfter;  // removed comma
+	gettimeofday (&minutiaeExtractionTimeBefore, NULL);
+	minutiaeExtract(equalizedImage,option,id);
+	gettimeofday (&minutiaeExtractionTimeAfter, NULL);
+	float minutiaeExtractionTime = ((minutiaeExtractionTimeAfter.tv_sec - minutiaeExtractionTimeBefore.tv_sec)
+				+ (minutiaeExtractionTimeAfter.tv_usec - minutiaeExtractionTimeBefore.tv_usec)/(float)1000000);
+	cout << "minutiaeExtractionTime(2): " << minutiaeExtractionTime << " segundos" << endl;
+	this->vInterfaceDTO.setMinutiaeExtractionTime2(minutiaeExtractionTime);
+
+	minutiaePlot(row, col, N, minutiaeImage);
+
+	if (option == 2) {
+		struct timeval matchingTimeBefore, matchingTimeAfter;  // removed comma
+		gettimeofday (&matchingTimeBefore, NULL);
+		bool resultado = matching();
+		this->vInterfaceDTO.setAccepted2(resultado);
+
+		gettimeofday (&matchingTimeAfter, NULL);
+		float matchingTime = ((matchingTimeAfter.tv_sec - matchingTimeBefore.tv_sec)
+					+ (matchingTimeAfter.tv_usec - matchingTimeBefore.tv_usec)/(float)1000000);
+		cout << "matchingTime(2): " << matchingTime << " segundos" << endl;
+		this->vInterfaceDTO.setMatchingTime2(matchingTime);
+
+
+		if (resultado == true) cout << "Usuario aceito!(2)" << endl;
+		else cout << "Usuario recusado.(2)" << endl;
+	}
+
+}
+
+void Main::runSystem3() {
+
 	int dpi;			//resolução da imagem em dpi's
 	string imagePath;	//endereço da imagem de entrada
 	Mat originalImage;	//imagem de entrada (no formato lido pelo opencv)
@@ -141,9 +302,9 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 			row - originalImage.rows, originalImage.cols, originalImage.rows);
 	gettimeofday (&windowingTimeAfter, NULL);
 	float windowingTime = ((windowingTimeAfter.tv_sec - windowingTimeBefore.tv_sec)
-            + (windowingTimeAfter.tv_usec - windowingTimeBefore.tv_usec)/(float)1000000);
-	cout << "windowingTime: " << windowingTime << " segundos" << endl;
-	this->vInterfaceDTO.setWindowingTime(windowingTime);
+			+ (windowingTimeAfter.tv_usec - windowingTimeBefore.tv_usec)/(float)1000000);
+	cout << "windowingTime(3): " << windowingTime << " segundos" << endl;
+	this->vInterfaceDTO.setWindowingTime3(windowingTime);
 	//cria as janelas após adicionar bordas brancas
 	createWindows(imageWhiteBorder, N, col, row, &windows);
 
@@ -153,10 +314,10 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 	equalizeWindows(N, col, row, &windows);
 	gettimeofday (&equalizationTimeAfter, NULL);
 	float equalizationTime = ((equalizationTimeAfter.tv_sec - equalizationTimeBefore.tv_sec)
-	            + (equalizationTimeAfter.tv_usec - equalizationTimeBefore.tv_usec)/(float)1000000);
-	cout << "equalizationTime: " << equalizationTime << " segundos" << endl;
-	this->vInterfaceDTO.setEqualizationTime(equalizationTime);
-	recreateImage(windows, row, col, N, "imagem equalizada");
+				+ (equalizationTimeAfter.tv_usec - equalizationTimeBefore.tv_usec)/(float)1000000);
+	cout << "equalizationTime(3): " << equalizationTime << " segundos" << endl;
+	this->vInterfaceDTO.setEqualizationTime3(equalizationTime);
+	recreateImage(windows, row, col, N, "imagem equalizada(3)");
 
 	//GABOR (including Orientation Map and Frequency Map)
 //	struct timeval gaborFilterTimeBefore, gaborFilterTimeAfter;  // removed comma
@@ -182,9 +343,9 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 	gabor(imageNew, row, col, N, &imageAfterGabor);
 	float gaborFilterTime = ((gaborFilterTimeAfter.tv_sec - gaborFilterTimeBefore.tv_sec)
 				+ (gaborFilterTimeAfter.tv_usec - gaborFilterTimeBefore.tv_usec)/(float)1000000);
-	cout << "gaborFilterTime: " << gaborFilterTime << " segundos" << endl;
-	this->vInterfaceDTO.setGaborFilterTime(gaborFilterTime);
-	imshow("Pós Gabor", imageAfterGabor);
+	cout << "gaborFilterTime(3): " << gaborFilterTime << " segundos" << endl;
+	this->vInterfaceDTO.setGaborFilterTime3(gaborFilterTime);
+	imshow("Pós Gabor (3)", imageAfterGabor);
 
 
 	//BINARIZATION
@@ -194,10 +355,10 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 	imageBinarization (&imageAfterGabor);
 	gettimeofday (&binarizationTimeAfter, NULL);
 	float binarizationTime = ((binarizationTimeAfter.tv_sec - binarizationTimeBefore.tv_sec)
-	            + (binarizationTimeAfter.tv_usec - binarizationTimeBefore.tv_usec)/(float)1000000);
-	cout << "binarizationTime: " << binarizationTime << " segundos" << endl;
-	this->vInterfaceDTO.setBinarizationTime(binarizationTime);
-	recreateImage(windows, row, col, N, "imagem binarizada");
+				+ (binarizationTimeAfter.tv_usec - binarizationTimeBefore.tv_usec)/(float)1000000);
+	cout << "binarizationTime(3): " << binarizationTime << " segundos" << endl;
+	this->vInterfaceDTO.setBinarizationTime3(binarizationTime);
+	recreateImage(windows, row, col, N, "imagem binarizada (3)");
 
 	//THINNING
 
@@ -208,14 +369,14 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 
 	gettimeofday (&thinningTimeAfter, NULL);
 	float thinningTime = ((thinningTimeAfter.tv_sec - thinningTimeBefore.tv_sec)
-	            + (thinningTimeAfter.tv_usec - thinningTimeBefore.tv_usec)/(float)1000000);
-	cout << "thinningTime: " << thinningTime << " segundos" << endl;
+				+ (thinningTimeAfter.tv_usec - thinningTimeBefore.tv_usec)/(float)1000000);
+	cout << "thinningTime(3): " << thinningTime << " segundos" << endl;
 
 
 	//Converte a imagem no formato colorido para que seja possível utilizá-la na hora de exibir as minúcias (em cor)
 	Mat minutiaeImage;
 	cvtColor(imageAfterGabor, minutiaeImage, CV_GRAY2RGB);
-	imshow("imagem refeita colorida", imageAfterGabor);
+	imshow("imagem refeita colorida (3)", imageAfterGabor);
 
 	/*thinning(imageNew);
 	imshow("imagem afinada", imageNew);
@@ -238,8 +399,8 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 	gettimeofday (&minutiaeExtractionTimeAfter, NULL);
 	float minutiaeExtractionTime = ((minutiaeExtractionTimeAfter.tv_sec - minutiaeExtractionTimeBefore.tv_sec)
 				+ (minutiaeExtractionTimeAfter.tv_usec - minutiaeExtractionTimeBefore.tv_usec)/(float)1000000);
-	cout << "minutiaeExtractionTime: " << minutiaeExtractionTime << " segundos" << endl;
-	this->vInterfaceDTO.setMinutiaeExtractionTime(minutiaeExtractionTime);
+	cout << "minutiaeExtractionTime(3): " << minutiaeExtractionTime << " segundos" << endl;
+	this->vInterfaceDTO.setMinutiaeExtractionTime3(minutiaeExtractionTime);
 
 	minutiaePlot(row, col, N, minutiaeImage);
 
@@ -247,18 +408,25 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 		struct timeval matchingTimeBefore, matchingTimeAfter;  // removed comma
 		gettimeofday (&matchingTimeBefore, NULL);
 		bool resultado = matching();
-		this->vInterfaceDTO.setAccepted(resultado);
+		this->vInterfaceDTO.setAccepted31(resultado);
 
 		gettimeofday (&matchingTimeAfter, NULL);
 		float matchingTime = ((matchingTimeAfter.tv_sec - matchingTimeBefore.tv_sec)
 					+ (matchingTimeAfter.tv_usec - matchingTimeBefore.tv_usec)/(float)1000000);
-		cout << "matchingTime: " << matchingTime << " segundos" << endl;
-		this->vInterfaceDTO.setMatchingTime(matchingTime);
+		cout << "matchingTime(3): " << matchingTime << " segundos" << endl;
+		this->vInterfaceDTO.setMatchingTime3(matchingTime);
 
-
-		if (resultado == true) cout << "Usuario aceito!" << endl;
-		else cout << "Usuario recusado." << endl;
+		if (resultado == true) cout << "Usuario aceito!(3)" << endl;
+		else cout << "Usuario recusado.(3)" << endl;
 	}
+
+}
+
+void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
+
+	runSystem1();
+	runSystem2();
+	runSystem3();
 
 	_clazz->callback();
 	waitKey(0);

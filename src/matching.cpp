@@ -8,17 +8,19 @@
 #include "matching.hpp"
 
 //PRISCILA
-//#define bozorthPath "/home/priscila/Rel_4.2.0/bozorth3/bin/bozorth3"
-//#define bdPath "/home/priscila/tcc_fp/fingerprint.db"
-//#define xytPath "/home/priscila/tcc_fp/minutiae/minutiae_ref.xyt"
-//#define inputPath "/home/priscila/tcc_fp/minutiae/minutiae.xyt"
+#define bozorthPath "/home/priscila/Rel_4.2.0/bozorth3/bin/bozorth3"
+#define bdPath "/home/priscila/tcc_fp/fingerprint.db"
+#define xytPath "/home/priscila/tcc_fp/minutiae/minutiae_ref.xyt"
+#define inputPath "/home/priscila/tcc_fp/minutiae/minutiae.xyt"
 //PRISCILA
 
 //FERNANDA
+/*
 #define bozorthPath "/home/fernanda/Documents/tcc/nbis/Rel_4.2.0/bozorth3/bin/bozorth3"
 #define bdPath "/home/fernanda/workspace/c/tcc_fp/fingerprint.db"
 #define xytPath "/home/fernanda/workspace/c/tcc_fp/minutiae/minutiae_ref.xyt"
 #define inputPath "/home/fernanda/workspace/c/tcc_fp/minutiae/minutiae.xyt"
+*/
 //FERNANDA
 
 //RAFAEL
@@ -213,6 +215,8 @@ bool matching()
    char *zErrMsg = 0;
    int rc;
    const char* data = "Callback function called";
+
+   results_id.clear();
 
    rc = sqlite3_open(bdPath, &db);
 

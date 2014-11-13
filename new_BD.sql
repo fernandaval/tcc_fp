@@ -1,6 +1,7 @@
 drop table system;
 drop table user;
 drop table template;
+drop table minutia;
 
 create table system(id integer not null, falseRejection int, falseAcceptance int, trueRejection int, trueAcceptance int, mode int, primary key (id));
 create table user(id integer not null, idSystem int not null, name varchar(40), rg varchar(15), cpf varchar(11), nusp varchar(10), email varchar(50), falseRejection int, falseAcceptance int, trueRejection int, trueAcceptance int, minimumScore int, primary key (id), foreign key (idSystem) references system(id));

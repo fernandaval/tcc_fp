@@ -9,19 +9,21 @@
 #include "minutiaeExtraction.hpp"
 
 //PRISCILA
-//#define mindtctPath "/home/priscila/Rel_4.2.0/mindtct/bin/mindtct"
-//#define imagePath "/home/priscila/tcc_fp/minutiae"
-//#define xytPath "/home/priscila/tcc_fp/minutiae/minutiae.xyt"
-//#define bdPath "/home/priscila/tcc_fp/fingerprint.db"
-//#define outputPath "/home/priscila/tcc_fp/minutiae/minucias.jpg"
+#define mindtctPath "/home/priscila/Rel_4.2.0/mindtct/bin/mindtct"
+#define imagePath "/home/priscila/tcc_fp/minutiae"
+#define xytPath "/home/priscila/tcc_fp/minutiae/minutiae.xyt"
+#define bdPath "/home/priscila/tcc_fp/fingerprint.db"
+#define outputPath "/home/priscila/tcc_fp/minutiae/minucias.jpg"
 //PRISCILA
 
 //FERNANDA
+/*
 #define mindtctPath "/home/fernanda/Documents/tcc/nbis/Rel_4.2.0/mindtct/bin/mindtct"
 #define imagePath "/home/fernanda/workspace/c/tcc_fp/minutiae"
 #define xytPath "/home/fernanda/workspace/c/tcc_fp/minutiae/minutiae.xyt"
 #define bdPath "/home/fernanda/workspace/c/tcc_fp/fingerprint.db"
 #define outputPath "/home/fernanda/workspace/c/tcc_fp/minutiae/minucias.jpg"
+*/
 //FERNANDA
 
 //RAFAEL

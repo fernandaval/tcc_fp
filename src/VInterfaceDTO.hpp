@@ -14,36 +14,76 @@
 class VInterfaceDTO{
 
 public:
-	float getWindowingTime(void);
-	void setWindowingTime(float windowingTime);
+	float getWindowingTime3(void);
+	void setWindowingTime3(float windowingTime3);
 
-	float getEqualizationTime(void);
-	void setEqualizationTime(float equalizationTime);
+	float getEqualizationTime2(void);
+	void setEqualizationTime2(float equalizationTime2);
 
-	float getGaborFilterTime(void);
-	void setGaborFilterTime(float gaborFilterTime);
+	float getEqualizationTime3(void);
+	void setEqualizationTime3(float equalizationTime3);
 
-	float getBinarizationTime(void);
-	void setBinarizationTime(float binarizationTime);
+	float getGaborFilterTime3(void);
+	void setGaborFilterTime3(float gaborFilterTime3);
 
-	float getMinutiaeExtractionTime(void);
-	void setMinutiaeExtractionTime(float minutiaeExtractionTime);
+	float getBinarizationTime2(void);
+	void setBinarizationTime2(float binarizationTime2);
 
-	float getMatchingTime(void);
-	void setMatchingTime(float matchingTime);
+	float getBinarizationTime3(void);
+	void setBinarizationTime3(float binarizationTime3);
 
-	bool getAccepted(void);
-	void setAccepted(bool accepted);
+	float getMinutiaeExtractionTime1(void);
+	void setMinutiaeExtractionTime1(float minutiaeExtractionTime1);
+
+	float getMinutiaeExtractionTime2(void);
+	void setMinutiaeExtractionTime2(float minutiaeExtractionTime2);
+
+	float getMinutiaeExtractionTime3(void);
+	void setMinutiaeExtractionTime3(float minutiaeExtractionTime3);
+
+	float getMatchingTime1(void);
+	void setMatchingTime1(float matchingTime1);
+
+	float getMatchingTime2(void);
+	void setMatchingTime2(float matchingTime2);
+
+	float getMatchingTime3(void);
+	void setMatchingTime3(float matchingTime3);
+
+	bool getAccepted1(void);
+	void setAccepted1(bool accepted1);
+
+	bool getAccepted2(void);
+	void setAccepted2(bool accepted2);
+
+	bool getAccepted31(void);
+	void setAccepted31(bool accepted31);
+
+	bool getAccepted32(void);
+	void setAccepted32(bool accepted32);
+
+	bool getAccepted33(void);
+	void setAccepted33(bool accepted33);
 
 private:
-	float windowingTime;
-	float equalizationTime;
-	float gaborFilterTime;
-	float binarizationTime;
-	float minutiaeExtractionTime;
-	float matchingTime;
+	float windowingTime3;
+	float equalizationTime2;
+	float equalizationTime3;
+	float gaborFilterTime3;
+	float binarizationTime2;
+	float binarizationTime3;
+	float minutiaeExtractionTime1;
+	float minutiaeExtractionTime2;
+	float minutiaeExtractionTime3;
+	float matchingTime1;
+	float matchingTime2;
+	float matchingTime3;
 
-	bool accepted;
+	bool accepted1;
+	bool accepted2;
+	bool accepted31;
+	bool accepted32;
+	bool accepted33;
 
 };
 

@@ -9,13 +9,13 @@
 #include "preProcessing.hpp"
 
 //FERNANDA
-#define outputPath "/home/fernanda/Documents/tcc/imagens_teste/Output/"
-#define imagePathAux "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/103_1.tif"
+//#define outputPath "/home/fernanda/Documents/tcc/imagens_teste/Output/"
+//#define imagePathAux "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/103_1.tif"
 //FERNANDA
 
 //PRISCILA
-//#define outputPath "/home/priscila/Documents/tcc/imagens_teste/Output/"
-//#define imagePathAux "/home/priscila/Rel_4.2.0/mindtct/bin/101_1.jpg"
+#define outputPath "/home/priscila/Documents/tcc/imagens_teste/Output/"
+#define imagePathAux "/home/priscila/Rel_4.2.0/mindtct/bin/101_1.jpg"
 //PRISCILA
 
 //RAFAEL
@@ -127,6 +127,13 @@ void fillWhiteBorderInImage(Mat image, Mat *imageWhiteBorder, int N, int extraX,
 	imwrite(imageWhiteBorderOutputPath, *imageWhiteBorder);
 	imwrite(imageOutputPath, image);
 	*/
+	return;
+}
+
+void equalize(Mat *imageBefore, Mat *imageAfter) {
+
+	equalizeHist(*imageBefore, *imageAfter);
+
 	return;
 }
 
@@ -823,7 +830,7 @@ void get_angle_and_lambda(Mat& in, float& angle, float& lambda)
 
 	//lambda=dist[0];
 	lambda=10;
-	cout << "L:" << lambda << endl;
+	//cout << "L:" << lambda << endl;
 }
 
 
