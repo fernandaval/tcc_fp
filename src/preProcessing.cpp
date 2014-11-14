@@ -51,8 +51,8 @@ void imageRead (Mat *image, int *dpi, string imagePath) {
 		return;
 	}
 	else{
-		namedWindow( "Display original image", WINDOW_AUTOSIZE ); // Create a window to display image
-		imshow( "Display original image", *image ); // Show the image inside it
+		//namedWindow( "Display original image", WINDOW_AUTOSIZE ); // Create a window to display image
+		//imshow( "Display original image", *image ); // Show the image inside it
 	}
 
 	//teste
@@ -114,8 +114,8 @@ void fillWhiteBorderInImage(Mat image, Mat *imageWhiteBorder, int N, int extraX,
 		}
 	}
 
-	namedWindow( "Borda branca", WINDOW_AUTOSIZE ); // Create a window to display image
-	imshow( "Borda branca", *imageWhiteBorder); // Show the image inside it
+	//namedWindow( "Borda branca", WINDOW_AUTOSIZE ); // Create a window to display image
+	//imshow( "Borda branca", *imageWhiteBorder); // Show the image inside it
 
 	/*
 	imageWhiteBorderOutputPath.append(outputPath);
@@ -253,8 +253,27 @@ void recreateImage(vector< vector <window*> > windows, int row, int col, int N, 
 	recreatedImageOutputPath.append(outputPath);
 	recreatedImageOutputPath.append(imageName);
 	recreatedImageOutputPath.append(".jpg");
-	imshow( imageName, recreatedImage);
+	//imshow( imageName, recreatedImage);
 	imwrite(recreatedImageOutputPath, recreatedImage);
+
+	return;
+}
+
+void recreateImagePath(vector< vector <window*> > windows, int row, int col, int N, String path) {
+	Mat recreatedImage;
+
+	recreatedImage.create(row, col, windows[0][0]->getImageWindow().type());
+
+	for (int i = 0; i < row/N; i++) {
+		for (int j = 0; j < col/N; j++) {
+			for (int k = 0; k < N; k++) {
+				for (int l = 0; l < N; l++){
+					recreatedImage.at<uchar>(N*i + k, N*j + l) = windows[i][j]->getImageWindow().at<uchar>(k, l);
+				}
+			}
+		}
+	}
+	imwrite(path, recreatedImage);
 
 	return;
 }

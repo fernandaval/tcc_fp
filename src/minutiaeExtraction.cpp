@@ -83,7 +83,7 @@ void minutiaePlot(int row, int col, int N, Mat minutiaeImage) {
 		//ALÉM DISSO, USA  AFUNÇÃO "CIRCLE" PARA QUE SEJAM BEM VISÍVEIS AS MINÚCIAS EXTRAÍDAS
 		circle(minutiaeImage, Point(minutiae[i]->getX(), row - minutiae[i]->getY()), 3, Scalar( 0, 0, 255 ), -1, 8, 0);
 	}
-	imshow("Minúcias extraídas", minutiaeImage);
+	//imshow("Minúcias extraídas", minutiaeImage);
 	imwrite(outputPath, minutiaeImage);
 
 	return;

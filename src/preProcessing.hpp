@@ -39,6 +39,8 @@ void imageMeasures(Mat image, int dpi, int *N, int *col, int *row);
 
 void recreateImage(vector < vector <window*> > windows, int row, int col, int N, String imageName);
 
+void recreateImagePath(vector < vector <window*> > windows, int row, int col, int N, String path);
+
 void thinningIteration(cv::Mat& im, int iter);
 
 void thinning(cv::Mat& im);

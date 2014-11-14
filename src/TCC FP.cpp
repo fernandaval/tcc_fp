@@ -34,6 +34,18 @@
 #include "window.hpp"
 #include "TCC FP.hpp"
 
+//Priscila
+#define minutiae1Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/minutiae1.tif"
+#define minutiae2Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/minutiae2.tif"
+#define minutiae3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/minutiae3.tif"
+#define equalized2Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/equalized2.tif"
+#define equalized3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/equalized3.tif"
+#define binarized2Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/binarized2.tif"
+#define binarized3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/binarized3.tif"
+#define gabor3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/gabor3.tif"
+#define whiteBorder23Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/whiteborder23.tif"
+#define originalPath "/home/priscila/tcc_fp_gui/resources/images/fingerprints/original.tif"
+
 using namespace cv;
 using namespace std;
 
@@ -117,12 +129,14 @@ void Main::runSystem1() {
 	//Leitura da imagem de entrada
 	imageRead(&originalImage, &dpi, imagePath);
 
+
+	imwrite(originalPath,originalImage);
+
 	imageMeasures (originalImage, dpi, &N, &col, &row); //retorna coluna e linha da imagem final com borda
 
 	//Converte a imagem no formato colorido para que seja possível utilizá-la na hora de exibir as minúcias (em cor)
 	Mat minutiaeImage;
 	cvtColor(originalImage, minutiaeImage, CV_GRAY2RGB);
-	imshow("imagem refeita colorida (1)", originalImage);
 
 	int option = 2;
 	int id = 1;
@@ -145,6 +159,7 @@ void Main::runSystem1() {
 	this->vInterfaceDTO.setMinutiaeExtractionTime1(minutiaeExtractionTime);
 
 	minutiaePlot(row, col, N, minutiaeImage);
+	imwrite(minutiae1Path, minutiaeImage);
 
 	if (option == 2) {
 		struct timeval matchingTimeBefore, matchingTimeAfter;  // removed comma
@@ -183,6 +198,8 @@ void Main::runSystem2() {
 	fillWhiteBorderInImage(originalImage, &imageWhiteBorder, N, col - originalImage.cols,
 			row - originalImage.rows, originalImage.cols, originalImage.rows);
 
+	imwrite(whiteBorder23Path, imageWhiteBorder);
+
 	Mat equalizedImage;
 	//EQUALIZATION
 	struct timeval equalizationTimeBefore, equalizationTimeAfter;  // removed comma
@@ -194,6 +211,8 @@ void Main::runSystem2() {
 	cout << "equalizationTime(2): " << equalizationTime << " segundos" << endl;
 	this->vInterfaceDTO.setEqualizationTime2(equalizationTime);
 
+	imwrite(equalized2Path, equalizedImage);
+
 	//BINARIZATION
 	struct timeval binarizationTimeBefore, binarizationTimeAfter;  // removed comma
 	gettimeofday (&binarizationTimeBefore, NULL);
@@ -204,6 +223,8 @@ void Main::runSystem2() {
 				+ (binarizationTimeAfter.tv_usec - binarizationTimeBefore.tv_usec)/(float)1000000);
 	cout << "binarizationTime(2): " << binarizationTime << " segundos" << endl;
 	this->vInterfaceDTO.setBinarizationTime2(binarizationTime);
+
+	imwrite(binarized2Path, equalizedImage);
 
 	//THINNING
 
@@ -221,7 +242,6 @@ void Main::runSystem2() {
 	//Converte a imagem no formato colorido para que seja possível utilizá-la na hora de exibir as minúcias (em cor)
 	Mat minutiaeImage;
 	cvtColor(equalizedImage, minutiaeImage, CV_GRAY2RGB);
-	imshow("imagem refeita colorida(2)", equalizedImage);
 
 	/*thinning(imageNew);
 	imshow("imagem afinada", imageNew);
@@ -248,6 +268,8 @@ void Main::runSystem2() {
 	this->vInterfaceDTO.setMinutiaeExtractionTime2(minutiaeExtractionTime);
 
 	minutiaePlot(row, col, N, minutiaeImage);
+
+	imwrite(minutiae2Path, minutiaeImage);
 
 	if (option == 2) {
 		struct timeval matchingTimeBefore, matchingTimeAfter;  // removed comma
@@ -308,6 +330,8 @@ void Main::runSystem3() {
 	//cria as janelas após adicionar bordas brancas
 	createWindows(imageWhiteBorder, N, col, row, &windows);
 
+	//imwrite(whiteBorder23Path, imageWhiteBorder);
+
 	//EQUALIZATION
 	struct timeval equalizationTimeBefore, equalizationTimeAfter;  // removed comma
 	gettimeofday (&equalizationTimeBefore, NULL);
@@ -317,7 +341,7 @@ void Main::runSystem3() {
 				+ (equalizationTimeAfter.tv_usec - equalizationTimeBefore.tv_usec)/(float)1000000);
 	cout << "equalizationTime(3): " << equalizationTime << " segundos" << endl;
 	this->vInterfaceDTO.setEqualizationTime3(equalizationTime);
-	recreateImage(windows, row, col, N, "imagem equalizada(3)");
+	recreateImagePath(windows, row, col, N, equalized3Path);
 
 	//GABOR (including Orientation Map and Frequency Map)
 //	struct timeval gaborFilterTimeBefore, gaborFilterTimeAfter;  // removed comma
@@ -345,8 +369,7 @@ void Main::runSystem3() {
 				+ (gaborFilterTimeAfter.tv_usec - gaborFilterTimeBefore.tv_usec)/(float)1000000);
 	cout << "gaborFilterTime(3): " << gaborFilterTime << " segundos" << endl;
 	this->vInterfaceDTO.setGaborFilterTime3(gaborFilterTime);
-	imshow("Pós Gabor (3)", imageAfterGabor);
-
+	imwrite(gabor3Path, imageAfterGabor);
 
 	//BINARIZATION
 	struct timeval binarizationTimeBefore, binarizationTimeAfter;  // removed comma
@@ -358,7 +381,7 @@ void Main::runSystem3() {
 				+ (binarizationTimeAfter.tv_usec - binarizationTimeBefore.tv_usec)/(float)1000000);
 	cout << "binarizationTime(3): " << binarizationTime << " segundos" << endl;
 	this->vInterfaceDTO.setBinarizationTime3(binarizationTime);
-	recreateImage(windows, row, col, N, "imagem binarizada (3)");
+	recreateImagePath(windows, row, col, N, binarized3Path);
 
 	//THINNING
 
@@ -376,7 +399,6 @@ void Main::runSystem3() {
 	//Converte a imagem no formato colorido para que seja possível utilizá-la na hora de exibir as minúcias (em cor)
 	Mat minutiaeImage;
 	cvtColor(imageAfterGabor, minutiaeImage, CV_GRAY2RGB);
-	imshow("imagem refeita colorida (3)", imageAfterGabor);
 
 	/*thinning(imageNew);
 	imshow("imagem afinada", imageNew);
@@ -403,6 +425,7 @@ void Main::runSystem3() {
 	this->vInterfaceDTO.setMinutiaeExtractionTime3(minutiaeExtractionTime);
 
 	minutiaePlot(row, col, N, minutiaeImage);
+	imwrite(minutiae3Path, minutiaeImage);
 
 	if (option == 2) {
 		struct timeval matchingTimeBefore, matchingTimeAfter;  // removed comma
