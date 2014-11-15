@@ -22,6 +22,7 @@ public:
 	void runSystem1();
 	void runSystem2();
 	void runSystem3();
+	void updateMetrics();
 private:
 	VInterfaceDTO vInterfaceDTO;
 };

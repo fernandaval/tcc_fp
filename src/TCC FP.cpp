@@ -45,6 +45,7 @@
 #define gabor3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/gabor3.tif"
 #define whiteBorder23Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/whiteborder23.tif"
 #define originalPath "/home/priscila/tcc_fp_gui/resources/images/fingerprints/original.tif"
+#define bdPath "/home/priscila/tcc_fp/fingerprint.db"
 
 using namespace cv;
 using namespace std;
@@ -128,7 +129,6 @@ void Main::runSystem1() {
 
 	//Leitura da imagem de entrada
 	imageRead(&originalImage, &dpi, imagePath);
-
 
 	imwrite(originalPath,originalImage);
 
@@ -445,11 +445,44 @@ void Main::runSystem3() {
 
 }
 
+void Main::updateMetrics() {
+	int feedback1, feedback2, feedback31, feedback32, feedback33;
+
+	//Capturando feedbacks vindos da interface
+	feedback1 = this->vInterfaceDTO.getFeedback1();
+	feedback2 = this->vInterfaceDTO.getFeedback2();
+	feedback31 = this->vInterfaceDTO.getFeedback31();
+	feedback32 = this->vInterfaceDTO.getFeedback32();
+	feedback33 = this->vInterfaceDTO.getFeedback33();
+
+	//atualizando BD conforme feedbacks
+	/*sqlite3 *db;
+	char *zErrMsg = 0;
+	int rc;
+	string sqlstr;
+
+	/* Open database */
+	/*rc = sqlite3_open(bdPath, &db);
+	if( rc ){
+		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+		exit(0);
+	}*/
+
+	cout << "Feedback1: " << feedback1 << endl;
+	cout << "Feedback2: " << feedback1 << endl;
+	cout << "Feedback31: " << feedback1 << endl;
+	cout << "Feedback32: " << feedback1 << endl;
+	cout << "Feedback33: " << feedback1 << endl;
+
+}
+
 void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 
 	runSystem1();
 	runSystem2();
 	runSystem3();
+
+	updateMetrics();
 
 	_clazz->callback();
 	waitKey(0);
