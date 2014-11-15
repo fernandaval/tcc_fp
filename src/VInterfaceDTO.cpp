@@ -136,42 +136,10 @@ void VInterfaceDTO::setAccepted33(bool accepted33){
 	this->accepted33 = accepted33;
 }
 
-void VInterfaceDTO::setFeedback1(int feedback1){
-	this->feedback1 = feedback1;
+void VInterfaceDTO::setFeedback(int feedback){
+	this->feedback = feedback;
 }
 
-int VInterfaceDTO::getFeedback1(void){
-	return this->feedback1;
-}
-
-void VInterfaceDTO::setFeedback2(int feedback2){
-	this->feedback2 = feedback2;
-}
-
-int VInterfaceDTO::getFeedback2(void){
-	return this->feedback2;
-}
-
-void VInterfaceDTO::setFeedback31(int feedback31){
-	this->feedback31 = feedback31;
-}
-
-int VInterfaceDTO::getFeedback31(void){
-	return this->feedback31;
-}
-
-void VInterfaceDTO::setFeedback32(int feedback32){
-	this->feedback32 = feedback32;
-}
-
-int VInterfaceDTO::getFeedback32(void){
-	return this->feedback32;
-}
-
-void VInterfaceDTO::setFeedback33(int feedback33){
-	this->feedback33 = feedback33;
-}
-
-int VInterfaceDTO::getFeedback33(void){
-	return this->feedback33;
+int VInterfaceDTO::getFeedback(void){
+	return this->feedback;
 }

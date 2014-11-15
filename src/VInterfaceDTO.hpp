@@ -65,20 +65,8 @@ public:
 	bool getAccepted33(void);
 	void setAccepted33(bool accepted33);
 
-	int getFeedback1(void);
-	void setFeedback1(int feedback1);
-
-	int getFeedback2(void);
-	void setFeedback2(int feedback2);
-
-	int getFeedback31(void);
-	void setFeedback31(int feedback31);
-
-	int getFeedback32(void);
-	void setFeedback32(int feedback32);
-
-	int getFeedback33(void);
-	void setFeedback33(int feedback33);
+	int getFeedback(void);
+	void setFeedback(int feedback);
 
 private:
 	float windowingTime3;
@@ -100,11 +88,7 @@ private:
 	bool accepted32;
 	bool accepted33;
 
-	int feedback1;
-	int feedback2;
-	int feedback31;
-	int feedback32;
-	int feedback33;
+	int feedback;
 };
 
 
