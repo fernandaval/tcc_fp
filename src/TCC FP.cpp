@@ -62,54 +62,62 @@ void Main::fillBD() {
 	int N, col, row;
 	vector < vector <window*> > windows;
 
-	int a,b,c;
+	int a,b,c, option;
 	b = 1;
 	c = 1;
 	a = 0;
+	option = 1;
+
 	while (a <= 1)
 	{
 		while (b <= 9)
 		{
-			while (c<=4)
+			while (c<=1) //quantas imagens de cada pessoa queremos cadastrar
 			{
-				stringstream stra;
-				stringstream strb;
-				stringstream strc;
-				stra << a;
-				strb << b;
-				strc << c;
-				imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+				if (10*a+b <= 10) //Só executa para ID de usuário <= 10
+				{
+					stringstream stra;
+					stringstream strb;
+					stringstream strc;
+					stra << a;
+					strb << b;
+					strc << c;
+					imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
 
-				originalImage = imread(imagePath, CV_LOAD_IMAGE_GRAYSCALE);
-				imageMeasures (originalImage, 500, &N, &col, &row);
+					runSystem1(imagePath,option,(a*10)+b);
+					runSystem2(imagePath,option,(a*10)+b);
+					runSystem3(imagePath,option,(a*10)+b);
 
-				//Dimensiona a matriz com as janelas (i = linhas, j = colunas)
-				windows.resize(row/N);
-				for (int i = 0; i < row/N; i++){
-					windows[i].resize((int)col/N);
-				}
+					/*originalImage = imread(imagePath, CV_LOAD_IMAGE_GRAYSCALE);
+					imageMeasures (originalImage, 500, &N, &col, &row);
 
-				//inicializando a matriz com as janelas (usando a classe window)
-				for (int i = 0; i < row/N; i++){
-					for (int j = 0; j < col/N;  j++){
-						windows[i][j] = new window(N, N, originalImage.type());
+					//Dimensiona a matriz com as janelas (i = linhas, j = colunas)
+					windows.resize(row/N);
+					for (int i = 0; i < row/N; i++){
+						windows[i].resize((int)col/N);
 					}
+
+					//inicializando a matriz com as janelas (usando a classe window)
+					for (int i = 0; i < row/N; i++){
+						for (int j = 0; j < col/N;  j++){
+							windows[i][j] = new window(N, N, originalImage.type());
+						}
+					}
+
+					fillWhiteBorderInImage(originalImage, &imageWhiteBorder, N, col - originalImage.cols,
+							row - originalImage.rows, originalImage.cols, originalImage.rows);
+
+					createWindows(imageWhiteBorder, N, col, row, &windows);
+					equalizeWindows(N, col, row, &windows);
+					orientationMap(&windows, row, col, N);
+					binarization(&windows, row, col, N);
+
+					Mat imageNew;
+					imageNew.create(row, col, CV_8UC3);
+					groupImageWindows(&imageNew, windows, row, col, N);
+
+					minutiaeExtract(imageNew,1,(a*10)+b);*/
 				}
-
-				fillWhiteBorderInImage(originalImage, &imageWhiteBorder, N, col - originalImage.cols,
-						row - originalImage.rows, originalImage.cols, originalImage.rows);
-
-				createWindows(imageWhiteBorder, N, col, row, &windows);
-				equalizeWindows(N, col, row, &windows);
-				orientationMap(&windows, row, col, N);
-				binarization(&windows, row, col, N);
-
-				Mat imageNew;
-				imageNew.create(row, col, CV_8UC3);
-				groupImageWindows(&imageNew, windows, row, col, N);
-
-				minutiaeExtract(imageNew,1,(a*10)+b);
-
 				c = c + 1;
 			}
 			b = b + 1;
@@ -120,10 +128,10 @@ void Main::fillBD() {
 	}
 }
 
-void Main::runSystem1() {
+void Main::runSystem1(string imagePath, int option, int idUser) {
 
+	int idSystem = 1;
 	int dpi;			//resolução da imagem em dpi's
-	string imagePath;	//endereço da imagem de entrada
 	Mat originalImage;	//imagem de entrada (no formato lido pelo opencv)
 	int N, col, row;
 
@@ -138,9 +146,7 @@ void Main::runSystem1() {
 	Mat minutiaeImage;
 	cvtColor(originalImage, minutiaeImage, CV_GRAY2RGB);
 
-	int option = 2;
-	int id = 1;
-	cout << "O que você deseja fazer com a imagem: 1- cadastrar no BD 2- autenticar no sistema" << endl;
+//	cout << "O que você deseja fazer com a imagem: 1- cadastrar no BD 2- autenticar no sistema" << endl;
 //	cin >> option;
 //	int id = 0;
 //	if (option == 1) {
@@ -151,7 +157,7 @@ void Main::runSystem1() {
 	//MINUTIA EXTRACTION
 	struct timeval minutiaeExtractionTimeBefore, minutiaeExtractionTimeAfter;  // removed comma
 	gettimeofday (&minutiaeExtractionTimeBefore, NULL);
-	minutiaeExtract(originalImage,option,id);
+	minutiaeExtract(originalImage,idSystem,option,idUser);
 	gettimeofday (&minutiaeExtractionTimeAfter, NULL);
 	float minutiaeExtractionTime = ((minutiaeExtractionTimeAfter.tv_sec - minutiaeExtractionTimeBefore.tv_sec)
 				+ (minutiaeExtractionTimeAfter.tv_usec - minutiaeExtractionTimeBefore.tv_usec)/(float)1000000);
@@ -180,10 +186,10 @@ void Main::runSystem1() {
 
 }
 
-void Main::runSystem2() {
+void Main::runSystem2(string imagePath, int option, int idUser) {
 
+	int idSystem = 2;
 	int dpi;			//resolução da imagem em dpi's
-	string imagePath;	//endereço da imagem de entrada
 	Mat originalImage;	//imagem de entrada (no formato lido pelo opencv)
 	Mat imageWhiteBorder;
 	int N, col, row;
@@ -247,9 +253,9 @@ void Main::runSystem2() {
 	imshow("imagem afinada", imageNew);
 	*/
 
-	int option = 2;
-	int id = 1;
-	cout << "O que você deseja fazer com a imagem: 1- cadastrar no BD 2- autenticar no sistema" << endl;
+//	int option = 2;
+//	int id = 1;
+//	cout << "O que você deseja fazer com a imagem: 1- cadastrar no BD 2- autenticar no sistema" << endl;
 //	cin >> option;
 //	int id = 0;
 //	if (option == 1) {
@@ -260,7 +266,7 @@ void Main::runSystem2() {
 	//MINUTIA EXTRACTION
 	struct timeval minutiaeExtractionTimeBefore, minutiaeExtractionTimeAfter;  // removed comma
 	gettimeofday (&minutiaeExtractionTimeBefore, NULL);
-	minutiaeExtract(equalizedImage,option,id);
+	minutiaeExtract(equalizedImage,idSystem,option,idUser);
 	gettimeofday (&minutiaeExtractionTimeAfter, NULL);
 	float minutiaeExtractionTime = ((minutiaeExtractionTimeAfter.tv_sec - minutiaeExtractionTimeBefore.tv_sec)
 				+ (minutiaeExtractionTimeAfter.tv_usec - minutiaeExtractionTimeBefore.tv_usec)/(float)1000000);
@@ -290,10 +296,10 @@ void Main::runSystem2() {
 
 }
 
-void Main::runSystem3() {
+void Main::runSystem3(string imagePath, int option, int idUser) {
 
+	int idSystem = 3;
 	int dpi;			//resolução da imagem em dpi's
-	string imagePath;	//endereço da imagem de entrada
 	Mat originalImage;	//imagem de entrada (no formato lido pelo opencv)
 	Mat imageWhiteBorder;
 	int N, col, row;
@@ -381,7 +387,7 @@ void Main::runSystem3() {
 				+ (binarizationTimeAfter.tv_usec - binarizationTimeBefore.tv_usec)/(float)1000000);
 	cout << "binarizationTime(3): " << binarizationTime << " segundos" << endl;
 	this->vInterfaceDTO.setBinarizationTime3(binarizationTime);
-	recreateImagePath(windows, row, col, N, binarized3Path);
+	imwrite(binarized3Path,imageAfterGabor);
 
 	//THINNING
 
@@ -404,9 +410,9 @@ void Main::runSystem3() {
 	imshow("imagem afinada", imageNew);
 	*/
 
-	int option = 2;
-	int id = 1;
-	cout << "O que você deseja fazer com a imagem: 1- cadastrar no BD 2- autenticar no sistema" << endl;
+//	int option = 2;
+//	int id = 1;
+//	cout << "O que você deseja fazer com a imagem: 1- cadastrar no BD 2- autenticar no sistema" << endl;
 //	cin >> option;
 //	int id = 0;
 //	if (option == 1) {
@@ -417,7 +423,7 @@ void Main::runSystem3() {
 	//MINUTIA EXTRACTION
 	struct timeval minutiaeExtractionTimeBefore, minutiaeExtractionTimeAfter;  // removed comma
 	gettimeofday (&minutiaeExtractionTimeBefore, NULL);
-	minutiaeExtract(imageAfterGabor,option,id);
+	minutiaeExtract(imageAfterGabor,idSystem,option,idUser);
 	gettimeofday (&minutiaeExtractionTimeAfter, NULL);
 	float minutiaeExtractionTime = ((minutiaeExtractionTimeAfter.tv_sec - minutiaeExtractionTimeBefore.tv_sec)
 				+ (minutiaeExtractionTimeAfter.tv_usec - minutiaeExtractionTimeBefore.tv_usec)/(float)1000000);
@@ -467,6 +473,7 @@ void Main::updateMetrics() {
 		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
 		exit(0);
 	}*/
+	//TODO: prosseguir com integração com BD
 
 	cout << "Feedback1: " << feedback1 << endl;
 	cout << "Feedback2: " << feedback1 << endl;
@@ -478,11 +485,13 @@ void Main::updateMetrics() {
 
 void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 
-	runSystem1();
-	runSystem2();
-	runSystem3();
+	fillBD();
 
-	updateMetrics();
+	//runSystem1("/home/priscila/BDs_imagens_de_digitais/2004/DB1/1",1,0);
+	//runSystem2("/home/priscila/BDs_imagens_de_digitais/2004/DB1/1",1,0);
+	//runSystem3("/home/priscila/BDs_imagens_de_digitais/2004/DB1/1",1,0);
+
+	//updateMetrics();
 
 	_clazz->callback();
 	waitKey(0);

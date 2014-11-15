@@ -226,7 +226,7 @@ void saveMinutiae2(int idUsuario)
 }
 
 //salva minucias recem-extraidas no BD
-void saveMinutiae(int idUsuario)
+void saveMinutiae(int idSystem, int idUser)
 {
 	 ifstream myReadFile;
 	 char output[100];
@@ -281,8 +281,10 @@ void saveMinutiae(int idUsuario)
 	    exit(0);
 	}
 
-	sqlstr = "INSERT INTO template (idUser,registerDate,quality,type,minutiae) VALUES (";
-	sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << idUsuario) )->str());
+	sqlstr = "INSERT INTO template (idUser,idSystem,registerDate,quality,type,minutiae) VALUES (";
+	sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << idUser) )->str());
+	sqlstr.append(",");
+	sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << idSystem) )->str());
 	sqlstr.append(",'");
 	sqlstr.append(__DATE__);
 	sqlstr.append("',");
@@ -301,7 +303,7 @@ void saveMinutiae(int idUsuario)
 
 }
 
-void minutiaeExtract(Mat image, int option, int idUsuario)
+void minutiaeExtract(Mat image, int idSystem, int option, int idUsuario)
 {
 	//EXTRAÇÃO DE MINÚCIAS COM MINDTCT
 	char *my_env[] = {NULL};
@@ -346,6 +348,6 @@ void minutiaeExtract(Mat image, int option, int idUsuario)
 	}
 	fprintf(stdout, "minucias extraidas\n");
 
-	if (option == 1) saveMinutiae(idUsuario);
+	if (option == 1) saveMinutiae(idSystem, idUsuario);
 }
 

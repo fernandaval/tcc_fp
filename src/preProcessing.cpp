@@ -33,12 +33,10 @@ void imageRead (Mat *image, int *dpi, string imagePath) {
 	//teste
 	*dpi = 500;
 
-	imagePath = imagePathAux;
-
-	cout << "Quantos DPIs tem sua imagem? "; // prints !!!Hello World!!!
+	//cout << "Quantos DPIs tem sua imagem? "; // prints !!!Hello World!!!
 	//cin >> *dpi;
 
-	cout << "Digite o endereço da sua imagem (Ex: /home/Pictures/image.jpg): "; //get o imagePath
+	//cout << "Digite o endereço da sua imagem (Ex: /home/Pictures/image.jpg): "; //get o imagePath
 	//cin >> imagePath;
 
 	//Ao carregar a imagem, já se garante que será em tons de cinza
@@ -56,7 +54,7 @@ void imageRead (Mat *image, int *dpi, string imagePath) {
 	}
 
 	//teste
-	cout << "dpi: " << *dpi << endl;
+	//cout << "dpi: " << *dpi << endl;
 
 	return;
 }

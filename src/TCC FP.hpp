@@ -19,9 +19,9 @@ public:
 	void execute(SystemMode mode,  HasCallbackClass *_clazz);
 	VInterfaceDTO getVInterfaceDTO(void);
 	void fillBD();
-	void runSystem1();
-	void runSystem2();
-	void runSystem3();
+	void runSystem1(string path, int option, int idUser);
+	void runSystem2(string path, int option, int idUser);
+	void runSystem3(string path, int option, int idUser);
 	void updateMetrics();
 private:
 	VInterfaceDTO vInterfaceDTO;

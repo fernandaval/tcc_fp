@@ -39,7 +39,7 @@
 #define TRUE 1
 #define FALSE 0
 
-void minutiaeExtract(Mat image, int option, int id);
+void minutiaeExtract(Mat image, int idSystem, int option, int id);
 
 void minutiaePlot(int row, int col, int N, Mat minutiaeImage);
 
