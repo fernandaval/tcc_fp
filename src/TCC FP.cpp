@@ -348,30 +348,28 @@ void runSystem3(VInterfaceDTO vinterface, string imagePath, int option, int idUs
 	recreateImagePath(windows, row, col, N, equalized3Path);
 
 	//GABOR (including Orientation Map and Frequency Map)
-//	struct timeval gaborFilterTimeBefore, gaborFilterTimeAfter;  // removed comma
-//	gettimeofday (&gaborFilterTimeBefore, NULL);
-//	orientationMap(&windows, row, col, N);
-//	frequencyMap(&windows, row, col, N);
-//	gaborFilter (&windows, row, col, N);
-//	gettimeofday (&gaborFilterTimeAfter, NULL);
-//	float gaborFilterTime = ((gaborFilterTimeAfter.tv_sec - gaborFilterTimeBefore.tv_sec)
-//	            + (gaborFilterTimeAfter.tv_usec - gaborFilterTimeBefore.tv_usec)/(float)1000000);
-//	cout << "gaborFilterTime: " << gaborFilterTime << " segundos" << endl;
-//	this->vInterfaceDTO.setGaborFilterTime(gaborFilterTime);
-//	recreateImage(windows, row, col, N, "Gabor");
-
-	//GABOR
-	Mat imageNew;
-	imageNew.create(row, col, CV_8UC1);
-	groupImageWindows(&imageNew, windows, row, col, N);
-
-	Mat imageAfterGabor;
+	Mat fullImage;
+	fullImage.create(row, col, CV_8UC1);
+	groupImageWindows(&fullImage, windows, row, col, N);
 	struct timeval gaborFilterTimeBefore, gaborFilterTimeAfter;  // removed comma
 	gettimeofday (&gaborFilterTimeBefore, NULL);
-	gabor(imageNew, row, col, N, &imageAfterGabor);
+//	orientationMapOLD(&windows, row, col, N);
+	orientationMap(&windows, row, col, N);
+//	frequencyMap(&windows, row, col, N);
+	//cout << "depois mapa de orientação, antes gabor" << endl;
+	gaborFilter (&windows, row, col, N);
+	//cout << "depois gabor" << endl;
+	gettimeofday (&gaborFilterTimeAfter, NULL);
 	float gaborFilterTime = ((gaborFilterTimeAfter.tv_sec - gaborFilterTimeBefore.tv_sec)
-				+ (gaborFilterTimeAfter.tv_usec - gaborFilterTimeBefore.tv_usec)/(float)1000000);
+	            + (gaborFilterTimeAfter.tv_usec - gaborFilterTimeBefore.tv_usec)/(float)1000000);
 	cout << "gaborFilterTime(3): " << gaborFilterTime << " segundos" << endl;
+	//recreateImage(windows, row, col, N, "Gabor");
+
+	//código temporário para teste
+	Mat imageAfterGabor;
+	imageAfterGabor.create(row, col, CV_8UC1);
+	groupImageWindows(&imageAfterGabor, windows, row, col, N);
+
 	vinterface.setGaborFilterTime3(gaborFilterTime);
 	imwrite(gabor3Path, imageAfterGabor);
 
@@ -389,34 +387,20 @@ void runSystem3(VInterfaceDTO vinterface, string imagePath, int option, int idUs
 
 	//THINNING
 
-	struct timeval thinningTimeBefore, thinningTimeAfter;  // removed comma
+	/*struct timeval thinningTimeBefore, thinningTimeAfter;  // removed comma
 	gettimeofday (&thinningTimeBefore, NULL);
 
-	//thinning(imageAfterGabor);
+	thinning(imageAfterGabor);
 
 	gettimeofday (&thinningTimeAfter, NULL);
 	float thinningTime = ((thinningTimeAfter.tv_sec - thinningTimeBefore.tv_sec)
 				+ (thinningTimeAfter.tv_usec - thinningTimeBefore.tv_usec)/(float)1000000);
-	cout << "thinningTime(3): " << thinningTime << " segundos" << endl;
+	cout << "thinningTime(3): " << thinningTime << " segundos" << endl;*/
 
 
 	//Converte a imagem no formato colorido para que seja possível utilizá-la na hora de exibir as minúcias (em cor)
 	Mat minutiaeImage;
 	cvtColor(imageAfterGabor, minutiaeImage, CV_GRAY2RGB);
-
-	/*thinning(imageNew);
-	imshow("imagem afinada", imageNew);
-	*/
-
-//	int option = 2;
-//	int id = 1;
-//	cout << "O que você deseja fazer com a imagem: 1- cadastrar no BD 2- autenticar no sistema" << endl;
-//	cin >> option;
-//	int id = 0;
-//	if (option == 1) {
-//		cout << "Para qual usuário você deseja cadastrar essa imagem? Digite a ID" << endl;
-//		cin >> id;
-//	}
 
 	//MINUTIA EXTRACTION
 	struct timeval minutiaeExtractionTimeBefore, minutiaeExtractionTimeAfter;  // removed comma

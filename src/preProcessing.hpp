@@ -24,12 +24,14 @@ using namespace std;
 //lê uma imagem de entrada e altera "image"
 void imageRead (Mat *image, int *dpi, string imagePath);
 
+void equalize(Mat *imageBefore, Mat *imageAfter);
+
+void recreateImagePath(vector < vector <window*> > windows, int row, int col, int N, String path);
+
 //Preenche a borda da imagem com brancos para garantir que o janelamento terá 100% das janelas quadradas
 void fillWhiteBorderInImage(Mat image, Mat *imageWhiteBorder, int N, int extraX, int extraY, int x, int y);
 
 void equalizeWindows(int N, int col, int row, vector< vector <window*> > *windows);
-
-void equalize(Mat *imageBefore, Mat *imageAfter);
 
 //Altera a matriz com cada um adas janelas, criando uma por uma (a partir de uma imagem de entrada -> imageWhiteBorder)
 void createWindows(Mat imageWhiteBorder, int N, int column, int row, vector< vector <window*> > *windows);
@@ -38,8 +40,6 @@ void createWindows(Mat imageWhiteBorder, int N, int column, int row, vector< vec
 void imageMeasures(Mat image, int dpi, int *N, int *col, int *row);
 
 void recreateImage(vector < vector <window*> > windows, int row, int col, int N, String imageName);
-
-void recreateImagePath(vector < vector <window*> > windows, int row, int col, int N, String path);
 
 void thinningIteration(cv::Mat& im, int iter);
 
@@ -51,7 +51,7 @@ void binarization (vector < vector <window*> > *windows, int row, int col, int N
 
 void frequencyMap (vector < vector <window*> > *windows, int row, int col, int N);
 
-void orientationMap (vector < vector <window*> > *windows, int row, int col, int N);
+void orientationMapOLD (vector < vector <window*> > *windows, int row, int col, int N);
 
 void getWindowBorder (Mat *imageWithBorder, int N, vector < vector <window*> > windows, int i, int j);
 
@@ -77,8 +77,12 @@ void applyGabor(Mat& in, Mat& out, float theta, float lambda);
 
 void rotate(cv::Mat& src, double angle, cv::Mat& dst);
 
-void gabor(Mat I, int row, int col, int N, Mat *finalImage);
+void gaborNET(Mat I, int row, int col, int N, Mat *finalImage);
 
 void imageBinarization (Mat *image);
+
+float getAngle (Mat kernelX, Mat kernelY, Mat image, int N);
+
+void orientationMap (vector < vector <window*> > *windows, int row, int col, int N);
 
 #endif /* PREPROCESSING_HPP_ */
