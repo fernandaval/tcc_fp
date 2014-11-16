@@ -869,6 +869,11 @@ void rotate(cv::Mat& src, double angle, cv::Mat& dst)
 }
 
 void gabor(Mat I, int row, int col, int N, Mat *finalImage) {
+	I.copyTo(*finalImage);
+	return;
+}
+
+void gabor2(Mat I, int row, int col, int N, Mat *finalImage) {
 //	Mat I;
 //	I.create(row, col, windows[0][0]->getImageWindow().type());
 //

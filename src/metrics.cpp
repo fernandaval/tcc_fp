@@ -91,7 +91,7 @@ void minimumScoresUpdate() {
 
 	if (falseRejectionRate > 0.05) {
 		sqlstr = "UPDATE operationMode SET minimumScore = ";
-		int temp = score + 5;
+		int temp = score - 5;
 		if (temp >= 20) { //minimumScore não deve ultrapassar o limite mínimo de 20
 			sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << temp) )->str());
 			sqlstr.append(" WHERE id = 2 AND idSystem = 3;");
@@ -105,8 +105,8 @@ void minimumScoresUpdate() {
 	}
 	else {
 		sqlstr = "UPDATE operationMode SET minimumScore = ";
-		int temp = score - 5;
-		if (temp >= 20) { //minimumScore não deve ultrapassar o limite mínimo de 20
+		int temp = score + 5;
+		if (temp <= 60) { //sistema tolerante nunca deve ter nota de corte menor que 60
 			sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << temp) )->str());
 			sqlstr.append(" WHERE id = 2 AND idSystem = 3;");
 			const char * sql2 = sqlstr.c_str();

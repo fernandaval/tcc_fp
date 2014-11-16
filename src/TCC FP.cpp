@@ -474,9 +474,9 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 
 	//fillBD(this->vInterfaceDTO);
 
-	runSystem1(this->vInterfaceDTO,"/home/priscila/BDs_imagens_de_digitais/2004/DB1/101_1.tif",2,0);
-	runSystem2(this->vInterfaceDTO,"/home/priscila/BDs_imagens_de_digitais/2004/DB1/101_1.tif",2,0);
-	runSystem3(this->vInterfaceDTO,"/home/priscila/BDs_imagens_de_digitais/2004/DB1/101_1.tif",2,0);
+	runSystem1(this->vInterfaceDTO,"/home/priscila/BDs_imagens_de_digitais/2004/DB1/103_1.tif",2,0);
+	runSystem2(this->vInterfaceDTO,"/home/priscila/BDs_imagens_de_digitais/2004/DB1/103_1.tif",2,0);
+	runSystem3(this->vInterfaceDTO,"/home/priscila/BDs_imagens_de_digitais/2004/DB1/103_1.tif",2,0);
 
 	_clazz->callback();
 	//waitKey(0);

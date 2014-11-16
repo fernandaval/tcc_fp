@@ -134,14 +134,14 @@ int bozorth()
 		//fprintf(stdout, "Bozorth - PAI EXECUTANDO\n");
 		int status;
 
-		if (wait(NULL) == -1)
+		/*if (wait(NULL) == -1)
 		{
 			fprintf(stderr, "Erro no wait");
 		}
 		else
-		{
+		{*/
 
-		//if (waitpid(pid,&status,0) > 0) {
+		if (waitpid(pid,&status,0) > 0) {
 			char line[255];
 			dup2(fd[0], 0);
 			close(fd[1]);
