@@ -43,6 +43,7 @@ vector <int> results_y;
 vector <int> results_theta;
 vector <int> results_quality;
 string minutiae;
+int minimumScore;
 
 static int callback(void *data, int argc, char **argv, char **azColName){
 	int i;
@@ -51,6 +52,17 @@ static int callback(void *data, int argc, char **argv, char **azColName){
 		const char * temp = argv[i];
 		string column = azColName[i];
 		if (column == "minutiae") minutiae = temp;
+	}
+	return 0;
+}
+
+static int callbackMode(void *data, int argc, char **argv, char **azColName){
+	int i;
+
+	for(i=0; i<argc; i++){
+		const char * temp = argv[i];
+		string column = azColName[i];
+		if (column == "minimumScore") minimumScore = atoi(temp);
 	}
 	return 0;
 }
@@ -86,7 +98,7 @@ static int callbackMinutia(void *data, int argc, char **argv, char **azColName){
    return 0;
 }
 
-bool bozorth()
+int bozorth()
 {
 	char *my_env[] = {NULL};
 	char *newargv_bozorth[] = {"bozorth3", inputPath, xytPath, NULL};
@@ -140,8 +152,7 @@ bool bozorth()
 			string resultado = temp;
 			//cout << "resultado contem: " << resultado << endl;
 			int score = atoi(resultado.c_str());
-			if (score >= MINIMUMSCORE) return true;
-			else return false;
+			return score;
 		}
 	}
 	//return false;
@@ -261,12 +272,25 @@ bool matching(int idSystem, int idMode)
 	   }
 	   myfile.close();
 
-	   if (bozorth()==true){
-		   cout << "Matching com template " << results_id[k] << "!\n";
+	   sqlstr = "SELECT minimumScore FROM operationMode WHERE id = ";
+	   sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << idMode) )->str());
+	   sqlstr.append(";");
+
+	   sql = sqlstr.c_str();
+
+	   rc = sqlite3_exec(db, sql, callbackMode, (void*)data, &zErrMsg);
+	   if( rc != SQLITE_OK ){
+		   fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		   sqlite3_free(zErrMsg);
+	   }
+
+	   cout << "note de corte: " << minimumScore << endl;
+	   if (bozorth()>=minimumScore){
+		   //cout << "Matching com template " << results_id[k] << "!\n";
 		   approval = true;
 	   }
 	   else {
-		   cout << "Sem similaridade com template " << results_id[k] << "\n";
+		   //cout << "Sem similaridade com template " << results_id[k] << "\n";
 	   }
 	   k++;
    }

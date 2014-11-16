@@ -463,7 +463,9 @@ void Main::updateMetrics(bool feedback, HasCallbackClass *_clazz) {
 
 	metricsUpdate(feedback,this->vInterfaceDTO.getAccepted1(),this->vInterfaceDTO.getAccepted2(),this->vInterfaceDTO.getAccepted31(),this->vInterfaceDTO.getAccepted32(),this->vInterfaceDTO.getAccepted33());
 
-	cout << "Feedback: " << feedback << endl;
+	minimumScoresUpdate();
+
+	//cout << "Feedback: " << feedback << endl;
 
 	_clazz->callback();
 }

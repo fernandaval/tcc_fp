@@ -34,6 +34,7 @@
 
 using namespace std;
 
+int score;
 int trueAcceptance;
 int trueRejection;
 int falseAcceptance;
@@ -48,8 +49,111 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName){
 		if (column == "trueRejection") trueRejection = atoi(temp);
 		if (column == "falseAcceptance") falseAcceptance = atoi(temp);
 		if (column == "falseRejection") falseRejection = atoi(temp);
+		if (column == "minimumScore") score = atoi(temp);
    }
    return 0;
+}
+
+static int callbackNone(void *NotUsed, int argc, char **argv, char **azColName){
+   return 0;
+}
+
+void minimumScoresUpdate() {
+	sqlite3 *db;
+	char *zErrMsg = 0;
+	int rc;
+	string sqlstr;
+	const char * sql;
+
+	/* Open database */
+	rc = sqlite3_open(bdPath, &db);
+	if( rc ){
+		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+		exit(0);
+	}
+
+	//Sistema Tolerante
+	sqlstr = "SELECT * FROM operationMode WHERE id = 2 AND idSystem = 3;";
+	sql = sqlstr.c_str();
+	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+	if( rc != SQLITE_OK ){
+	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+	  sqlite3_free(zErrMsg);
+	}
+
+	float fa = (float)falseAcceptance;
+	float ta = (float)trueAcceptance;
+	float tr = (float)trueRejection;
+	float fr = (float)falseRejection;
+	float falseRejectionRate = fr/(fa+ta+tr+fr);
+
+	cout << "falseRejectionRate do Tolerante: " << falseRejectionRate << endl;
+
+	if (falseRejectionRate > 0.05) {
+		sqlstr = "UPDATE operationMode SET minimumScore = ";
+		int temp = score + 5;
+		if (temp >= 20) { //minimumScore não deve ultrapassar o limite mínimo de 20
+			sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << temp) )->str());
+			sqlstr.append(" WHERE id = 2 AND idSystem = 3;");
+			const char * sql2 = sqlstr.c_str();
+			rc = sqlite3_exec(db, sql2, callbackNone, 0, &zErrMsg);
+			if( rc != SQLITE_OK ){
+			  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+			  sqlite3_free(zErrMsg);
+			}
+		}
+	}
+	else {
+		sqlstr = "UPDATE operationMode SET minimumScore = ";
+		int temp = score - 5;
+		if (temp >= 20) { //minimumScore não deve ultrapassar o limite mínimo de 20
+			sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << temp) )->str());
+			sqlstr.append(" WHERE id = 2 AND idSystem = 3;");
+			const char * sql2 = sqlstr.c_str();
+			rc = sqlite3_exec(db, sql2, callbackNone, 0, &zErrMsg);
+			if( rc != SQLITE_OK ){
+			  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+			  sqlite3_free(zErrMsg);
+			}
+		}
+	}
+
+	//Sistema Rigoroso
+	sqlstr = "SELECT * FROM operationMode WHERE id = 3 AND idSystem = 3;";
+	sql = sqlstr.c_str();
+	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+	if( rc != SQLITE_OK ){
+	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+	  sqlite3_free(zErrMsg);
+	}
+
+	float falseAcceptanceRate = fa/(fa+ta+tr+fr);
+	if (falseAcceptanceRate > 0.01) {
+		sqlstr = "UPDATE operationMode SET minimumScore = ";
+		int temp = score + 5;
+		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << temp) )->str());
+		sqlstr.append(" WHERE id = 3 AND idSystem = 3;");
+		const char * sql2 = sqlstr.c_str();
+		rc = sqlite3_exec(db, sql2, callbackNone, 0, &zErrMsg);
+		if( rc != SQLITE_OK ){
+		  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		  sqlite3_free(zErrMsg);
+		}
+	}
+	else {
+		sqlstr = "UPDATE operationMode SET minimumScore = ";
+		int temp = score - 5;
+		if (temp >= 60) { //sistema rigoroso nunca deve ter nota de corte menor que 60
+			sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << temp) )->str());
+			sqlstr.append(" WHERE id = 3 AND idSystem = 3;");
+			const char * sql2 = sqlstr.c_str();
+			rc = sqlite3_exec(db, sql2, callbackNone, 0, &zErrMsg);
+			if( rc != SQLITE_OK ){
+			  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+			  sqlite3_free(zErrMsg);
+			}
+		}
+	}
 }
 
 void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted31, bool accepted32, bool accepted33) {

@@ -26,7 +26,6 @@
 using namespace cv;
 using namespace std;
 
-
 //lê uma imagem de entrada e altera "image"
 void imageRead (Mat *image, int *dpi, string imagePath) {
 
@@ -70,10 +69,10 @@ void fillWhiteBorderInImage(Mat image, Mat *imageWhiteBorder, int N, int extraX,
 
 	imageWhiteBorder->create(y + extraY, x + extraX, image.type());
 
-	cout << "y: " << y << endl;
-	cout << "linhas: " << image.rows << endl;
-	cout << "x: " << x << endl;
-	cout << "colunas: " << image.cols << endl;
+	//cout << "y: " << y << endl;
+	//cout << "linhas: " << image.rows << endl;
+	//cout << "x: " << x << endl;
+	//cout << "colunas: " << image.cols << endl;
 
 	//preenche borda superior
 	for (int i =0; i < extraY/2; i++){
