@@ -159,32 +159,48 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 	recreateImage(windows, row, col, N, "imagem equalizada");
 
 	//GABOR (including Orientation Map and Frequency Map)
-//	struct timeval gaborFilterTimeBefore, gaborFilterTimeAfter;  // removed comma
-//	gettimeofday (&gaborFilterTimeBefore, NULL);
-//	orientationMap(&windows, row, col, N);
-//	frequencyMap(&windows, row, col, N);
-//	gaborFilter (&windows, row, col, N);
-//	gettimeofday (&gaborFilterTimeAfter, NULL);
-//	float gaborFilterTime = ((gaborFilterTimeAfter.tv_sec - gaborFilterTimeBefore.tv_sec)
-//	            + (gaborFilterTimeAfter.tv_usec - gaborFilterTimeBefore.tv_usec)/(float)1000000);
-//	cout << "gaborFilterTime: " << gaborFilterTime << " segundos" << endl;
-//	this->vInterfaceDTO.setGaborFilterTime(gaborFilterTime);
-//	recreateImage(windows, row, col, N, "Gabor");
 
 	//GABOR
+	Mat fullImage;
+	fullImage.create(row, col, CV_8UC1);
+	groupImageWindows(&fullImage, windows, row, col, N);
+	struct timeval gaborFilterTimeBefore, gaborFilterTimeAfter;  // removed comma
+	gettimeofday (&gaborFilterTimeBefore, NULL);
+//	orientationMapOLD(&windows, row, col, N);
+	orientationMap(&windows, row, col, N);
+//	frequencyMap(&windows, row, col, N);
+	cout << "depois mapa de orientação, antes gabor" << endl;
+	gaborFilter (&windows, row, col, N);
+	cout << "depois gabor" << endl;
+	gettimeofday (&gaborFilterTimeAfter, NULL);
+	float gaborFilterTime = ((gaborFilterTimeAfter.tv_sec - gaborFilterTimeBefore.tv_sec)
+	            + (gaborFilterTimeAfter.tv_usec - gaborFilterTimeBefore.tv_usec)/(float)1000000);
+	cout << "gaborFilterTime: " << gaborFilterTime << " segundos" << endl;
+	this->vInterfaceDTO.setGaborFilterTime(gaborFilterTime);
+	recreateImage(windows, row, col, N, "Gabor");
+
+	return;
+
+	//GABOR INTERNET
 	Mat imageNew;
 	imageNew.create(row, col, CV_8UC1);
 	groupImageWindows(&imageNew, windows, row, col, N);
 
+//	//código temporário para teste
+//	Mat imageAfterGabor;
+//	imageAfterGabor.create(row, col, CV_8UC1);
+//	groupImageWindows(&imageAfterGabor, windows, row, col, N);
+
+
 	Mat imageAfterGabor;
-	struct timeval gaborFilterTimeBefore, gaborFilterTimeAfter;  // removed comma
-	gettimeofday (&gaborFilterTimeBefore, NULL);
-	gabor(imageNew, row, col, N, &imageAfterGabor);
-	float gaborFilterTime = ((gaborFilterTimeAfter.tv_sec - gaborFilterTimeBefore.tv_sec)
-				+ (gaborFilterTimeAfter.tv_usec - gaborFilterTimeBefore.tv_usec)/(float)1000000);
-	cout << "gaborFilterTime: " << gaborFilterTime << " segundos" << endl;
-	this->vInterfaceDTO.setGaborFilterTime(gaborFilterTime);
-	imshow("Pós Gabor", imageAfterGabor);
+//	struct timeval gaborFilterTimeBefore, gaborFilterTimeAfter;  // removed comma
+//	gettimeofday (&gaborFilterTimeBefore, NULL);
+//	gabor(imageNew, row, col, N, &imageAfterGabor);
+//	float gaborFilterTime = ((gaborFilterTimeAfter.tv_sec - gaborFilterTimeBefore.tv_sec)
+//				+ (gaborFilterTimeAfter.tv_usec - gaborFilterTimeBefore.tv_usec)/(float)1000000);
+//	cout << "gaborFilterTime: " << gaborFilterTime << " segundos" << endl;
+//	this->vInterfaceDTO.setGaborFilterTime(gaborFilterTime);
+//	imshow("Pós Gabor", imageAfterGabor);
 
 
 	//BINARIZATION
@@ -203,9 +219,7 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 
 	struct timeval thinningTimeBefore, thinningTimeAfter;  // removed comma
 	gettimeofday (&thinningTimeBefore, NULL);
-
-	//thinning(imageAfterGabor);
-
+	thinning(imageAfterGabor);
 	gettimeofday (&thinningTimeAfter, NULL);
 	float thinningTime = ((thinningTimeAfter.tv_sec - thinningTimeBefore.tv_sec)
 	            + (thinningTimeAfter.tv_usec - thinningTimeBefore.tv_usec)/(float)1000000);
@@ -217,9 +231,6 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 	cvtColor(imageAfterGabor, minutiaeImage, CV_GRAY2RGB);
 	imshow("imagem refeita colorida", imageAfterGabor);
 
-	/*thinning(imageNew);
-	imshow("imagem afinada", imageNew);
-	*/
 
 	int option = 2;
 	int id = 1;

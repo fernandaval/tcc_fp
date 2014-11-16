@@ -7,10 +7,12 @@
 //============================================================================
 
 #include "preProcessing.hpp"
+#define GABOR_NOT_APPLICABLE 1000
 
 //FERNANDA
 #define outputPath "/home/fernanda/Documents/tcc/imagens_teste/Output/"
 #define imagePathAux "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/103_1.tif"
+//#define imagePathAux "/home/fernanda/Documents/tcc/imagens_teste/45s.jpg"
 //FERNANDA
 
 //PRISCILA
@@ -135,26 +137,6 @@ void equalizeWindows(int N, int col, int row, vector< vector <window*> > *window
 	for (int j = 0; j < col/N; j++) {
 		for (int i = 0; i < row/N; i++) {
 			equalizeHist((*windows)[i][j]->getImageWindow(), (*windows)[i][j]->getImageWindow());
-			//->get_imageWindow(), (*windows)[i][j]->get_imageWindow());
-
-			//TESTE
-			//salva a imagem equalizada
-			/*
-			String equalizedImageoutputPath;
-
-			equalizedImageoutputPath.append(outputPath);
-			equalizedImageoutputPath.append("equalizedWindow_");
-			ostringstream iString;
-			ostringstream jString;
-			iString << i;
-			jString << j;
-			equalizedImageoutputPath.append(iString.str());
-			equalizedImageoutputPath.append("_");
-			equalizedImageoutputPath.append(jString.str());
-			equalizedImageoutputPath.append(".tif");
-			imwrite(equalizedImageoutputPath, (*windows)[i][j]->getImageWindow());
-			*/
-			//FIM TESTE
 		}
 	}
 
@@ -164,7 +146,7 @@ void equalizeWindows(int N, int col, int row, vector< vector <window*> > *window
 //N = param
 //int *p
 //p= &i
-//Altera a matriz com cada um adas janelas, criando uma por uma (a partir de uma imagem de entrada -> imageWhiteBorder)
+//Altera a matriz com cada uma das janelas, criando uma por uma (a partir de uma imagem de entrada -> imageWhiteBorder)
 void createWindows(Mat imageWhiteBorder, int N, int column, int row, vector< vector <window*> > *windows) {
 	for (int j = 0; j < column/N; j++) {
 		for (int i = 0; i < row/N; i++){
@@ -204,6 +186,10 @@ void imageMeasures(Mat image, int dpi, int *N, int *col, int *row) {
 
 	//para 500 dpi, janelas de 17 x 17, a proporção é de dpi/N = 29
 	//as janelas da última coluna direita e da última linha podem ser um pouco maiores ou menores
+	//(*N) = dpi/29;
+	//para 500 dpi, janelas de 32 x 32, a proporção é de dpi/N = 16
+	//as janelas da última coluna direita e da última linha podem ser um pouco maiores ou menores
+	//(*N) = dpi/16;
 	(*N) = dpi/29;
 
 	Nx = x/(*N);
@@ -455,7 +441,84 @@ void tempFrequencyMap (vector < vector <window*> > windows, int row, int col, in
 
 //Seta o ângulo de orientação de cada uma das janelas da imagem
 //**** O ângulo setado é em RADIANOS
-void orientationMap (vector < vector <window*> > *windows, int row, int col, int N){
+void orientationMapOLD (vector < vector <window*> > *windows, int row, int col, int N){
+
+    Mat kernelX;
+    kernelX.create(3, 3, CV_8SC1);
+    kernelX.at<uchar>(0,0) = -1;
+    kernelX.at<uchar>(0,1) = 0;
+    kernelX.at<uchar>(0,2) = 1;
+    kernelX.at<uchar>(1,0) = -2;
+    kernelX.at<uchar>(1,1) = 0;
+    kernelX.at<uchar>(1,2) = 2;
+    kernelX.at<uchar>(2,0) = -1;
+    kernelX.at<uchar>(2,1) = 0;
+    kernelX.at<uchar>(2,2) = 1;
+
+    Mat kernelY;
+    kernelY.create(3, 3, CV_8SC1);
+    kernelY.at<uchar>(0,0) = 1;
+    kernelY.at<uchar>(0,1) = 2;
+    kernelY.at<uchar>(0,2) = 1;
+    kernelY.at<uchar>(1,0) = 0;
+    kernelY.at<uchar>(1,1) = 0;
+    kernelY.at<uchar>(1,2) = 0;
+    kernelY.at<uchar>(2,0) = -1;
+    kernelY.at<uchar>(2,1) = -2;
+    kernelY.at<uchar>(2,2) = -1;
+
+	for (int i = 0; i < row/N; i++) {
+
+		for (int j = 0; j <  col/N; j++) {
+			//GRADIENTE GX
+			Mat Gx;
+			filter2D((*windows)[i][j]->getImageWindow()/255, Gx, CV_16SC1, kernelX);
+
+			//GRADIENTE GY
+			Mat Gy;
+			filter2D((*windows)[i][j]->getImageWindow()/255, Gy, CV_16SC1, kernelY);
+
+			int Vx, Vy;
+			Vx = 0;
+			Vy = 0;
+
+			for (int k = 0; k < N; k++) {
+				for (int l = 0; l < N; l++) {
+					Vx = Vx + 2 * Gx.at<signed short>(k, l) * Gy.at<signed short>(k, l);
+					Vy = Vy + Gx.at<signed short>(k, l) * Gx.at<signed short>(k, l) - Gy.at<signed short>(k, l) * Gy.at<signed short>(k, l);
+				}
+			}
+
+			//Grava o ângulo da janela na variável "angle", atributo da classe window
+			//obs: precisa somar 90º, porque o ângulo para o gabor é ortogonal ao obtido pelo sobel
+			if (Vy == 0) {	//a tangente de um valor dividido por zero é 90º = PI/2
+				if (Vx == 0)(*windows)[i][j]->setAngle(GABOR_NOT_APPLICABLE);
+				else if ( Vx > 0) (*windows)[i][j]->setAngle( (double)0.5 * (double)M_PI * 0.5);// - (double)M_PI * 0.5 );
+				else (*windows)[i][j]->setAngle( (double)(-0.5) * (double)M_PI * 0.5);
+			}
+			else {
+				double k;
+				double angle;
+				angle = (double)0.5 * atan((double) Vx / Vy);
+				if ((angle < 0 && Vx < 0) || (angle >= 0 && Vx > 0)) k = 0.5;
+				else if (angle < 0  && Vx >= 0) k = 0;
+				else k = 0;
+
+				(*windows)[i][j]->setAngle( angle + (double)(k * M_PI));// - (double)M_PI * 0.5);
+			}
+			if ((*windows)[i][j]->getAngle() != GABOR_NOT_APPLICABLE) {
+				cout << "janela (i: " << i << ", j: " << j << ") ";
+				cout << "ângulo: " << ((double)(180 / M_PI) * (*windows)[i][j]->getAngle()) << endl;
+			}
+		}
+		cout << endl;
+	}
+	return;
+
+
+
+	//**************** CÓDIGO ANTIGO ***********************//
+
 	for (int i = 0; i < row/N; i++) {
 		for (int j = 0; j <  col/N; j++) {
 			Mat Gx, Gy;
@@ -466,8 +529,8 @@ void orientationMap (vector < vector <window*> > *windows, int row, int col, int
 			//4º: dx: se é ordem de X =1 , se não =0
 			//5º: dy: se é ordem de Y =1 , se não =0
 			//6º: dimensão da matriz de sobel
-			Sobel((*windows)[i][j]->getImageWindow()/255, Gx, -1, 1, 0, 3, 1, 0, BORDER_DEFAULT);
-			Sobel((*windows)[i][j]->getImageWindow()/255, Gy, -1, 0, 1, 3, 1, 0, BORDER_DEFAULT);
+			Sobel((*windows)[i][j]->getImageWindow()/255, Gx, -1, 1, 0, -1, 1, 0, BORDER_DEFAULT);
+			Sobel((*windows)[i][j]->getImageWindow()/255, Gy, -1, 0, 1, -1, 1, 0, BORDER_DEFAULT);
 
 			int Vx, Vy;
 			Vx = 0;
@@ -475,22 +538,21 @@ void orientationMap (vector < vector <window*> > *windows, int row, int col, int
 			for (int k = 0; k < N; k++) {
 				for (int l = 0; l < N; l++) {
 					Vx = Vx + 2 * Gx.at<uchar>(k, l) * Gy.at<uchar>(k, l);//[k][l] * Gy[k][l];
-					Vy = Vy + Gx.at<uchar>(k, l) * Gx.at<uchar>(k, l) * Gy.at<uchar>(k, l) * Gy.at<uchar>(k, l);
+					Vy = Vy + Gx.at<uchar>(k, l) * Gx.at<uchar>(k, l) - Gy.at<uchar>(k, l) * Gy.at<uchar>(k, l);
 				}
 			}
 
 			//Grava o ângulo da janela na variável "angle", atributo da classe window
-			if (Vx == 0) {	//a tangente de um valor dividido por zero é 90º = PI/2
-				(*windows)[i][j]->setAngle( (double)M_PI * 0.5);
+			//obs: precisa somar 90º, porque o ângulo para o gabor é ortogonal ao obtido pelo sobel
+			if (Vy == 0) {	//a tangente de um valor dividido por zero é 90º = PI/2
+				(*windows)[i][j]->setAngle( 0 );
 			}
 			else {
-				(*windows)[i][j]->setAngle( (double)0.5 * atan((double) Vy / Vx));
+				(*windows)[i][j]->setAngle( (double)0.5 * atan((double) Vx / Vy) - (double)M_PI * 0.5);
 			}
 
-			//(*windows)[i][j]->setAngle(0.785398163); //45º em rad
-
-			//cout << "Ângulo janela (em graus) " << i << ", " << j << ": " << ((double)(180 / M_PI) * (*windows)[i][j]->getAngle());// << endl;
-			//cout << "; Ângulo janela (em radianos) " << i << ", " << j << ": " << (*windows)[i][j]->getAngle() << endl;
+			cout << "Ângulo janela (em graus) " << i << ", " << j << ": " << ((double)(180 / M_PI) * (*windows)[i][j]->getAngle())+90;// << endl;
+			cout << "; Ângulo janela (em radianos) " << i << ", " << j << ": " << (*windows)[i][j]->getAngle() + (double)M_PI * 0.5 << endl;
 		}
 	}
 	return;
@@ -597,19 +659,92 @@ void removeWindowBorder( Mat *imageWithoutBorder, Mat imageWithBorder, int origi
 }
 
 void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N) {
+
+	//TEMP
+
+	for (double w = 10; w <= 10; w = w + 0.5) {
+		vector < vector <window*> > windowsTemp;
+		//Dimensiona a matriz com as janelas (i = linhas, j = colunas)
+		windowsTemp.resize(row/N);
+		for (int i = 0; i < row/N; i++){
+			windowsTemp[i].resize((int)col/N);
+		}
+
+		//inicializando a matriz com as janelas (usando a classe window)
+		for (int i = 0; i < row/N; i++){
+			for (int j = 0; j < col/N;  j++){
+				windowsTemp[i][j] = new window(N, N, (*windows)[0][0]->getImageWindow().type());
+				(*windows)[i][j]->getImageWindow().copyTo(windowsTemp[i][j]->imageWindow);
+				windowsTemp[i][j]->setAngle((*windows)[i][j]->getAngle());
+				//windowsTemp[i][j]->setImageWindow((*windows)[i][j]->getImageWindow());
+			}
+		}
+
+		//cópia do outro código
+		for (int i = 1; i < row/N - 1; i++) {
+				for (int j = 1; j <  col/N - 1; j++) {
+					if ( windowsTemp[i][j]->getAngle() != GABOR_NOT_APPLICABLE) {
+						Mat imageWithBorder;
+						getWindowBorder (&imageWithBorder, N, windowsTemp, i, j);
+//						cout << "angulo: " << windowsTemp[i][j]->getAngle() << endl;
+//						Mat gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, windowsTemp[i][j]->getAngle()+ (double)(M_PI/2), w, 1, 0, CV_32F );
+						Mat gaborKernel;
+//						if( windowsTemp[i][j]->getAngle() == 0 || windowsTemp[i][j]->getAngle() == M_PI ||
+//								windowsTemp[i][j]->getAngle() == M_PI/2 || windowsTemp[i][j]->getAngle() == -M_PI/2) {
+						gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, windowsTemp[i][j]->getAngle()+ M_PI/2, w, 1, 0, CV_32F );
+//						}
+//						else {
+//						gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, windowsTemp[i][j]->getAngle(), w, 1, 0, CV_32F );
+//						}
+
+						filter2D(imageWithBorder, imageWithBorder, -1, gaborKernel);
+						removeWindowBorder( &windowsTemp[i][j]->imageWindow, imageWithBorder, N + 4, N);
+						//filter2D((*windows)[i][j]->getImageWindow(), (*windows)[i][j]->imageWindow, -1, gaborKernel);
+					}
+				}
+			}
+
+			Mat fullImage;
+			fullImage.create(row, col, CV_8UC1);
+			groupImageWindows(&fullImage, windowsTemp, row, col, N);
+
+			string sqlstr;
+			sqlstr.append("teste ");
+			sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << w) )->str());
+			imshow (sqlstr, fullImage);
+
+	}
+
+	return;
+	//FIM TEMP
+
+
+
 	for (int i = 1; i < row/N - 1; i++) {
 		for (int j = 1; j <  col/N - 1; j++) {
-			Mat imageWithBorder;
-			getWindowBorder (&imageWithBorder, N, *windows, i, j);
+			if ( (*windows)[i][j]->getAngle() != GABOR_NOT_APPLICABLE) {
+				Mat imageWithBorder;
+				getWindowBorder (&imageWithBorder, N, *windows, i, j);
 
-//			Mat gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, (*windows)[i][j]->getAngle()+ M_PI/2, (*windows)[i][j]->getFrequency(), 1, 0, CV_32F );
+//				Mat gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, (*windows)[i][j]->getAngle()+ (double)(M_PI/2), (*windows)[i][j]->getFrequency(), 1, 0, CV_32F );
 
-			//DE ACORDO COM A TEORIA, A ORIENTAÇÃO DA JANELA DEVERIA SER UM ÂNGULO (EM RADIANOS), NORMAL À ORIENTAÇÃO REAL
-			//APESAR DISSO, DE ACORDO COM OS TESTE REALIZADOS, ISSO NÃO OCORRE. O ÂNGULO DEVE SER A ORIENTAÇÃO NATURAL DA JANELA
-			Mat gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, (*windows)[i][j]->getAngle(), 5.8, 1, 0, CV_32F );
-			filter2D(imageWithBorder, imageWithBorder, -1, gaborKernel);
-			removeWindowBorder( &(*windows)[i][j]->imageWindow, imageWithBorder, N + 4, N);
-			//filter2D((*windows)[i][j]->getImageWindow(), (*windows)[i][j]->imageWindow, -1, gaborKernel);
+				Mat gaborKernel = getGaborKernel( Size(2*N, 2*N), 4, (*windows)[i][j]->getAngle() + (double)(M_PI/2), 1, 1, 0, CV_32F );
+
+//				//TESTE
+//				for (int i = 1; i < 11; i = i +2) {
+//					Mat imageTest;
+//					filter2D(imageWithBorder, imageTest, -1, gaborKernel);
+//					string sqlstr;
+//					sqlstr.append("teste ");
+//					sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << i) )->str());
+//					//istringstream temp (i);
+//					imshow (sqlstr, imageTest);
+//				}
+
+				filter2D(imageWithBorder, imageWithBorder, -1, gaborKernel);
+				removeWindowBorder( &(*windows)[i][j]->imageWindow, imageWithBorder, N + 4, N);
+				//filter2D((*windows)[i][j]->getImageWindow(), (*windows)[i][j]->imageWindow, -1, gaborKernel);
+			}
 		}
 	}
 
@@ -823,7 +958,7 @@ void get_angle_and_lambda(Mat& in, float& angle, float& lambda)
 
 	//lambda=dist[0];
 	lambda=10;
-	cout << "L:" << lambda << endl;
+	//cout << "L:" << lambda << endl;
 }
 
 
@@ -845,20 +980,33 @@ void rotate(cv::Mat& src, double angle, cv::Mat& dst)
     cv::warpAffine(src, dst, r, cv::Size(len, len));
 }
 
-void gabor(Mat I, int row, int col, int N, Mat *finalImage) {
-//	Mat I;
-//	I.create(row, col, windows[0][0]->getImageWindow().type());
-//
-//	//recria a imagem das windows na imagem I
-//	for (int i = 0; i < row/N; i++) {
-//		for (int j = 0; j < col/N; j++) {
-//			for (int k = 0; k < N; k++) {
-//				for (int l = 0; l < N; l++){
-//					I.at<uchar>(N*i + k, N*j + l) = windows[i][j]->getImageWindow().at<uchar>(k, l);
-//				}
-//			}
-//		}
-//	}
+void gaborNET(Mat I, int row, int col, int N, Mat *finalImage) {
+
+    Mat kernelX;
+    kernelX.create(3, 3, CV_8SC1);
+    kernelX.at<uchar>(0,0) = -1;
+    kernelX.at<uchar>(0,1) = 0;
+    kernelX.at<uchar>(0,2) = 1;
+    kernelX.at<uchar>(1,0) = -2;
+    kernelX.at<uchar>(1,1) = 0;
+    kernelX.at<uchar>(1,2) = 2;
+    kernelX.at<uchar>(2,0) = -1;
+    kernelX.at<uchar>(2,1) = 0;
+    kernelX.at<uchar>(2,2) = 1;
+
+    Mat kernelY;
+    kernelY.create(3, 3, CV_8SC1);
+    kernelY.at<uchar>(0,0) = 1;
+    kernelY.at<uchar>(0,1) = 2;
+    kernelY.at<uchar>(0,2) = 1;
+    kernelY.at<uchar>(1,0) = 0;
+    kernelY.at<uchar>(1,1) = 0;
+    kernelY.at<uchar>(1,2) = 0;
+    kernelY.at<uchar>(2,0) = -1;
+    kernelY.at<uchar>(2,1) = -2;
+    kernelY.at<uchar>(2,2) = -1;
+//	cout << "******** KernelY ********" << endl;
+//	cout << kernelY << endl;
 
 	Mat FFT_Result;
 	Mat Final_Result = Mat::zeros(I.rows,I.cols,CV_8U);
@@ -875,7 +1023,8 @@ void gabor(Mat I, int row, int col, int N, Mat *finalImage) {
 			get_angle_and_lambda(FFT_Result,angulo,lambda);
 			dst_roi = FFT_Final_Result(Rect(j, i, N, N));
 			FFT_Result.copyTo(dst_roi);
-			applyGabor(I,ttt,angulo,lambda);
+			//applyGabor(I,ttt,angulo,lambda);
+			applyGabor(I, ttt, getAngle (kernelX, kernelY, FFT_Result, N), 10);
 
 			Mat temp=Mat::zeros(N,N,CV_8U);
 			Mat temp2=Mat::zeros(N,N,CV_8U);
@@ -890,3 +1039,258 @@ void gabor(Mat I, int row, int col, int N, Mat *finalImage) {
 	ttt.copyTo(*finalImage);
 	return;
 }
+
+float getAngle (Mat kernelX, Mat kernelY, Mat image, int N){
+	float angle = GABOR_NOT_APPLICABLE;
+
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j <  N; j++) {
+			//GRADIENTE GX
+			Mat Gx;
+			filter2D(image/255, Gx, CV_16SC1, kernelX);
+
+			//GRADIENTE GY
+			Mat Gy;
+			filter2D(image/255, Gy, CV_16SC1, kernelY);
+
+			int Vx, Vy;
+			Vx = 0;
+			Vy = 0;
+
+			int flag = 0;
+			for (int k = 0; k < N; k++) {
+				for (int l = 0; l < N; l++) {
+					if (Gx.at<signed short>(k, l) != 0) flag = 1;
+					Vx = Vx + 2 * Gx.at<signed short>(k, l) * Gy.at<signed short>(k, l);
+					Vy = Vy + Gx.at<signed short>(k, l) * Gx.at<signed short>(k, l) - Gy.at<signed short>(k, l) * Gy.at<signed short>(k, l);
+				}
+			}
+
+			if ( flag == 1) {
+				//Grava o ângulo da janela na variável "angle", atributo da classe window
+				//obs: precisa somar 90º, porque o ângulo para o gabor é ortogonal ao obtido pelo sobel
+				if (Vy == 0) {	//a tangente de um valor dividido por zero é 90º = PI/2
+					angle = (float)0.5 * (float)(M_PI * 0.5);// - (double)M_PI * 0.5 );
+				}
+				else {
+					angle = (float)0.5 * atan((float) (Vx / Vy));// - (double)M_PI * 0.5);
+				}
+			}
+
+			if (flag == 1) {
+				cout << "Ângulo janela (em graus) : " << ((float)(180 / M_PI)) * angle;
+				cout << "; Ângulo janela (em radianos) : " << angle << endl;
+			}
+
+		}
+	}
+	return angle;
+}
+
+//A diferença entre este mapa de orientação e o da função orientationMapOLD é que este selecionada uma janela
+//2N x 2N para o cálculo do Gabor, enquanto a função orientationMapOLD seleciona a própria janela N x N
+void orientationMap (vector < vector <window*> > *windows, int row, int col, int N){
+
+	Mat fullFPImage;
+	fullFPImage.create(row, col, CV_8UC1);
+	groupImageWindows(&fullFPImage, *windows, row, col, N);
+
+//	Mat kernelX;
+//    kernelX.create(3, 3, CV_8SC1);
+//    kernelX.at<uchar>(0,0) = -1;
+//    kernelX.at<uchar>(0,1) = 0;
+//    kernelX.at<uchar>(0,2) = 1;
+//    kernelX.at<uchar>(1,0) = -2;
+//    kernelX.at<uchar>(1,1) = 0;
+//    kernelX.at<uchar>(1,2) = 2;
+//    kernelX.at<uchar>(2,0) = -1;
+//    kernelX.at<uchar>(2,1) = 0;
+//    kernelX.at<uchar>(2,2) = 1;
+//
+//    Mat kernelY;
+//    kernelY.create(3, 3, CV_8SC1);
+//    kernelY.at<uchar>(0,0) = 1;
+//    kernelY.at<uchar>(0,1) = 2;
+//    kernelY.at<uchar>(0,2) = 1;
+//    kernelY.at<uchar>(1,0) = 0;
+//    kernelY.at<uchar>(1,1) = 0;
+//    kernelY.at<uchar>(1,2) = 0;
+//    kernelY.at<uchar>(2,0) = -1;
+//    kernelY.at<uchar>(2,1) = -2;
+//    kernelY.at<uchar>(2,2) = -1;
+
+	Mat kernelX;
+    kernelX.create(5, 5, CV_8SC1);
+
+    kernelX.at<uchar>(0,0) = -2;
+    kernelX.at<uchar>(0,1) = -1;
+    kernelX.at<uchar>(0,2) = 0;
+    kernelX.at<uchar>(0,3) = 1;
+    kernelX.at<uchar>(0,4) = 2;
+
+    kernelX.at<uchar>(1,0) = -2;
+    kernelX.at<uchar>(1,1) = -4;
+    kernelX.at<uchar>(1,2) = 0;
+    kernelX.at<uchar>(1,3) = 4;
+    kernelX.at<uchar>(1,4) = 2;
+
+    kernelX.at<uchar>(2,0) = -2;
+	kernelX.at<uchar>(2,1) = -4;
+	kernelX.at<uchar>(2,2) = 0;
+	kernelX.at<uchar>(2,3) = 4;
+	kernelX.at<uchar>(2,4) = 2;
+
+	kernelX.at<uchar>(3,0) = -2;
+	kernelX.at<uchar>(3,1) = -4;
+	kernelX.at<uchar>(3,2) = 0;
+	kernelX.at<uchar>(3,3) = 4;
+	kernelX.at<uchar>(3,4) = 2;
+
+    kernelX.at<uchar>(4,0) = -2;
+    kernelX.at<uchar>(4,1) = -1;
+    kernelX.at<uchar>(4,2) = 0;
+    kernelX.at<uchar>(4,3) = 1;
+    kernelX.at<uchar>(4,4) = 2;
+
+    Mat kernelY;
+    kernelY.create(5, 5, CV_8SC1);
+
+    kernelY.at<uchar>(0,0) = -2;
+    kernelY.at<uchar>(0,1) = -2;
+    kernelY.at<uchar>(0,2) = -2;
+    kernelY.at<uchar>(0,3) = -2;
+    kernelY.at<uchar>(0,4) = -2;
+
+    kernelY.at<uchar>(1,0) = -1;
+    kernelY.at<uchar>(1,1) = -4;
+    kernelY.at<uchar>(1,2) = -4;
+    kernelY.at<uchar>(1,3) = -4;
+    kernelY.at<uchar>(1,4) = -1;
+
+    kernelY.at<uchar>(2,0) = 0;
+    kernelY.at<uchar>(2,1) = 0;
+    kernelY.at<uchar>(2,2) = 0;
+    kernelY.at<uchar>(2,3) = 0;
+    kernelY.at<uchar>(2,4) = 0;
+
+    kernelY.at<uchar>(3,0) = 1;
+    kernelY.at<uchar>(3,1) = 4;
+    kernelY.at<uchar>(3,2) = 4;
+    kernelY.at<uchar>(3,3) = 4;
+    kernelY.at<uchar>(3,4) = 1;
+
+    kernelY.at<uchar>(4,0) = 2;
+    kernelY.at<uchar>(4,1) = 2;
+    kernelY.at<uchar>(4,2) = 2;
+    kernelY.at<uchar>(4,3) = 2;
+    kernelY.at<uchar>(4,4) = 2;
+
+    //não percorre as bordas, porque elas já serão utilizadas no cálculo do ângulo
+    //Se a janela é N x N, o Sobel fará o cálculo em uma imagem 2N x 2N
+	for (int i = N; i < row - N; i = i + N) {
+		for (int j = N; j <  col - N; j = j + N) {
+			//GRADIENTE GX
+			Mat Gx;
+			filter2D(fullFPImage(Rect(j - N, i - N, 2*N, 2*N))/255, Gx, CV_16SC1, kernelX);
+			//filter2D((*windows)[i][j]->getImageWindow()/255, Gx, CV_16SC1, kernelX);
+
+			//GRADIENTE GY
+			Mat Gy;
+			filter2D(fullFPImage(Rect(j - N, i - N, 2*N, 2*N))/255, Gy, CV_16SC1, kernelY);
+			//filter2D((*windows)[i][j]->getImageWindow()/255, Gy, CV_16SC1, kernelY);
+
+			int Vx, Vy;
+			Vx = 0;
+			Vy = 0;
+
+			for (int k = 0; k < 2*N; k++) {
+				for (int l = 0; l < 2*N; l++) {
+					Vx = Vx + 2 * Gx.at<signed short>(k, l) * Gy.at<signed short>(k, l);
+					Vy = Vy + Gx.at<signed short>(k, l) * Gx.at<signed short>(k, l) - Gy.at<signed short>(k, l) * Gy.at<signed short>(k, l);
+				}
+			}
+
+			//Grava o ângulo da janela na variável "angle", atributo da classe window
+			//obs: precisa somar 90º, porque o ângulo para o gabor é ortogonal ao obtido pelo sobel
+//			if (Vy == 0) {	//a tangente de um valor dividido por zero é 90º = PI/2
+//				if (Vx == 0) {
+//					(*windows)[(int)i/N][(int)j/N]->setAngle(GABOR_NOT_APPLICABLE);
+//				}
+//				else if ( Vx > 0) {
+//					(*windows)[(int)i/N][(int)j/N]->setAngle( (-0.5) * M_PI * 0.5);// - (double)M_PI * 0.5 );
+//				}
+//				else {
+//					(*windows)[(int)i/N][(int)j/N]->setAngle( (0.5) * M_PI * 0.5);
+//				}
+//			}
+//			else {
+//				float k = 0;
+//				if (Vx == 0 && Vy > 0) {
+//					k = 0.5;
+//				}
+//				double angle;
+//				angle = (double)0.5 * atan((double) Vx / Vy) + (double) (k * M_PI);
+//				(*windows)[(int)i/N][(int)j/N]->setAngle(angle);// - (double)M_PI * 0.5);
+//			}
+			if (abs(Vx) < 10000 || abs(Vy) < 10000) (*windows)[(int)i/N][(int)j/N]->setAngle(GABOR_NOT_APPLICABLE);
+			else if ((Vy > -10 && Vy < 10) || abs(Vx) > abs(Vy)*100) {	//a tangente de um valor dividido por zero é 90º = PI/2
+				if (Vx == 0) {
+					(*windows)[(int)i/N][(int)j/N]->setAngle(GABOR_NOT_APPLICABLE);
+				}
+				else if ( Vx > 0) {
+					(*windows)[(int)i/N][(int)j/N]->setAngle( (-0.5) * M_PI * 0.5);// - (double)M_PI * 0.5 );
+				}
+				else {
+					(*windows)[(int)i/N][(int)j/N]->setAngle( (0.5) * M_PI * 0.5);
+				}
+			}
+			else {
+				float k = 0;
+				if (Vx == 0 && Vy > 0) {
+					k = 0.5;
+				}
+				double angle;
+				angle = (double)0.5 * atan((double) Vx / Vy) + (double) (k * M_PI);
+				(*windows)[(int)i/N][(int)j/N]->setAngle(angle);// - (double)M_PI * 0.5);
+			}
+
+			if ((*windows)[(int)i/N][(int)j/N]->getAngle() != GABOR_NOT_APPLICABLE)
+				cout << "janela i: " << (int)i/N << ", j: " << (int) j/N <<
+				"; Ângulo:  " << (*windows)[(int)i/N][(int)j/N]->getAngle()*180/M_PI <<
+				" graus; Vx: " << Vx << " ; Vy: " << Vy << endl;
+		}
+		cout << endl;
+	}
+	return;
+}
+
+
+//void gabor (Mat imageIn, Mat* imageOut, double theta, double lambda, int row, int col, int N){
+//	for (int i = N; i < )
+//	Mat gaborKernel = getGaborKernel( cv::Size(17,17) , 4, -theta+CV_PI/2, lambda, 1, 0, CV_32F );
+//		filter2D(in,out,-1,gaborKernel);
+//	}
+//}
+
+//double variance (int hist_size, Mat histImage) {
+//	for( int i = 0; i < hist_size; i++ ) {
+//		//draw the histogram data onto the histogram image
+//		cvRectangle( histImage, cvPoint(i*bin_w, histImage->height),
+//		cvPoint((i+1)*bin_w,
+//		histImage->height - cvRound(cvGetReal1D(hist->bins,i))),
+//		cvScalarAll(0), -1, 8, 0 );
+//		//get the value at the current histogram bucket
+//		float* bins = cvGetHistValue_1D(hist,i);
+//		//increment the mean value
+//		mean += bins[0];
+//	}
+//	//finish mean calculation
+//	mean /= hist_size;
+//	//go back through now that mean has been calculated in order to calculate variance
+//	for( i = 0; i < hist_size; i++ ) {
+//	float* bins = cvGetHistValue_1D(hist,i);
+//	variance += pow((bins[0] - mean),2);
+//	}
+//	//finish variance calculation
+//	variance /= hist_size;
+//}

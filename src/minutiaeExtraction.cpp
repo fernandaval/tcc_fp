@@ -76,6 +76,7 @@ void minutiaePlot(int row, int col, int N, Mat minutiaeImage) {
 	}
 	myReadFile.close();
 
+	cout << "nº de minúcias: " << aux << endl;
 	for (int i = 0; i < aux; i++) {
 		//FOI NECESSÁRIO INVERTER X E Y PARA QUE AS MINÚCIAS FOSSEM EXIBIDAS ADEQUADAMENTE
 		//ALÉM DISSO, USA  AFUNÇÃO "CIRCLE" PARA QUE SEJAM BEM VISÍVEIS AS MINÚCIAS EXTRAÍDAS

@@ -47,7 +47,7 @@ void binarization (vector < vector <window*> > *windows, int row, int col, int N
 
 void frequencyMap (vector < vector <window*> > *windows, int row, int col, int N);
 
-void orientationMap (vector < vector <window*> > *windows, int row, int col, int N);
+void orientationMapOLD (vector < vector <window*> > *windows, int row, int col, int N);
 
 void getWindowBorder (Mat *imageWithBorder, int N, vector < vector <window*> > windows, int i, int j);
 
@@ -73,8 +73,14 @@ void applyGabor(Mat& in, Mat& out, float theta, float lambda);
 
 void rotate(cv::Mat& src, double angle, cv::Mat& dst);
 
-void gabor(Mat I, int row, int col, int N, Mat *finalImage);
+void gaborNET(Mat I, int row, int col, int N, Mat *finalImage);
 
 void imageBinarization (Mat *image);
+
+//float getAngle (Mat image, int N);
+
+float getAngle (Mat kernelX, Mat kernelY, Mat image, int N);
+
+void orientationMap (vector < vector <window*> > *windows, int row, int col, int N);
 
 #endif /* PREPROCESSING_HPP_ */
