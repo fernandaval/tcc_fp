@@ -80,7 +80,7 @@ void minutiaePlot(int row, int col, int N, Mat minutiaeImage) {
 	for (int i = 0; i < aux; i++) {
 		//FOI NECESSÁRIO INVERTER X E Y PARA QUE AS MINÚCIAS FOSSEM EXIBIDAS ADEQUADAMENTE
 		//ALÉM DISSO, USA  AFUNÇÃO "CIRCLE" PARA QUE SEJAM BEM VISÍVEIS AS MINÚCIAS EXTRAÍDAS
-		circle(minutiaeImage, Point(minutiae[i]->getX(), row - minutiae[i]->getY()), 3, Scalar( 0, 0, 255 ), -1, 8, 0);
+		circle(minutiaeImage, Point(minutiae[i]->getX(), row - minutiae[i]->getY()), 3.5, Scalar( 0, 0, 255 ), -1, 8, 0);
 	}
 	imshow("Minúcias extraídas", minutiaeImage);
 	imwrite(outputPath, minutiaeImage);

@@ -179,20 +179,14 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 	this->vInterfaceDTO.setGaborFilterTime(gaborFilterTime);
 	recreateImage(windows, row, col, N, "Gabor");
 
-	return;
 
-	//GABOR INTERNET
-	Mat imageNew;
-	imageNew.create(row, col, CV_8UC1);
-	groupImageWindows(&imageNew, windows, row, col, N);
-
-//	//código temporário para teste
-//	Mat imageAfterGabor;
-//	imageAfterGabor.create(row, col, CV_8UC1);
-//	groupImageWindows(&imageAfterGabor, windows, row, col, N);
-
-
+	//código temporário para teste
 	Mat imageAfterGabor;
+	imageAfterGabor.create(row, col, CV_8UC1);
+	groupImageWindows(&imageAfterGabor, windows, row, col, N);
+
+
+//	Mat imageAfterGabor;
 //	struct timeval gaborFilterTimeBefore, gaborFilterTimeAfter;  // removed comma
 //	gettimeofday (&gaborFilterTimeBefore, NULL);
 //	gabor(imageNew, row, col, N, &imageAfterGabor);
@@ -213,17 +207,18 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 	            + (binarizationTimeAfter.tv_usec - binarizationTimeBefore.tv_usec)/(float)1000000);
 	cout << "binarizationTime: " << binarizationTime << " segundos" << endl;
 	this->vInterfaceDTO.setBinarizationTime(binarizationTime);
-	recreateImage(windows, row, col, N, "imagem binarizada");
+	imshow ("imagem binarizada", imageAfterGabor);
+//	recreateImage(windows, row, col, N, "imagem binarizada");
 
 	//THINNING
 
-	struct timeval thinningTimeBefore, thinningTimeAfter;  // removed comma
-	gettimeofday (&thinningTimeBefore, NULL);
-	thinning(imageAfterGabor);
-	gettimeofday (&thinningTimeAfter, NULL);
-	float thinningTime = ((thinningTimeAfter.tv_sec - thinningTimeBefore.tv_sec)
-	            + (thinningTimeAfter.tv_usec - thinningTimeBefore.tv_usec)/(float)1000000);
-	cout << "thinningTime: " << thinningTime << " segundos" << endl;
+//	struct timeval thinningTimeBefore, thinningTimeAfter;  // removed comma
+//	gettimeofday (&thinningTimeBefore, NULL);
+//	thinning(imageAfterGabor);
+//	gettimeofday (&thinningTimeAfter, NULL);
+//	float thinningTime = ((thinningTimeAfter.tv_sec - thinningTimeBefore.tv_sec)
+//	            + (thinningTimeAfter.tv_usec - thinningTimeBefore.tv_usec)/(float)1000000);
+//	cout << "thinningTime: " << thinningTime << " segundos" << endl;
 
 
 	//Converte a imagem no formato colorido para que seja possível utilizá-la na hora de exibir as minúcias (em cor)
@@ -234,7 +229,7 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 
 	int option = 2;
 	int id = 1;
-	cout << "O que você deseja fazer com a imagem: 1- cadastrar no BD 2- autenticar no sistema" << endl;
+//	cout << "O que você deseja fazer com a imagem: 1- cadastrar no BD 2- autenticar no sistema" << endl;
 //	cin >> option;
 //	int id = 0;
 //	if (option == 1) {
@@ -253,6 +248,8 @@ void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
 	this->vInterfaceDTO.setMinutiaeExtractionTime(minutiaeExtractionTime);
 
 	minutiaePlot(row, col, N, minutiaeImage);
+
+	return;
 
 	if (option == 2) {
 		struct timeval matchingTimeBefore, matchingTimeAfter;  // removed comma

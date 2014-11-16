@@ -11,7 +11,7 @@
 
 //FERNANDA
 #define outputPath "/home/fernanda/Documents/tcc/imagens_teste/Output/"
-#define imagePathAux "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/103_1.tif"
+#define imagePathAux "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/108_4.tif"
 //#define imagePathAux "/home/fernanda/Documents/tcc/imagens_teste/45s.jpg"
 //FERNANDA
 
@@ -190,7 +190,7 @@ void imageMeasures(Mat image, int dpi, int *N, int *col, int *row) {
 	//para 500 dpi, janelas de 32 x 32, a proporção é de dpi/N = 16
 	//as janelas da última coluna direita e da última linha podem ser um pouco maiores ou menores
 	//(*N) = dpi/16;
-	(*N) = dpi/29;
+	(*N) = dpi/16;
 
 	Nx = x/(*N);
 	Ny = y/(*N);
@@ -660,93 +660,161 @@ void removeWindowBorder( Mat *imageWithoutBorder, Mat imageWithBorder, int origi
 
 void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N) {
 
+	int w = 10; // frequencia a ser utilizada no Gabor
 	//TEMP
 
-	for (double w = 10; w <= 10; w = w + 0.5) {
-		vector < vector <window*> > windowsTemp;
-		//Dimensiona a matriz com as janelas (i = linhas, j = colunas)
-		windowsTemp.resize(row/N);
-		for (int i = 0; i < row/N; i++){
-			windowsTemp[i].resize((int)col/N);
+	vector < vector <window*> > windowsTemp;
+	//Dimensiona a matriz com as janelas (i = linhas, j = colunas)
+	windowsTemp.resize(row/N);
+	for (int i = 0; i < row/N; i++){
+		windowsTemp[i].resize((int)col/N);
+	}
+
+	//inicializando a matriz com as janelas (usando a classe window)
+	for (int i = 0; i < row/N; i++){
+		for (int j = 0; j < col/N;  j++){
+			windowsTemp[i][j] = new window(N, N, (*windows)[0][0]->getImageWindow().type());
+			(*windows)[i][j]->getImageWindow().copyTo(windowsTemp[i][j]->imageWindow);
+			windowsTemp[i][j]->setAngle((*windows)[i][j]->getAngle());
+			//windowsTemp[i][j]->setImageWindow((*windows)[i][j]->getImageWindow());
 		}
+	}
 
-		//inicializando a matriz com as janelas (usando a classe window)
-		for (int i = 0; i < row/N; i++){
-			for (int j = 0; j < col/N;  j++){
-				windowsTemp[i][j] = new window(N, N, (*windows)[0][0]->getImageWindow().type());
-				(*windows)[i][j]->getImageWindow().copyTo(windowsTemp[i][j]->imageWindow);
-				windowsTemp[i][j]->setAngle((*windows)[i][j]->getAngle());
-				//windowsTemp[i][j]->setImageWindow((*windows)[i][j]->getImageWindow());
-			}
+	vector < vector <window*> > windowsTemp2;
+	//Dimensiona a matriz com as janelas (i = linhas, j = colunas)
+	windowsTemp2.resize(row/N);
+	for (int i = 0; i < row/N; i++){
+		windowsTemp2[i].resize((int)col/N);
+	}
+
+	//inicializando a matriz com as janelas (usando a classe window)
+	for (int i = 0; i < row/N; i++){
+		for (int j = 0; j < col/N;  j++){
+			windowsTemp2[i][j] = new window(N, N, (*windows)[0][0]->getImageWindow().type());
+			(*windows)[i][j]->getImageWindow().copyTo(windowsTemp2[i][j]->imageWindow);
+			windowsTemp2[i][j]->setAngle((*windows)[i][j]->getAngle());
+			//windowsTemp[i][j]->setImageWindow((*windows)[i][j]->getImageWindow());
 		}
+	}
 
-		//cópia do outro código
-		for (int i = 1; i < row/N - 1; i++) {
-				for (int j = 1; j <  col/N - 1; j++) {
-					if ( windowsTemp[i][j]->getAngle() != GABOR_NOT_APPLICABLE) {
-						Mat imageWithBorder;
-						getWindowBorder (&imageWithBorder, N, windowsTemp, i, j);
-//						cout << "angulo: " << windowsTemp[i][j]->getAngle() << endl;
-//						Mat gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, windowsTemp[i][j]->getAngle()+ (double)(M_PI/2), w, 1, 0, CV_32F );
-						Mat gaborKernel;
-//						if( windowsTemp[i][j]->getAngle() == 0 || windowsTemp[i][j]->getAngle() == M_PI ||
-//								windowsTemp[i][j]->getAngle() == M_PI/2 || windowsTemp[i][j]->getAngle() == -M_PI/2) {
-						gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, windowsTemp[i][j]->getAngle()+ M_PI/2, w, 1, 0, CV_32F );
-//						}
-//						else {
-//						gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, windowsTemp[i][j]->getAngle(), w, 1, 0, CV_32F );
-//						}
 
-						filter2D(imageWithBorder, imageWithBorder, -1, gaborKernel);
-						removeWindowBorder( &windowsTemp[i][j]->imageWindow, imageWithBorder, N + 4, N);
-						//filter2D((*windows)[i][j]->getImageWindow(), (*windows)[i][j]->imageWindow, -1, gaborKernel);
+//	vector < vector <window*> > windowsFinal;
+//	//Dimensiona a matriz com as janelas (i = linhas, j = colunas)
+//	windowsFinal.resize(row/N);
+//	for (int i = 0; i < row/N; i++){
+//		windowsFinal[i].resize((int)col/N);
+//	}
+//
+//	//inicializando a matriz com as janelas (usando a classe window)
+//	for (int i = 0; i < row/N; i++){
+//		for (int j = 0; j < col/N;  j++){
+//			windowsFinal[i][j] = new window(N, N, (*windows)[0][0]->getImageWindow().type());
+//			(*windows)[i][j]->getImageWindow().copyTo(windowsFinal[i][j]->imageWindow);
+//			windowsFinal[i][j]->setAngle((*windows)[i][j]->getAngle());
+//		}
+//	}
+
+	for (int i = 1; i < row/N - 1; i++) {
+			for (int j = 1; j <  col/N - 1; j++) {
+				if ( windowsTemp[i][j]->getAngle() != GABOR_NOT_APPLICABLE) {
+					Mat imageWithBorder;
+					getWindowBorder (&imageWithBorder, N, windowsTemp, i, j);
+
+					Mat gaborKernel;
+					gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, windowsTemp[i][j]->getAngle()+ M_PI/2, w, 1, 0, CV_32F );
+
+					Mat gaborKernel2;
+					gaborKernel2 = getGaborKernel( Size(N + 4,N + 4) , 4, windowsTemp2[i][j]->getAngle(), w, 1, 0, CV_32F );
+
+					Mat imageAux;
+					Mat imageAux2;
+					imageAux.create(N+4, N+4, imageWithBorder.type());
+					imageAux2.create(N+4, N+4, imageWithBorder.type());
+					filter2D(imageWithBorder, imageAux, -1, gaborKernel);
+					filter2D(imageWithBorder, imageAux2, -1, gaborKernel2);
+
+					removeWindowBorder( &windowsTemp[i][j]->imageWindow, imageAux, N + 4, N);
+					removeWindowBorder( &windowsTemp2[i][j]->imageWindow, imageAux2, N + 4, N);
+
+					float media = mean(windowsTemp[i][j]->imageWindow, windowsTemp[i][j]->imageWindow)[0];
+					float media2 = mean(windowsTemp2[i][j]->imageWindow, windowsTemp2[i][j]->imageWindow)[0];
+
+					if (media > media2) {
+//						windowsTemp[i][j]->imageWindow.copyTo(windowsFinal[i][j]->imageWindow);
+						windowsTemp[i][j]->imageWindow.copyTo((*windows)[i][j]->imageWindow);
+					}
+					else {
+//						windowsTemp2[i][j]->imageWindow.copyTo(windowsFinal[i][j]->imageWindow);
+						windowsTemp2[i][j]->imageWindow.copyTo((*windows)[i][j]->imageWindow);
 					}
 				}
 			}
-
-			Mat fullImage;
-			fullImage.create(row, col, CV_8UC1);
-			groupImageWindows(&fullImage, windowsTemp, row, col, N);
-
-			string sqlstr;
-			sqlstr.append("teste ");
-			sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << w) )->str());
-			imshow (sqlstr, fullImage);
-
-	}
-
-	return;
-	//FIM TEMP
-
-
-
-	for (int i = 1; i < row/N - 1; i++) {
-		for (int j = 1; j <  col/N - 1; j++) {
-			if ( (*windows)[i][j]->getAngle() != GABOR_NOT_APPLICABLE) {
-				Mat imageWithBorder;
-				getWindowBorder (&imageWithBorder, N, *windows, i, j);
-
-//				Mat gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, (*windows)[i][j]->getAngle()+ (double)(M_PI/2), (*windows)[i][j]->getFrequency(), 1, 0, CV_32F );
-
-				Mat gaborKernel = getGaborKernel( Size(2*N, 2*N), 4, (*windows)[i][j]->getAngle() + (double)(M_PI/2), 1, 1, 0, CV_32F );
-
-//				//TESTE
-//				for (int i = 1; i < 11; i = i +2) {
-//					Mat imageTest;
-//					filter2D(imageWithBorder, imageTest, -1, gaborKernel);
-//					string sqlstr;
-//					sqlstr.append("teste ");
-//					sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << i) )->str());
-//					//istringstream temp (i);
-//					imshow (sqlstr, imageTest);
-//				}
-
-				filter2D(imageWithBorder, imageWithBorder, -1, gaborKernel);
-				removeWindowBorder( &(*windows)[i][j]->imageWindow, imageWithBorder, N + 4, N);
-				//filter2D((*windows)[i][j]->getImageWindow(), (*windows)[i][j]->imageWindow, -1, gaborKernel);
-			}
 		}
-	}
+//
+//		Mat fullImage;
+//		fullImage.create(row, col, CV_8UC1);
+//		groupImageWindows(&fullImage, windowsFinal, row, col, N);
+//
+//		string nome;
+//		nome.append("Imagem Final depois do Gabor ");
+//		nome.append(static_cast<ostringstream*>( &(ostringstream() << w) )->str());
+//		imshow (nome, fullImage);
+
+		Mat tempImage;
+		tempImage.create(row, col, CV_8UC1);
+		groupImageWindows(&tempImage, windowsTemp, row, col, N);
+
+		string sqlstr;
+		sqlstr.append("teste ");
+		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << w) )->str());
+		imshow (sqlstr, tempImage);
+
+		Mat tempImage2;
+		tempImage2.create(row, col, CV_8UC1);
+		groupImageWindows(&tempImage2, windowsTemp2, row, col, N);
+
+		string sqlstr2;
+		sqlstr2.append("teste2 ");
+		sqlstr2.append(static_cast<ostringstream*>( &(ostringstream() << w) )->str());
+		imshow (sqlstr2, tempImage2);
+
+
+	//PERCORRE A IMAGEM COMBINADA DE DOIS GABORS PARA CORRIGIR JANELAS QUE NÃO ESTÃO ADEQUADAS
+	//precisa percorrer as janelas deixando duas de sobra para olhar os vizinhos
+//	for (int i = 2; i < row/N - 2; i++) {
+//		for (int j = 2; j <  col/N - 2; j++) {
+//			if (windowsFinal[i][j]->getAngle() != GABOR_NOT_APPLICABLE) {
+//				float mediaVizinhas = 0;
+//				float media = mean(windowsFinal[i][j]->getImageWindow(), windowsFinal[i][j]->getImageWindow())[0];
+//				cout << "media " << media << endl;
+//
+//				int count = 0;
+//				for (int k = i - 1; k <= i +1; k +=2) {
+//					for (int l = j - 1; l <= j +1; l +=2) {
+//						if (windowsFinal[k][l]->getAngle() != GABOR_NOT_APPLICABLE) {
+//							count ++;
+//							mediaVizinhas = mediaVizinhas + mean(windowsFinal[k][l]->getImageWindow(), windowsFinal[k][l]->getImageWindow())[0];
+//						}
+//					}
+//				}
+//				if ( count != 0) {
+//					mediaVizinhas = mediaVizinhas/count;
+//
+//					if (abs(media - mediaVizinhas) > 5) {
+//						cout << "mudou a imagem da janela" << endl;
+//
+//						float media1 = mean(windowsTemp[i][j]->imageWindow, windowsTemp[i][j]->imageWindow)[0];
+//						float media2 = mean(windowsTemp2[i][j]->imageWindow, windowsTemp2[i][j]->imageWindow)[0];
+//
+//						if (media1 > media2) {
+//							windowsTemp2[i][j]->imageWindow.copyTo(windowsFinal[i][j]->imageWindow);
+//						}
+//						else {
+//							windowsTemp[i][j]->imageWindow.copyTo(windowsFinal[i][j]->imageWindow);//.copyTo(&windowsTemp[i][j]->imageWindow);
+//						}
+//
+//					}
+//				}
 
 	return;
 }
@@ -838,23 +906,6 @@ void get_lambda(Mat& in, float& lambda)
 bool comparar (Point3f i,Point3f j) { return (i.z<j.z); }
 
 void groupImageWindows(Mat *imageNew, vector < vector <window*> > windows, int row, int col, int N) {
-//	//cria cópia da imagem de cada janela
-//	for (int i = 0; i < row/N; i++) {
-////		for (int j = 0; j < col/N; j++) {
-////			Mat temp(windows[i][j]->imageWindow);
-////		}
-////	}
-//	for (int i = 0; i < row/N; i++) {
-//		for (int j = 0; j < col/N; j++) {
-//			Mat temp(windows[i][j]->imageWindow);
-//			for (int k = 0; k < N; k++) {
-//				for (int l = 0; l < N; l++){
-//					imageNew->at<uchar>(N*i + k, N*j + l) = temp.at<uchar>(k, l);
-//				}
-//			}
-//		}
-//	}
-
 	for (int i = 0; i < row/N; i++) {
 		for (int j = 0; j < col/N; j++) {
 			for (int k = 0; k < N; k++) {
@@ -1191,12 +1242,14 @@ void orientationMap (vector < vector <window*> > *windows, int row, int col, int
 		for (int j = N; j <  col - N; j = j + N) {
 			//GRADIENTE GX
 			Mat Gx;
-			filter2D(fullFPImage(Rect(j - N, i - N, 2*N, 2*N))/255, Gx, CV_16SC1, kernelX);
+			filter2D(fullFPImage(Rect(j - N/2, i - N/2, 2*N, 2*N))/255, Gx, CV_16SC1, kernelX);
+//			filter2D(fullFPImage(Rect(j - N, i - N, 2*N, 2*N))/255, Gx, CV_16SC1, kernelX);
 			//filter2D((*windows)[i][j]->getImageWindow()/255, Gx, CV_16SC1, kernelX);
 
 			//GRADIENTE GY
 			Mat Gy;
-			filter2D(fullFPImage(Rect(j - N, i - N, 2*N, 2*N))/255, Gy, CV_16SC1, kernelY);
+			filter2D(fullFPImage(Rect(j - N/2, i - N/2, 2*N, 2*N))/255, Gy, CV_16SC1, kernelY);
+//			filter2D(fullFPImage(Rect(j - N, i - N, 2*N, 2*N))/255, Gy, CV_16SC1, kernelY);
 			//filter2D((*windows)[i][j]->getImageWindow()/255, Gy, CV_16SC1, kernelY);
 
 			int Vx, Vy;
@@ -1210,30 +1263,8 @@ void orientationMap (vector < vector <window*> > *windows, int row, int col, int
 				}
 			}
 
-			//Grava o ângulo da janela na variável "angle", atributo da classe window
-			//obs: precisa somar 90º, porque o ângulo para o gabor é ortogonal ao obtido pelo sobel
-//			if (Vy == 0) {	//a tangente de um valor dividido por zero é 90º = PI/2
-//				if (Vx == 0) {
-//					(*windows)[(int)i/N][(int)j/N]->setAngle(GABOR_NOT_APPLICABLE);
-//				}
-//				else if ( Vx > 0) {
-//					(*windows)[(int)i/N][(int)j/N]->setAngle( (-0.5) * M_PI * 0.5);// - (double)M_PI * 0.5 );
-//				}
-//				else {
-//					(*windows)[(int)i/N][(int)j/N]->setAngle( (0.5) * M_PI * 0.5);
-//				}
-//			}
-//			else {
-//				float k = 0;
-//				if (Vx == 0 && Vy > 0) {
-//					k = 0.5;
-//				}
-//				double angle;
-//				angle = (double)0.5 * atan((double) Vx / Vy) + (double) (k * M_PI);
-//				(*windows)[(int)i/N][(int)j/N]->setAngle(angle);// - (double)M_PI * 0.5);
-//			}
 			if (abs(Vx) < 10000 || abs(Vy) < 10000) (*windows)[(int)i/N][(int)j/N]->setAngle(GABOR_NOT_APPLICABLE);
-			else if ((Vy > -10 && Vy < 10) || abs(Vx) > abs(Vy)*100) {	//a tangente de um valor dividido por zero é 90º = PI/2
+			if ((Vy > -10 && Vy < 10) || abs(Vx) > abs(Vy)*100) {	//a tangente de um valor dividido por zero é 90º = PI/2
 				if (Vx == 0) {
 					(*windows)[(int)i/N][(int)j/N]->setAngle(GABOR_NOT_APPLICABLE);
 				}
@@ -1245,7 +1276,7 @@ void orientationMap (vector < vector <window*> > *windows, int row, int col, int
 				}
 			}
 			else {
-				float k = 0;
+				double k = 0;
 				if (Vx == 0 && Vy > 0) {
 					k = 0.5;
 				}
@@ -1253,44 +1284,8 @@ void orientationMap (vector < vector <window*> > *windows, int row, int col, int
 				angle = (double)0.5 * atan((double) Vx / Vy) + (double) (k * M_PI);
 				(*windows)[(int)i/N][(int)j/N]->setAngle(angle);// - (double)M_PI * 0.5);
 			}
-
-			if ((*windows)[(int)i/N][(int)j/N]->getAngle() != GABOR_NOT_APPLICABLE)
-				cout << "janela i: " << (int)i/N << ", j: " << (int) j/N <<
-				"; Ângulo:  " << (*windows)[(int)i/N][(int)j/N]->getAngle()*180/M_PI <<
-				" graus; Vx: " << Vx << " ; Vy: " << Vy << endl;
 		}
 		cout << endl;
 	}
 	return;
 }
-
-
-//void gabor (Mat imageIn, Mat* imageOut, double theta, double lambda, int row, int col, int N){
-//	for (int i = N; i < )
-//	Mat gaborKernel = getGaborKernel( cv::Size(17,17) , 4, -theta+CV_PI/2, lambda, 1, 0, CV_32F );
-//		filter2D(in,out,-1,gaborKernel);
-//	}
-//}
-
-//double variance (int hist_size, Mat histImage) {
-//	for( int i = 0; i < hist_size; i++ ) {
-//		//draw the histogram data onto the histogram image
-//		cvRectangle( histImage, cvPoint(i*bin_w, histImage->height),
-//		cvPoint((i+1)*bin_w,
-//		histImage->height - cvRound(cvGetReal1D(hist->bins,i))),
-//		cvScalarAll(0), -1, 8, 0 );
-//		//get the value at the current histogram bucket
-//		float* bins = cvGetHistValue_1D(hist,i);
-//		//increment the mean value
-//		mean += bins[0];
-//	}
-//	//finish mean calculation
-//	mean /= hist_size;
-//	//go back through now that mean has been calculated in order to calculate variance
-//	for( i = 0; i < hist_size; i++ ) {
-//	float* bins = cvGetHistValue_1D(hist,i);
-//	variance += pow((bins[0] - mean),2);
-//	}
-//	//finish variance calculation
-//	variance /= hist_size;
-//}

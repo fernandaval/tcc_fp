@@ -77,8 +77,6 @@ void gaborNET(Mat I, int row, int col, int N, Mat *finalImage);
 
 void imageBinarization (Mat *image);
 
-//float getAngle (Mat image, int N);
-
 float getAngle (Mat kernelX, Mat kernelY, Mat image, int N);
 
 void orientationMap (vector < vector <window*> > *windows, int row, int col, int N);
