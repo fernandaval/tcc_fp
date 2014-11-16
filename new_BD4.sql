@@ -13,9 +13,7 @@ create table template(id integer not null, idUser int not null, idSystem int not
 
 insert into system (id) values(1);
 insert into system (id) values(2);
-insert into system (id) values(31);
-insert into system (id) values(32);
-insert into system (id) values(33);
+insert into system (id) values(3);
 
 insert into operationMode (id, idSystem, falseRejection, falseAcceptance, trueRejection, trueAcceptance) values (1,1,0,0,0,0);
 insert into operationMode (id, idSystem, falseRejection, falseAcceptance, trueRejection, trueAcceptance) values (1,2,0,0,0,0);

@@ -10,6 +10,7 @@
 #include "VInterfaceDTO.hpp"
 #include "HasCallbackClass.hpp"
 #include <string>
+#include <sqlite3.h>
 
 using namespace std;
 
@@ -26,7 +27,7 @@ class Main{
 public:
 	void execute(SystemMode mode,  HasCallbackClass *_clazz);
 	VInterfaceDTO getVInterfaceDTO(void);
-    void updateMetrics(int feedback, HasCallbackClass *_clazz);
+    void updateMetrics(bool feedback, HasCallbackClass *_clazz);
 private:
 	VInterfaceDTO vInterfaceDTO;
 };

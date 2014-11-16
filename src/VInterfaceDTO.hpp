@@ -65,8 +65,8 @@ public:
 	bool getAccepted33(void);
 	void setAccepted33(bool accepted33);
 
-	int getFeedback(void);
-	void setFeedback(int feedback);
+	bool getFeedback(void);
+	void setFeedback(bool feedback);
 
 private:
 	float windowingTime3;
@@ -88,7 +88,7 @@ private:
 	bool accepted32;
 	bool accepted33;
 
-	int feedback;
+	bool feedback;
 };
 
 

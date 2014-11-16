@@ -209,7 +209,7 @@ bool matching2()
 }
 
 //converte os templates do BD para arquivo .xyt e chama o Bozorth
-bool matching()
+bool matching(int idSystem, int idMode)
 {
    sqlite3 *db;
    char *zErrMsg = 0;
@@ -225,7 +225,11 @@ bool matching()
 	  exit(0);
    }
 
-   const char * sql = "SELECT id FROM template;";
+   string sqlstring;
+   sqlstring = "SELECT id FROM template WHERE idSystem = ";
+   sqlstring.append(static_cast<ostringstream*>( &(ostringstream() << idSystem) )->str());
+   sqlstring.append(";");
+   const char * sql = sqlstring.c_str();
 
    rc = sqlite3_exec(db, sql, callbackTemplate, (void*)data, &zErrMsg);
    if( rc != SQLITE_OK ){
@@ -251,6 +255,7 @@ bool matching()
 
 	   ofstream myfile;
 	   myfile.open(xytPath);
+
 	   if (myfile.is_open()) {
 		   myfile << minutiae;
 	   }

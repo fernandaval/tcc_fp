@@ -136,10 +136,10 @@ void VInterfaceDTO::setAccepted33(bool accepted33){
 	this->accepted33 = accepted33;
 }
 
-void VInterfaceDTO::setFeedback(int feedback){
+void VInterfaceDTO::setFeedback(bool feedback){
 	this->feedback = feedback;
 }
 
-int VInterfaceDTO::getFeedback(void){
+bool VInterfaceDTO::getFeedback(void){
 	return this->feedback;
 }

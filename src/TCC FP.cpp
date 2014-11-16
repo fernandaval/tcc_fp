@@ -33,6 +33,7 @@
 #include "matching.hpp"
 #include "window.hpp"
 #include "TCC FP.hpp"
+#include "metrics.hpp"
 
 //Priscila
 #define minutiae1Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/minutiae1.tif"
@@ -168,7 +169,7 @@ void runSystem1(VInterfaceDTO vinterface, string imagePath, int option, int idUs
 	if (option == 2) {
 		struct timeval matchingTimeBefore, matchingTimeAfter;  // removed comma
 		gettimeofday (&matchingTimeBefore, NULL);
-		bool resultado = matching();
+		bool resultado = matching(idSystem,1);
 		vinterface.setAccepted1(resultado);
 
 		gettimeofday (&matchingTimeAfter, NULL);
@@ -278,7 +279,7 @@ void runSystem2(VInterfaceDTO vinterface, string imagePath, int option, int idUs
 	if (option == 2) {
 		struct timeval matchingTimeBefore, matchingTimeAfter;  // removed comma
 		gettimeofday (&matchingTimeBefore, NULL);
-		bool resultado = matching();
+		bool resultado = matching(idSystem,1);
 		vinterface.setAccepted2(resultado);
 
 		gettimeofday (&matchingTimeAfter, NULL);
@@ -286,7 +287,6 @@ void runSystem2(VInterfaceDTO vinterface, string imagePath, int option, int idUs
 					+ (matchingTimeAfter.tv_usec - matchingTimeBefore.tv_usec)/(float)1000000);
 		cout << "matchingTime(2): " << matchingTime << " segundos" << endl;
 		vinterface.setMatchingTime2(matchingTime);
-
 
 		if (resultado == true) cout << "Usuario aceito!(2)" << endl;
 		else cout << "Usuario recusado.(2)" << endl;
@@ -434,8 +434,12 @@ void runSystem3(VInterfaceDTO vinterface, string imagePath, int option, int idUs
 	if (option == 2) {
 		struct timeval matchingTimeBefore, matchingTimeAfter;  // removed comma
 		gettimeofday (&matchingTimeBefore, NULL);
-		bool resultado = matching();
-		vinterface.setAccepted31(resultado);
+		bool resultado31 = matching(idSystem,1);
+		bool resultado32 = matching(idSystem,2);
+		bool resultado33 = matching(idSystem,3);
+		vinterface.setAccepted31(resultado31);
+		vinterface.setAccepted32(resultado32);
+		vinterface.setAccepted33(resultado33);
 
 		gettimeofday (&matchingTimeAfter, NULL);
 		float matchingTime = ((matchingTimeAfter.tv_sec - matchingTimeBefore.tv_sec)
@@ -443,30 +447,21 @@ void runSystem3(VInterfaceDTO vinterface, string imagePath, int option, int idUs
 		cout << "matchingTime(3): " << matchingTime << " segundos" << endl;
 		vinterface.setMatchingTime3(matchingTime);
 
-		if (resultado == true) cout << "Usuario aceito!(3)" << endl;
-		else cout << "Usuario recusado.(3)" << endl;
+		if (resultado31 == true) cout << "Usuario aceito!(31)" << endl;
+		else cout << "Usuario recusado.(31)" << endl;
+
+		if (resultado32 == true) cout << "Usuario aceito!(32)" << endl;
+		else cout << "Usuario recusado.(32)" << endl;
+
+		if (resultado33 == true) cout << "Usuario aceito!(33)" << endl;
+		else cout << "Usuario recusado.(33)" << endl;
 	}
 
 }
 
-void Main::updateMetrics(int feedback, HasCallbackClass *_clazz) {
+void Main::updateMetrics(bool feedback, HasCallbackClass *_clazz) {
 
-	//Capturando feedback vindo da interface
-	//int feedback = this->vInterfaceDTO.getFeedback();
-
-	//atualizando BD conforme feedback
-	/*sqlite3 *db;
-	char *zErrMsg = 0;
-	int rc;
-	string sqlstr;
-
-	/* Open database */
-	/*rc = sqlite3_open(bdPath, &db);
-	if( rc ){
-		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-		exit(0);
-	}*/
-	//TODO: prosseguir com integração com BD
+	metricsUpdate(feedback,this->vInterfaceDTO.getAccepted1(),this->vInterfaceDTO.getAccepted2(),this->vInterfaceDTO.getAccepted31(),this->vInterfaceDTO.getAccepted32(),this->vInterfaceDTO.getAccepted33());
 
 	cout << "Feedback: " << feedback << endl;
 

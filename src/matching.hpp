@@ -42,6 +42,6 @@ char**,   /* An array of strings representing fields in the row */
 char**    /* An array of strings representing column names */
 );
 
-bool matching();
+bool matching(int idSystem, int idMode);
 
 #endif /* MATCHING_HPP_ */

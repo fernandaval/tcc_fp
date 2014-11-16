@@ -106,7 +106,7 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName){
       //printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
 
    }
-   printf("\n");
+   //printf("\n");
    return 0;
 }
 
