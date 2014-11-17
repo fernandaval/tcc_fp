@@ -25,7 +25,7 @@ enum SystemMode{
 
 class Main{
 public:
-	void execute(SystemMode mode,  HasCallbackClass *_clazz);
+	void execute(HasCallbackClass *_clazz, string imagePath);
 	VInterfaceDTO getVInterfaceDTO(void);
     void updateMetrics(bool feedback, HasCallbackClass *_clazz);
 private:

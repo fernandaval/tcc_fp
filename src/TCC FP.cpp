@@ -36,17 +36,31 @@
 #include "metrics.hpp"
 
 //Priscila
-#define minutiae1Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/minutiae1.tif"
-#define minutiae2Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/minutiae2.tif"
-#define minutiae3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/minutiae3.tif"
-#define equalized2Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/equalized2.tif"
-#define equalized3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/equalized3.tif"
-#define binarized2Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/binarized2.tif"
-#define binarized3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/binarized3.tif"
-#define gabor3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/gabor3.tif"
-#define whiteBorder23Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/whiteborder23.tif"
-#define originalPath "/home/priscila/tcc_fp_gui/resources/images/fingerprints/original.tif"
-#define bdPath "/home/priscila/tcc_fp/fingerprint.db"
+//#define minutiae1Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/minutiae1.tif"
+//#define minutiae2Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/minutiae2.tif"
+//#define minutiae3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/minutiae3.tif"
+//#define equalized2Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/equalized2.tif"
+//#define equalized3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/equalized3.tif"
+//#define binarized2Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/binarized2.tif"
+//#define binarized3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/binarized3.tif"
+//#define gabor3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/gabor3.tif"
+//#define whiteBorder23Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/whiteborder23.tif"
+//#define originalPath "/home/priscila/tcc_fp_gui/resources/images/fingerprints/original.tif"
+//#define bdPath "/home/priscila/tcc_fp/fingerprint.db"
+
+//Rafael
+#define minutiae1Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/minutiae1.tif"
+#define minutiae2Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/minutiae2.tif"
+#define minutiae3Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/minutiae3.tif"
+#define equalized2Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/equalized2.tif"
+#define equalized3Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/equalized3.tif"
+#define binarized2Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/binarized2.tif"
+#define binarized3Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/binarized3.tif"
+#define gabor3Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/gabor3.tif"
+#define whiteBorder23Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/whiteborder23.tif"
+#define originalPath "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/original.tif"
+#define bdPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/fingerprint.db"
+//Rafael
 
 using namespace cv;
 using namespace std;
@@ -454,13 +468,13 @@ void Main::updateMetrics(bool feedback, HasCallbackClass *_clazz) {
 	_clazz->callback();
 }
 
-void Main::execute(SystemMode mode,  HasCallbackClass *_clazz) {
+void Main::execute(HasCallbackClass *_clazz, string imagePath) {
 
 	//fillBD(this->vInterfaceDTO);
 
-	runSystem1(this->vInterfaceDTO,"/home/priscila/BDs_imagens_de_digitais/2004/DB1/103_1.tif",2,0);
-	runSystem2(this->vInterfaceDTO,"/home/priscila/BDs_imagens_de_digitais/2004/DB1/103_1.tif",2,0);
-	runSystem3(this->vInterfaceDTO,"/home/priscila/BDs_imagens_de_digitais/2004/DB1/103_1.tif",2,0);
+	runSystem1(this->vInterfaceDTO, imagePath,2,0);
+	runSystem2(this->vInterfaceDTO, imagePath,2,0);
+	runSystem3(this->vInterfaceDTO, imagePath,2,0);
 
 	_clazz->callback();
 	//waitKey(0);
