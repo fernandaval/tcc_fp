@@ -35,32 +35,8 @@
 #include "TCC FP.hpp"
 #include "metrics.hpp"
 
-//Priscila
-#define minutiae1Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/minutiae1.tif"
-#define minutiae2Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/minutiae2.tif"
-#define minutiae3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/minutiae3.tif"
-#define equalized2Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/equalized2.tif"
-#define equalized3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/equalized3.tif"
-#define binarized2Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/binarized2.tif"
-#define binarized3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/binarized3.tif"
-#define gabor3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/gabor3.tif"
-#define whiteBorder3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/whiteborder23.tif"
-#define originalPath "/home/priscila/tcc_fp_gui/resources/images/fingerprints/original.tif"
-#define bdPath "/home/priscila/tcc_fp/fingerprint.db"
+#include "constants.hpp"
 
-//Rafael
-//#define minutiae1Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/minutiae1.tif"
-//#define minutiae2Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/minutiae2.tif"
-//#define minutiae3Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/minutiae3.tif"
-//#define equalized2Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/equalized2.tif"
-//#define equalized3Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/equalized3.tif"
-//#define binarized2Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/binarized2.tif"
-//#define binarized3Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/binarized3.tif"
-//#define gabor3Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/gabor3.tif"
-//#define whiteBorder3Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/whiteborder23.tif"
-//#define originalPath "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/original.tif"
-//#define bdPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/fingerprint.db"
-//Rafael
 
 using namespace cv;
 using namespace std;
@@ -98,10 +74,9 @@ void runTests(VInterfaceDTO& vinterface) {
 					strc << c;
 
 					//imagens que deveriam ser aceitas
-					imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+					imagePath = imagePathTCCFP1 + stra.str() + strb.str() + "_" + strc.str() + ".tif";
 
 					cout << "USUARIO CADASTRADO" << endl;
-
 					runSystem1(vinterface,imagePath,option,(a*10)+b);
 					runSystem2(vinterface,imagePath,option,(a*10)+b);
 					runSystem3(vinterface,imagePath,option,(a*10)+b);
@@ -111,7 +86,7 @@ void runTests(VInterfaceDTO& vinterface) {
 					cout << "usuario NAO cadastrado" << endl;
 
 					//imagens que deveriam ser rejeitadas
-					imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB2/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+					imagePath = imagePathTCCFP2 + stra.str() + strb.str() + "_" + strc.str() + ".tif";
 
 					runSystem1(vinterface,imagePath,option,(a*10)+b);
 					runSystem2(vinterface,imagePath,option,(a*10)+b);
@@ -154,7 +129,7 @@ void fillBD(VInterfaceDTO& vinterface) {
 					stra << a;
 					strb << b;
 					strc << c;
-					imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+					imagePath = "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
 
 					runSystem1(vinterface,imagePath,option,(a*10)+b);
 					//cout << "cadastrei template " << strc.str() << " do usuario " << stra.str() + strb.str() << " no sistema 1" << endl;
@@ -193,14 +168,6 @@ void runSystem1(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 	//Converte a imagem no formato colorido para que seja possível utilizá-la na hora de exibir as minúcias (em cor)
 	Mat minutiaeImage;
 	cvtColor(originalImage, minutiaeImage, CV_GRAY2RGB);
-
-//	cout << "O que você deseja fazer com a imagem: 1- cadastrar no BD 2- autenticar no sistema" << endl;
-//	cin >> option;
-//	int id = 0;
-//	if (option == 1) {
-//		cout << "Para qual usuário você deseja cadastrar essa imagem? Digite a ID" << endl;
-//		cin >> id;
-//	}
 
 	//MINUTIA EXTRACTION
 	struct timeval minutiaeExtractionTimeBefore, minutiaeExtractionTimeAfter;  // removed comma
@@ -288,20 +255,6 @@ void runSystem2(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 	//Converte a imagem no formato colorido para que seja possível utilizá-la na hora de exibir as minúcias (em cor)
 	Mat minutiaeImage;
 	cvtColor(equalizedImage, minutiaeImage, CV_GRAY2RGB);
-
-	/*thinning(imageNew);
-	imshow("imagem afinada", imageNew);
-	*/
-
-//	int option = 2;
-//	int id = 1;
-//	cout << "O que você deseja fazer com a imagem: 1- cadastrar no BD 2- autenticar no sistema" << endl;
-//	cin >> option;
-//	int id = 0;
-//	if (option == 1) {
-//		cout << "Para qual usuário você deseja cadastrar essa imagem? Digite a ID" << endl;
-//		cin >> id;
-//	}
 
 	//MINUTIA EXTRACTION
 	struct timeval minutiaeExtractionTimeBefore, minutiaeExtractionTimeAfter;  // removed comma

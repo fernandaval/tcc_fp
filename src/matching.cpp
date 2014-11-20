@@ -157,7 +157,7 @@ int bozorth()
 			return score;
 		}
 	}
-	//return false;
+	return -1;	// retornará -1 se der algum erro
 }
 
 //converte os templates do BD para arquivo .xyt e chama o Bozorth
