@@ -78,7 +78,7 @@ void runTests(VInterfaceDTO& vinterface) {
 	int a,b,c;
 	int option;
 	b = 1;
-	c = 8;
+	c = 2;
 	a = 0;
 	option = 2;
 
@@ -144,7 +144,7 @@ void fillBD(VInterfaceDTO& vinterface) {
 	{
 		while (b <= 9)
 		{
-			while (c<=7) //quantas imagens de cada pessoa queremos cadastrar
+			while (c<=1) //quantas imagens de cada pessoa queremos cadastrar
 			{
 				if (10*a+b <= 10) //Só executa para ID de usuário <= 10
 				{
@@ -156,14 +156,14 @@ void fillBD(VInterfaceDTO& vinterface) {
 					strc << c;
 					imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
 
-					//runSystem1(vinterface,imagePath,option,(a*10)+b);
-					cout << "cadastrei template " << strc.str() << " do usuario " << stra.str() + strb.str() << " no sistema 1" << endl;
+					runSystem1(vinterface,imagePath,option,(a*10)+b);
+					//cout << "cadastrei template " << strc.str() << " do usuario " << stra.str() + strb.str() << " no sistema 1" << endl;
 
-					runSystem2(vinterface,imagePath,option,(a*10)+b);//foi aqui que deu erro - na volta comentar essa linha e testar de novo
-					cout << "cadastrei template " << strc.str() << " do usuario " << stra.str() + strb.str() << " no sistema 2" << endl;
+					runSystem2(vinterface,imagePath,option,(a*10)+b);
+					//cout << "cadastrei template " << strc.str() << " do usuario " << stra.str() + strb.str() << " no sistema 2" << endl;
 
-					//runSystem3(vinterface,imagePath,option,(a*10)+b);
-					cout << "cadastrei template " << strc.str() << " do usuario " << stra.str() + strb.str() << " no sistema 3" << endl;
+					runSystem3(vinterface,imagePath,option,(a*10)+b);
+					//cout << "cadastrei template " << strc.str() << " do usuario " << stra.str() + strb.str() << " no sistema 3" << endl;
 
 				}
 				c = c + 1;
@@ -239,7 +239,6 @@ void runSystem2(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 	int idSystem = 2;
 	int dpi;			//resolução da imagem em dpi's
 	Mat originalImage;	//imagem de entrada (no formato lido pelo opencv)
-	Mat imageWhiteBorder;
 	int N, col, row;
 
 	//Leitura da imagem de entrada
@@ -307,7 +306,9 @@ void runSystem2(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 	//MINUTIA EXTRACTION
 	struct timeval minutiaeExtractionTimeBefore, minutiaeExtractionTimeAfter;  // removed comma
 	gettimeofday (&minutiaeExtractionTimeBefore, NULL);
+
 	minutiaeExtract(equalizedImage,idSystem,option,idUser);
+
 	gettimeofday (&minutiaeExtractionTimeAfter, NULL);
 	float minutiaeExtractionTime = ((minutiaeExtractionTimeAfter.tv_sec - minutiaeExtractionTimeBefore.tv_sec)
 				+ (minutiaeExtractionTimeAfter.tv_usec - minutiaeExtractionTimeBefore.tv_usec)/(float)1000000);
@@ -531,6 +532,11 @@ void updateMetrics(bool feedback, VInterfaceDTO& vinterface) {
 
 }
 
+void Main::getMetrics(HasCallbackClass *_clazz) {
+
+	refreshAllMetrics(this->vInterfaceDTO);
+}
+
 void Main::execute(HasCallbackClass *_clazz, string imagePath) {
 
 	fillBD(this->vInterfaceDTO);
@@ -545,5 +551,4 @@ void Main::execute(HasCallbackClass *_clazz, string imagePath) {
 	//waitKey(0);
 
 	//TODO fazer o delete das windows
-
 }

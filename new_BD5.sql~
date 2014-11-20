@@ -9,7 +9,7 @@ create table operationMode(id integer not null, idSystem int not null, falseReje
 
 create table user(id integer not null, idSystem int not null, name varchar(40), rg varchar(15), cpf varchar(11), nusp varchar(10), email varchar(50), falseRejection int, falseAcceptance int, trueRejection int, trueAcceptance int, minimumScore int, foreign key (idSystem) references system(id), primary key (id, idSystem));
 
-create table template(id integer not null, idUser int not null, idSystem int not null, registerDate text, quality real, type int, minutiae clob, foreign key (idUser) references user(id), foreign key (idSystem) references system(id), primary key (id));
+create table template(id integer not null, idUser int not null, idSystem int not null, registerDate text, quality int, type int, minutiae clob, foreign key (idUser) references user(id), foreign key (idSystem) references system(id), primary key (id));
 
 insert into system (id) values(1);
 insert into system (id) values(2);

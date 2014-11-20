@@ -233,3 +233,163 @@ void VInterfaceDTO::setMinutiaeQuality3(float minutiaeQuality3){
 float VInterfaceDTO::getMinutiaeQuality3(void){
 	return this->minutiaeQuality3;
 }
+
+void VInterfaceDTO::setFar1(float far1){
+	this->far1 = far1;
+}
+
+float VInterfaceDTO::getFar1(void){
+	return this->far1;
+}
+
+void VInterfaceDTO::setFar2(float far2){
+	this->far2 = far2;
+}
+
+float VInterfaceDTO::getFar2(void){
+	return this->far2;
+}
+
+void VInterfaceDTO::setFar31(float far31){
+	this->far31 = far31;
+}
+
+float VInterfaceDTO::getFar31(void){
+	return this->far31;
+}
+
+void VInterfaceDTO::setFar32(float far32){
+	this->far32 = far32;
+}
+
+float VInterfaceDTO::getFar32(void){
+	return this->far32;
+}
+
+void VInterfaceDTO::setFar33(float far33){
+	this->far33 = far33;
+}
+
+float VInterfaceDTO::getFar33(void){
+	return this->far33;
+}
+
+void VInterfaceDTO::setFrr1(float frr1){
+	this->frr1 = frr1;
+}
+
+float VInterfaceDTO::getFrr1(void){
+	return this->frr1;
+}
+
+void VInterfaceDTO::setFrr2(float frr2){
+	this->frr2 = frr2;
+}
+
+float VInterfaceDTO::getFrr2(void){
+	return this->frr2;
+}
+
+void VInterfaceDTO::setFrr31(float frr31){
+	this->frr31 = frr31;
+}
+
+float VInterfaceDTO::getFrr31(void){
+	return this->frr31;
+}
+
+void VInterfaceDTO::setFrr32(float frr32){
+	this->frr32 = frr32;
+}
+
+float VInterfaceDTO::getFrr32(void){
+	return this->frr32;
+}
+
+void VInterfaceDTO::setFrr33(float frr33){
+	this->frr33 = frr33;
+}
+
+float VInterfaceDTO::getFrr33(void){
+	return this->frr33;
+}
+
+void VInterfaceDTO::setTar1(float tar1){
+	this->tar1 = tar1;
+}
+
+float VInterfaceDTO::getTar1(void){
+	return this->tar1;
+}
+
+void VInterfaceDTO::setTar2(float tar2){
+	this->tar2 = tar2;
+}
+
+float VInterfaceDTO::getTar2(void){
+	return this->tar2;
+}
+
+void VInterfaceDTO::setTar31(float tar31){
+	this->tar31 = tar31;
+}
+
+float VInterfaceDTO::getTar31(void){
+	return this->tar31;
+}
+
+void VInterfaceDTO::setTar32(float tar32){
+	this->tar32 = tar32;
+}
+
+float VInterfaceDTO::getTar32(void){
+	return this->tar32;
+}
+
+void VInterfaceDTO::setTar33(float tar33){
+	this->tar33 = tar33;
+}
+
+float VInterfaceDTO::getTar33(void){
+	return this->tar33;
+}
+
+void VInterfaceDTO::setTrr1(float trr1){
+	this->trr1 = trr1;
+}
+
+float VInterfaceDTO::getTrr1(void){
+	return this->trr1;
+}
+
+void VInterfaceDTO::setTrr2(float trr2){
+	this->trr2 = trr2;
+}
+
+float VInterfaceDTO::getTrr2(void){
+	return this->trr2;
+}
+
+void VInterfaceDTO::setTrr31(float trr31){
+	this->trr31 = trr31;
+}
+
+float VInterfaceDTO::getTrr31(void){
+	return this->trr31;
+}
+
+void VInterfaceDTO::setTrr32(float trr32){
+	this->trr32 = trr32;
+}
+
+float VInterfaceDTO::getTrr32(void){
+	return this->trr32;
+}
+
+void VInterfaceDTO::setTrr33(float trr33){
+	this->trr33 = trr33;
+}
+
+float VInterfaceDTO::getTrr33(void){
+	return this->trr33;
+}

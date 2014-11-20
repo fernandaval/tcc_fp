@@ -58,6 +58,117 @@ static int callbackNone(void *NotUsed, int argc, char **argv, char **azColName){
    return 0;
 }
 
+void refreshAllMetrics(VInterfaceDTO& vinterface) {
+	float fa;
+	float ta;
+	float tr;
+	float fr;
+	float falseRejectionRate;
+	float falseAcceptanceRate;
+	float trueRejectionRate;
+	float trueAcceptanceRate;
+
+	sqlite3 *db;
+	char *zErrMsg = 0;
+	int rc;
+	string sqlstr;
+	const char * sql;
+
+	/* Open database */
+	rc = sqlite3_open(bdPath, &db);
+	if( rc ){
+		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+		exit(0);
+	}
+
+	//sistema 1
+	sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 1;";
+	sql = sqlstr.c_str();
+	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+	if( rc != SQLITE_OK ){
+	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+	  sqlite3_free(zErrMsg);
+	}
+	fa = (float)falseAcceptance;
+	ta = (float)trueAcceptance;
+	tr = (float)trueRejection;
+	fr = (float)falseRejection;
+	vinterface.setFar1(fa/(fa+ta+tr+fr));
+	vinterface.setFrr1(fr/(fa+ta+tr+fr));
+	vinterface.setTar1(ta/(fa+ta+tr+fr));
+	vinterface.setTrr1(tr/(fa+ta+tr+fr));
+
+	//sistema 2
+	sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 2;";
+	sql = sqlstr.c_str();
+	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+	if( rc != SQLITE_OK ){
+	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+	  sqlite3_free(zErrMsg);
+	}
+	fa = (float)falseAcceptance;
+	ta = (float)trueAcceptance;
+	tr = (float)trueRejection;
+	fr = (float)falseRejection;
+	vinterface.setFar2(fa/(fa+ta+tr+fr));
+	vinterface.setFrr2(fr/(fa+ta+tr+fr));
+	vinterface.setTar2(ta/(fa+ta+tr+fr));
+	vinterface.setTrr2(tr/(fa+ta+tr+fr));
+
+	//sistema 3 modo padrão
+	sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 3;";
+	sql = sqlstr.c_str();
+	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+	if( rc != SQLITE_OK ){
+	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+	  sqlite3_free(zErrMsg);
+	}
+	fa = (float)falseAcceptance;
+	ta = (float)trueAcceptance;
+	tr = (float)trueRejection;
+	fr = (float)falseRejection;
+	vinterface.setFar31(fa/(fa+ta+tr+fr));
+	vinterface.setFrr31(fr/(fa+ta+tr+fr));
+	vinterface.setTar31(ta/(fa+ta+tr+fr));
+	vinterface.setTrr31(tr/(fa+ta+tr+fr));
+
+	//sistema 3 modo tolerante
+	sqlstr = "SELECT * FROM operationMode WHERE id = 2 AND idSystem = 3;";
+	sql = sqlstr.c_str();
+	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+	if( rc != SQLITE_OK ){
+	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+	  sqlite3_free(zErrMsg);
+	}
+	fa = (float)falseAcceptance;
+	ta = (float)trueAcceptance;
+	tr = (float)trueRejection;
+	fr = (float)falseRejection;
+	vinterface.setFar32(fa/(fa+ta+tr+fr));
+	vinterface.setFrr32(fr/(fa+ta+tr+fr));
+	vinterface.setTar32(ta/(fa+ta+tr+fr));
+	vinterface.setTrr32(tr/(fa+ta+tr+fr));
+
+	//sistema 3 modo rigoroso
+	sqlstr = "SELECT * FROM operationMode WHERE id = 3 AND idSystem = 3;";
+	sql = sqlstr.c_str();
+	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+	if( rc != SQLITE_OK ){
+	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+	  sqlite3_free(zErrMsg);
+	}
+	fa = (float)falseAcceptance;
+	ta = (float)trueAcceptance;
+	tr = (float)trueRejection;
+	fr = (float)falseRejection;
+	vinterface.setFar33(fa/(fa+ta+tr+fr));
+	vinterface.setFrr33(fr/(fa+ta+tr+fr));
+	vinterface.setTar33(ta/(fa+ta+tr+fr));
+	vinterface.setTrr33(tr/(fa+ta+tr+fr));
+
+	return;
+}
+
 void minimumScoresUpdate() {
 	sqlite3 *db;
 	char *zErrMsg = 0;
@@ -92,7 +203,7 @@ void minimumScoresUpdate() {
 	if (falseRejectionRate > 0.05) {
 		sqlstr = "UPDATE operationMode SET minimumScore = ";
 		int temp = score - 5;
-		if (temp >= 20) { //minimumScore não deve ultrapassar o limite mínimo de 20
+		if (temp >= 5) { //minimumScore não deve ultrapassar o limite mínimo de 20
 			sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << temp) )->str());
 			sqlstr.append(" WHERE id = 2 AND idSystem = 3;");
 			const char * sql2 = sqlstr.c_str();

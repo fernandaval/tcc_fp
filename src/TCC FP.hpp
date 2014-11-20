@@ -30,6 +30,7 @@ public:
 	void execute(HasCallbackClass *_clazz, string imagePath);
 	VInterfaceDTO getVInterfaceDTO(void);
     void updateMetrics(bool feedback, HasCallbackClass *_clazz);
+    void getMetrics(HasCallbackClass *_clazz);
 private:
 	VInterfaceDTO vInterfaceDTO;
 };

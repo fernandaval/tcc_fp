@@ -120,11 +120,11 @@ void printType(Mat &mat) {
 }
 
 static int callback(void *NotUsed, int argc, char **argv, char **azColName){
-   int i;
-   for(i=0; i<argc; i++){
+   //int i;
+   //for(i=0; i<argc; i++){
       //printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
 
-   }
+   //}
    //printf("\n");
    return 0;
 }
@@ -256,14 +256,15 @@ void saveMinutiae(int idSystem, int idUser)
 	 char output[100];
 	 int count = 0;
 	 int aux = 0;
-	 string minutiae;
+	 string minutiae = "";
 
 	 myReadFile.open(xytPath);
 
-	 int totalQualityTemplate = 0;
+	 float totalQualityTemplate = 0;
 
 	 ifstream file(xytPath);
 	 string str;
+
 	 while (getline(file, str))
 	 {
 	   aux++;
@@ -296,7 +297,7 @@ void saveMinutiae(int idSystem, int idUser)
 	sqlite3 *db;
 	char *zErrMsg = 0;
 	int rc;
-	string sqlstr;
+	string sqlstr = "";
 
 	/* Open database */
 	rc = sqlite3_open(bdPath, &db);
@@ -312,7 +313,8 @@ void saveMinutiae(int idSystem, int idUser)
 	sqlstr.append(",'");
 	sqlstr.append(__DATE__);
 	sqlstr.append("',");
-	sqlstr.append(strquality);
+	if (minutiae != "") sqlstr.append(strquality);
+	else sqlstr.append("0");
 	sqlstr.append(",'','");
 	sqlstr.append(minutiae);
 	sqlstr.append("');");
