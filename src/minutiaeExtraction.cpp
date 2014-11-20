@@ -72,8 +72,10 @@ void minutiaePlot(int row, int col, int N, Mat minutiaeImage, int idSystem, VInt
 		//ALÉM DISSO, USA  AFUNÇÃO "CIRCLE" PARA QUE SEJAM BEM VISÍVEIS AS MINÚCIAS EXTRAÍDAS
 		circle(minutiaeImage, Point(minutiae[i]->getX(), row - minutiae[i]->getY()), 3, Scalar( 0, 0, 255 ), -1, 8, 0);
 	}
-	//imshow("Minúcias extraídas", minutiaeImage);
-	imwrite(outputPath, minutiaeImage);
+
+	for (int i = 0; i < col*row; i++) {
+		delete minutiae[i];
+	}
 
 	return;
 }
@@ -212,6 +214,11 @@ void saveMinutiae2(int idUsuario)
 
 	sqlite3_close(db);
 
+	for (int a = 0; a <= aux; a++)
+	{
+		delete minutiae[aux];
+	}
+
 }
 
 //salva minucias recem-extraidas no BD
@@ -336,8 +343,9 @@ void minutiaeExtract(Mat image, int idSystem, int option, int idUsuario)
 		//fprintf(stdout, "Mindtct - PAI EXECUTANDO\n");
 		int status;
 		if (waitpid(pid,&status,0) > 0) {
-			fprintf(stdout, "minucias extraidas\n");
-
+			//fprintf(stdout, "minucias extraidas\n");
+			delete parameter1;
+			delete parameter2;
 			if (option == 1) saveMinutiae(idSystem, idUsuario);
 		}
 	}

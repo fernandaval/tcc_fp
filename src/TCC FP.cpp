@@ -34,7 +34,9 @@
 #include "window.hpp"
 #include "TCC FP.hpp"
 #include "metrics.hpp"
+
 #include "constants.hpp"
+
 
 using namespace cv;
 using namespace std;
@@ -49,9 +51,10 @@ void runTests(VInterfaceDTO& vinterface) {
 	Mat originalImage;	//imagem de entrada (no formato lido pelo opencv)
 	vector < vector <window*> > windows;
 
-	int a,b,c, option;
+	int a,b,c;
+	int option;
 	b = 1;
-	c = 4;
+	c = 8;
 	a = 0;
 	option = 2;
 
@@ -72,16 +75,19 @@ void runTests(VInterfaceDTO& vinterface) {
 
 					//imagens que deveriam ser aceitas
 					imagePath = imagePathTCCFP1 + stra.str() + strb.str() + "_" + strc.str() + ".tif";
-					cout << imagePath << endl;
+
+					cout << "USUARIO CADASTRADO" << endl;
 					runSystem1(vinterface,imagePath,option,(a*10)+b);
 					runSystem2(vinterface,imagePath,option,(a*10)+b);
 					runSystem3(vinterface,imagePath,option,(a*10)+b);
 
 					updateMetrics(true,vinterface);
 
+					cout << "usuario NAO cadastrado" << endl;
+
 					//imagens que deveriam ser rejeitadas
 					imagePath = imagePathTCCFP2 + stra.str() + strb.str() + "_" + strc.str() + ".tif";
-					cout << imagePath << endl;
+
 					runSystem1(vinterface,imagePath,option,(a*10)+b);
 					runSystem2(vinterface,imagePath,option,(a*10)+b);
 					runSystem3(vinterface,imagePath,option,(a*10)+b);
@@ -113,7 +119,7 @@ void fillBD(VInterfaceDTO& vinterface) {
 	{
 		while (b <= 9)
 		{
-			while (c<=4) //quantas imagens de cada pessoa queremos cadastrar
+			while (c<=7) //quantas imagens de cada pessoa queremos cadastrar
 			{
 				if (10*a+b <= 10) //Só executa para ID de usuário <= 10
 				{
@@ -125,39 +131,15 @@ void fillBD(VInterfaceDTO& vinterface) {
 					strc << c;
 					imagePath = "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
 
-					runSystem1(vinterface,imagePath,option,(a*10)+b);
-					runSystem2(vinterface,imagePath,option,(a*10)+b);
-					runSystem3(vinterface,imagePath,option,(a*10)+b);
+					//runSystem1(vinterface,imagePath,option,(a*10)+b);
+					cout << "cadastrei template " << strc.str() << " do usuario " << stra.str() + strb.str() << " no sistema 1" << endl;
 
-					/*originalImage = imread(imagePath, CV_LOAD_IMAGE_GRAYSCALE);
-					imageMeasures (originalImage, 500, &N, &col, &row);
+					runSystem2(vinterface,imagePath,option,(a*10)+b);//foi aqui que deu erro - na volta comentar essa linha e testar de novo
+					cout << "cadastrei template " << strc.str() << " do usuario " << stra.str() + strb.str() << " no sistema 2" << endl;
 
-					//Dimensiona a matriz com as janelas (i = linhas, j = colunas)
-					windows.resize(row/N);
-					for (int i = 0; i < row/N; i++){
-						windows[i].resize((int)col/N);
-					}
+					//runSystem3(vinterface,imagePath,option,(a*10)+b);
+					cout << "cadastrei template " << strc.str() << " do usuario " << stra.str() + strb.str() << " no sistema 3" << endl;
 
-					//inicializando a matriz com as janelas (usando a classe window)
-					for (int i = 0; i < row/N; i++){
-						for (int j = 0; j < col/N;  j++){
-							windows[i][j] = new window(N, N, originalImage.type());
-						}
-					}
-
-					fillWhiteBorderInImage(originalImage, &imageWhiteBorder, N, col - originalImage.cols,
-							row - originalImage.rows, originalImage.cols, originalImage.rows);
-
-					createWindows(imageWhiteBorder, N, col, row, &windows);
-					equalizeWindows(N, col, row, &windows);
-					orientationMap(&windows, row, col, N);
-					binarization(&windows, row, col, N);
-
-					Mat imageNew;
-					imageNew.create(row, col, CV_8UC3);
-					groupImageWindows(&imageNew, windows, row, col, N);
-
-					minutiaeExtract(imageNew,1,(a*10)+b);*/
 				}
 				c = c + 1;
 			}
@@ -194,7 +176,7 @@ void runSystem1(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 	gettimeofday (&minutiaeExtractionTimeAfter, NULL);
 	float minutiaeExtractionTime = ((minutiaeExtractionTimeAfter.tv_sec - minutiaeExtractionTimeBefore.tv_sec)
 				+ (minutiaeExtractionTimeAfter.tv_usec - minutiaeExtractionTimeBefore.tv_usec)/(float)1000000);
-	cout << "minutiaeExtractionTime(1): " << minutiaeExtractionTime << " segundos" << endl;
+	//cout << "minutiaeExtractionTime(1): " << minutiaeExtractionTime << " segundos" << endl;
 	vinterface.setMinutiaeExtractionTime1(minutiaeExtractionTime);
 
 	minutiaePlot(row, col, N, minutiaeImage,idSystem,vinterface);
@@ -209,7 +191,7 @@ void runSystem1(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 		gettimeofday (&matchingTimeAfter, NULL);
 		float matchingTime = ((matchingTimeAfter.tv_sec - matchingTimeBefore.tv_sec)
 					+ (matchingTimeAfter.tv_usec - matchingTimeBefore.tv_usec)/(float)1000000);
-		cout << "matchingTime(1): " << matchingTime << " segundos" << endl;
+		//cout << "matchingTime(1): " << matchingTime << " segundos" << endl;
 		vinterface.setMatchingTime1(matchingTime);
 
 		if (result1 == true) cout << "Usuario aceito!(1)" << endl;
@@ -226,28 +208,21 @@ void runSystem2(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 	Mat originalImage;	//imagem de entrada (no formato lido pelo opencv)
 	Mat imageWhiteBorder;
 	int N, col, row;
-	vector < vector <window*> > windows;
 
 	//Leitura da imagem de entrada
 	imageRead(&originalImage, &dpi, imagePath);
 
 	imageMeasures (originalImage, dpi, &N, &col, &row); //retorna coluna e linha da imagem final com borda
 
-	//WINDOWING
-	fillWhiteBorderInImage(originalImage, &imageWhiteBorder, N, col - originalImage.cols,
-			row - originalImage.rows, originalImage.cols, originalImage.rows);
-
-	imwrite(whiteBorder23Path, imageWhiteBorder);
-
 	Mat equalizedImage;
 	//EQUALIZATION
 	struct timeval equalizationTimeBefore, equalizationTimeAfter;  // removed comma
 	gettimeofday (&equalizationTimeBefore, NULL);
-	equalize(&imageWhiteBorder,&equalizedImage);
+	equalize(&originalImage,&equalizedImage);
 	gettimeofday (&equalizationTimeAfter, NULL);
 	float equalizationTime = ((equalizationTimeAfter.tv_sec - equalizationTimeBefore.tv_sec)
 				+ (equalizationTimeAfter.tv_usec - equalizationTimeBefore.tv_usec)/(float)1000000);
-	cout << "equalizationTime(2): " << equalizationTime << " segundos" << endl;
+	//cout << "equalizationTime(2): " << equalizationTime << " segundos" << endl;
 	vinterface.setEqualizationTime2(equalizationTime);
 
 	imwrite(equalized2Path, equalizedImage);
@@ -260,13 +235,13 @@ void runSystem2(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 	gettimeofday (&binarizationTimeAfter, NULL);
 	float binarizationTime = ((binarizationTimeAfter.tv_sec - binarizationTimeBefore.tv_sec)
 				+ (binarizationTimeAfter.tv_usec - binarizationTimeBefore.tv_usec)/(float)1000000);
-	cout << "binarizationTime(2): " << binarizationTime << " segundos" << endl;
+	//cout << "binarizationTime(2): " << binarizationTime << " segundos" << endl;
 	vinterface.setBinarizationTime2(binarizationTime);
 
 	imwrite(binarized2Path, equalizedImage);
 
 	//THINNING
-
+	/*
 	struct timeval thinningTimeBefore, thinningTimeAfter;  // removed comma
 	gettimeofday (&thinningTimeBefore, NULL);
 
@@ -275,8 +250,8 @@ void runSystem2(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 	gettimeofday (&thinningTimeAfter, NULL);
 	float thinningTime = ((thinningTimeAfter.tv_sec - thinningTimeBefore.tv_sec)
 				+ (thinningTimeAfter.tv_usec - thinningTimeBefore.tv_usec)/(float)1000000);
-	cout << "thinningTime(2): " << thinningTime << " segundos" << endl;
-
+	//cout << "thinningTime(2): " << thinningTime << " segundos" << endl;
+	*/
 
 	//Converte a imagem no formato colorido para que seja possível utilizá-la na hora de exibir as minúcias (em cor)
 	Mat minutiaeImage;
@@ -289,7 +264,7 @@ void runSystem2(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 	gettimeofday (&minutiaeExtractionTimeAfter, NULL);
 	float minutiaeExtractionTime = ((minutiaeExtractionTimeAfter.tv_sec - minutiaeExtractionTimeBefore.tv_sec)
 				+ (minutiaeExtractionTimeAfter.tv_usec - minutiaeExtractionTimeBefore.tv_usec)/(float)1000000);
-	cout << "minutiaeExtractionTime(2): " << minutiaeExtractionTime << " segundos" << endl;
+	//cout << "minutiaeExtractionTime(2): " << minutiaeExtractionTime << " segundos" << endl;
 	vinterface.setMinutiaeExtractionTime2(minutiaeExtractionTime);
 
 	minutiaePlot(row, col, N, minutiaeImage,idSystem,vinterface);
@@ -305,7 +280,7 @@ void runSystem2(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 		gettimeofday (&matchingTimeAfter, NULL);
 		float matchingTime = ((matchingTimeAfter.tv_sec - matchingTimeBefore.tv_sec)
 					+ (matchingTimeAfter.tv_usec - matchingTimeBefore.tv_usec)/(float)1000000);
-		cout << "matchingTime(2): " << matchingTime << " segundos" << endl;
+		//cout << "matchingTime(2): " << matchingTime << " segundos" << endl;
 		vinterface.setMatchingTime2(matchingTime);
 
 		if (result2 == true) cout << "Usuario aceito!(2)" << endl;
@@ -350,12 +325,12 @@ void runSystem3(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 	gettimeofday (&windowingTimeAfter, NULL);
 	float windowingTime = ((windowingTimeAfter.tv_sec - windowingTimeBefore.tv_sec)
 			+ (windowingTimeAfter.tv_usec - windowingTimeBefore.tv_usec)/(float)1000000);
-	cout << "windowingTime(3): " << windowingTime << " segundos" << endl;
+	//cout << "windowingTime(3): " << windowingTime << " segundos" << endl;
 	vinterface.setWindowingTime3(windowingTime);
 	//cria as janelas após adicionar bordas brancas
 	createWindows(imageWhiteBorder, N, col, row, &windows);
 
-	//imwrite(whiteBorder23Path, imageWhiteBorder);
+	imwrite(whiteBorder3Path, imageWhiteBorder);
 
 	//EQUALIZATION
 	struct timeval equalizationTimeBefore, equalizationTimeAfter;  // removed comma
@@ -364,7 +339,7 @@ void runSystem3(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 	gettimeofday (&equalizationTimeAfter, NULL);
 	float equalizationTime = ((equalizationTimeAfter.tv_sec - equalizationTimeBefore.tv_sec)
 				+ (equalizationTimeAfter.tv_usec - equalizationTimeBefore.tv_usec)/(float)1000000);
-	cout << "equalizationTime(3): " << equalizationTime << " segundos" << endl;
+	//cout << "equalizationTime(3): " << equalizationTime << " segundos" << endl;
 	vinterface.setEqualizationTime3(equalizationTime);
 	recreateImagePath(windows, row, col, N, equalized3Path);
 
@@ -383,7 +358,7 @@ void runSystem3(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 	gettimeofday (&gaborFilterTimeAfter, NULL);
 	float gaborFilterTime = ((gaborFilterTimeAfter.tv_sec - gaborFilterTimeBefore.tv_sec)
 	            + (gaborFilterTimeAfter.tv_usec - gaborFilterTimeBefore.tv_usec)/(float)1000000);
-	cout << "gaborFilterTime(3): " << gaborFilterTime << " segundos" << endl;
+	//cout << "gaborFilterTime(3): " << gaborFilterTime << " segundos" << endl;
 	//recreateImage(windows, row, col, N, "Gabor");
 
 	//código temporário para teste
@@ -402,7 +377,7 @@ void runSystem3(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 	gettimeofday (&binarizationTimeAfter, NULL);
 	float binarizationTime = ((binarizationTimeAfter.tv_sec - binarizationTimeBefore.tv_sec)
 				+ (binarizationTimeAfter.tv_usec - binarizationTimeBefore.tv_usec)/(float)1000000);
-	cout << "binarizationTime(3): " << binarizationTime << " segundos" << endl;
+	//cout << "binarizationTime(3): " << binarizationTime << " segundos" << endl;
 	vinterface.setBinarizationTime3(binarizationTime);
 	imwrite(binarized3Path,imageAfterGabor);
 
@@ -430,11 +405,17 @@ void runSystem3(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 	gettimeofday (&minutiaeExtractionTimeAfter, NULL);
 	float minutiaeExtractionTime = ((minutiaeExtractionTimeAfter.tv_sec - minutiaeExtractionTimeBefore.tv_sec)
 				+ (minutiaeExtractionTimeAfter.tv_usec - minutiaeExtractionTimeBefore.tv_usec)/(float)1000000);
-	cout << "minutiaeExtractionTime(3): " << minutiaeExtractionTime << " segundos" << endl;
+	//cout << "minutiaeExtractionTime(3): " << minutiaeExtractionTime << " segundos" << endl;
 	vinterface.setMinutiaeExtractionTime3(minutiaeExtractionTime);
 
 	minutiaePlot(row, col, N, minutiaeImage,idSystem,vinterface);
 	imwrite(minutiae3Path, minutiaeImage);
+
+	for (int i = 0; i < row/N; i++){
+		for (int j = 0; j < col/N;  j++){
+			delete windows[i][j];
+		}
+	}
 
 	if (option == 2) {
 		//MODO 1 (padrao)
@@ -507,9 +488,9 @@ void Main::execute(HasCallbackClass *_clazz, string imagePath) {
 
 	fillBD(this->vInterfaceDTO);
 
-//	runSystem1(this->vInterfaceDTO, imagePath,2,0);
-//	runSystem2(this->vInterfaceDTO, imagePath,2,0);
-//	runSystem3(this->vInterfaceDTO, imagePath,2,0);
+	//runSystem1(this->vInterfaceDTO, imagePath,2,0);
+	//runSystem2(this->vInterfaceDTO, imagePath,2,0);
+	//runSystem3(this->vInterfaceDTO, imagePath,2,0);
 
 	runTests(this->vInterfaceDTO);
 
