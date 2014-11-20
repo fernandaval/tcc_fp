@@ -112,6 +112,7 @@ int bozorth()
 
 	if(pid == -1){
 		fprintf(stderr, "Erro ao executar o fork");
+		fprintf(stderr, "%s\n", strerror(errno));
 		exit(1);
 	}
 
@@ -152,6 +153,7 @@ int bozorth()
 			string resultado = temp;
 			//cout << "resultado contem: " << resultado << endl;
 			int score = atoi(resultado.c_str());
+
 			return score;
 		}
 	}
@@ -284,7 +286,7 @@ bool matching(int idSystem, int idMode)
 		   sqlite3_free(zErrMsg);
 	   }
 
-	   cout << "note de corte: " << minimumScore << endl;
+	   cout << "modo: " << idMode << " - note de corte: " << minimumScore << endl;
 	   if (bozorth()>=minimumScore){
 		   //cout << "Matching com template " << results_id[k] << "!\n";
 		   approval = true;

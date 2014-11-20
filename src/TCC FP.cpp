@@ -70,6 +70,60 @@ VInterfaceDTO Main::getVInterfaceDTO(void){
 	return this->vInterfaceDTO;
 }
 
+void runTests(VInterfaceDTO vinterface) {
+	string imagePath;	//endereço da imagem de entrada
+	Mat originalImage;	//imagem de entrada (no formato lido pelo opencv)
+	vector < vector <window*> > windows;
+
+	int a,b,c, option;
+	b = 1;
+	c = 4;
+	a = 0;
+	option = 2;
+
+	while (a <= 0)
+	{
+		while (b <= 2)
+		{
+			while (c<=2)
+			{
+				if (10*a+b <= 10) //Só executa para ID de usuário <= 10
+				{
+					stringstream stra;
+					stringstream strb;
+					stringstream strc;
+					stra << a;
+					strb << b;
+					strc << c;
+
+					//imagens que deveriam ser aceitas
+					imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+
+					runSystem1(vinterface,imagePath,option,(a*10)+b);
+					runSystem2(vinterface,imagePath,option,(a*10)+b);
+					runSystem3(vinterface,imagePath,option,(a*10)+b);
+
+					updateMetrics(true,vinterface);
+
+					//imagens que deveriam ser rejeitadas
+					imagePath = "/home/priscila/BDs_imagens_de_digitais/2000/DB2/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+
+					runSystem1(vinterface,imagePath,option,(a*10)+b);
+					runSystem2(vinterface,imagePath,option,(a*10)+b);
+					runSystem3(vinterface,imagePath,option,(a*10)+b);
+
+					updateMetrics(false,vinterface);
+				}
+				c = c + 1;
+			}
+			b = b + 1;
+			c = 1;
+		}
+		b = 0;
+		a = a + 1;
+	}
+}
+
 void fillBD(VInterfaceDTO vinterface) {
 	string imagePath;	//endereço da imagem de entrada
 	Mat originalImage;	//imagem de entrada (no formato lido pelo opencv)
@@ -177,14 +231,14 @@ void runSystem1(VInterfaceDTO vinterface, string imagePath, int option, int idUs
 	cout << "minutiaeExtractionTime(1): " << minutiaeExtractionTime << " segundos" << endl;
 	vinterface.setMinutiaeExtractionTime1(minutiaeExtractionTime);
 
-	minutiaePlot(row, col, N, minutiaeImage);
+	minutiaePlot(row, col, N, minutiaeImage,idSystem,vinterface);
 	imwrite(minutiae1Path, minutiaeImage);
 
 	if (option == 2) {
 		struct timeval matchingTimeBefore, matchingTimeAfter;  // removed comma
 		gettimeofday (&matchingTimeBefore, NULL);
-		bool resultado = matching(idSystem,1);
-		vinterface.setAccepted1(resultado);
+		bool result1 = matching(idSystem,1);
+		vinterface.setAccepted1(result1);
 
 		gettimeofday (&matchingTimeAfter, NULL);
 		float matchingTime = ((matchingTimeAfter.tv_sec - matchingTimeBefore.tv_sec)
@@ -192,9 +246,9 @@ void runSystem1(VInterfaceDTO vinterface, string imagePath, int option, int idUs
 		cout << "matchingTime(1): " << matchingTime << " segundos" << endl;
 		vinterface.setMatchingTime1(matchingTime);
 
-
-		if (resultado == true) cout << "Usuario aceito!(1)" << endl;
+		if (result1 == true) cout << "Usuario aceito!(1)" << endl;
 		else cout << "Usuario recusado.(1)" << endl;
+
 	}
 
 }
@@ -286,15 +340,15 @@ void runSystem2(VInterfaceDTO vinterface, string imagePath, int option, int idUs
 	cout << "minutiaeExtractionTime(2): " << minutiaeExtractionTime << " segundos" << endl;
 	vinterface.setMinutiaeExtractionTime2(minutiaeExtractionTime);
 
-	minutiaePlot(row, col, N, minutiaeImage);
+	minutiaePlot(row, col, N, minutiaeImage,idSystem,vinterface);
 
 	imwrite(minutiae2Path, minutiaeImage);
 
 	if (option == 2) {
 		struct timeval matchingTimeBefore, matchingTimeAfter;  // removed comma
 		gettimeofday (&matchingTimeBefore, NULL);
-		bool resultado = matching(idSystem,1);
-		vinterface.setAccepted2(resultado);
+		bool result2 = matching(idSystem,1);
+		vinterface.setAccepted2(result2);
 
 		gettimeofday (&matchingTimeAfter, NULL);
 		float matchingTime = ((matchingTimeAfter.tv_sec - matchingTimeBefore.tv_sec)
@@ -302,8 +356,9 @@ void runSystem2(VInterfaceDTO vinterface, string imagePath, int option, int idUs
 		cout << "matchingTime(2): " << matchingTime << " segundos" << endl;
 		vinterface.setMatchingTime2(matchingTime);
 
-		if (resultado == true) cout << "Usuario aceito!(2)" << endl;
+		if (result2 == true) cout << "Usuario aceito!(2)" << endl;
 		else cout << "Usuario recusado.(2)" << endl;
+
 	}
 
 }
@@ -426,32 +481,53 @@ void runSystem3(VInterfaceDTO vinterface, string imagePath, int option, int idUs
 	cout << "minutiaeExtractionTime(3): " << minutiaeExtractionTime << " segundos" << endl;
 	vinterface.setMinutiaeExtractionTime3(minutiaeExtractionTime);
 
-	minutiaePlot(row, col, N, minutiaeImage);
+	minutiaePlot(row, col, N, minutiaeImage,idSystem,vinterface);
 	imwrite(minutiae3Path, minutiaeImage);
 
 	if (option == 2) {
-		struct timeval matchingTimeBefore, matchingTimeAfter;  // removed comma
-		gettimeofday (&matchingTimeBefore, NULL);
-		bool resultado31 = matching(idSystem,1);
-		bool resultado32 = matching(idSystem,2);
-		bool resultado33 = matching(idSystem,3);
-		vinterface.setAccepted31(resultado31);
-		vinterface.setAccepted32(resultado32);
-		vinterface.setAccepted33(resultado33);
+		//MODO 1 (padrao)
+		struct timeval matchingTimeBefore31, matchingTimeAfter31;  // removed comma
+		gettimeofday (&matchingTimeBefore31, NULL);
+		bool result31 = matching(idSystem,1);
+		vinterface.setAccepted31(result31);
 
-		gettimeofday (&matchingTimeAfter, NULL);
-		float matchingTime = ((matchingTimeAfter.tv_sec - matchingTimeBefore.tv_sec)
-					+ (matchingTimeAfter.tv_usec - matchingTimeBefore.tv_usec)/(float)1000000);
-		cout << "matchingTime(3): " << matchingTime << " segundos" << endl;
-		vinterface.setMatchingTime3(matchingTime);
+		gettimeofday (&matchingTimeAfter31, NULL);
+		float matchingTime31 = ((matchingTimeAfter31.tv_sec - matchingTimeBefore31.tv_sec)
+					+ (matchingTimeAfter31.tv_usec - matchingTimeBefore31.tv_usec)/(float)1000000);
+		//cout << "matchingTime(3): " << matchingTime << " segundos" << endl;
+		vinterface.setMatchingTime31(matchingTime31);
 
-		if (resultado31 == true) cout << "Usuario aceito!(31)" << endl;
+		//MODO 2 (tolerante)
+		struct timeval matchingTimeBefore32, matchingTimeAfter32;  // removed comma
+		gettimeofday (&matchingTimeBefore32, NULL);
+		bool result32 = matching(idSystem,2);
+		vinterface.setAccepted32(result32);
+
+		gettimeofday (&matchingTimeAfter32, NULL);
+		float matchingTime32 = ((matchingTimeAfter32.tv_sec - matchingTimeBefore32.tv_sec)
+					+ (matchingTimeAfter32.tv_usec - matchingTimeBefore32.tv_usec)/(float)1000000);
+		//cout << "matchingTime(3): " << matchingTime << " segundos" << endl;
+		vinterface.setMatchingTime32(matchingTime32);
+
+		//MODO 3 (rigoroso)
+		struct timeval matchingTimeBefore33, matchingTimeAfter33;  // removed comma
+		gettimeofday (&matchingTimeBefore33, NULL);
+		bool result33 = matching(idSystem,3);
+		vinterface.setAccepted33(result33);
+
+		gettimeofday (&matchingTimeAfter33, NULL);
+		float matchingTime33 = ((matchingTimeAfter33.tv_sec - matchingTimeBefore33.tv_sec)
+					+ (matchingTimeAfter33.tv_usec - matchingTimeBefore33.tv_usec)/(float)1000000);
+		//cout << "matchingTime(3): " << matchingTime << " segundos" << endl;
+		vinterface.setMatchingTime33(matchingTime33);
+
+		if (result31 == true) cout << "Usuario aceito!(31)" << endl;
 		else cout << "Usuario recusado.(31)" << endl;
 
-		if (resultado32 == true) cout << "Usuario aceito!(32)" << endl;
+		if (result32 == true) cout << "Usuario aceito!(32)" << endl;
 		else cout << "Usuario recusado.(32)" << endl;
 
-		if (resultado33 == true) cout << "Usuario aceito!(33)" << endl;
+		if (result33 == true) cout << "Usuario aceito!(33)" << endl;
 		else cout << "Usuario recusado.(33)" << endl;
 	}
 
@@ -468,6 +544,13 @@ void Main::updateMetrics(bool feedback, HasCallbackClass *_clazz) {
 	_clazz->callback();
 }
 
+void updateMetrics(bool feedback, VInterfaceDTO vinterface) {
+
+	metricsUpdate(feedback,vinterface.getAccepted1(),vinterface.getAccepted2(),vinterface.getAccepted31(),vinterface.getAccepted32(),vinterface.getAccepted33());
+	minimumScoresUpdate();
+
+}
+
 void Main::execute(HasCallbackClass *_clazz, string imagePath) {
 
 	//fillBD(this->vInterfaceDTO);
@@ -475,6 +558,8 @@ void Main::execute(HasCallbackClass *_clazz, string imagePath) {
 	runSystem1(this->vInterfaceDTO, imagePath,2,0);
 	runSystem2(this->vInterfaceDTO, imagePath,2,0);
 	runSystem3(this->vInterfaceDTO, imagePath,2,0);
+
+	runTests(this->vInterfaceDTO);
 
 	_clazz->callback();
 	//waitKey(0);

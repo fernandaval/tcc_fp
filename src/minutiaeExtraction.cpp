@@ -40,12 +40,13 @@
 
 using namespace std;
 
-void minutiaePlot(int row, int col, int N, Mat minutiaeImage) {
+void minutiaePlot(int row, int col, int N, Mat minutiaeImage, int idSystem, VInterfaceDTO vinterface) {
 	 vector <minutia*> minutiae;
 	 ifstream myReadFile;
 	 char output[100];
 	 int count = 0;
 	 int aux = 0;
+	 float totalQuality = 0;
 
 	 myReadFile.open(xytPath);
 
@@ -71,12 +72,26 @@ void minutiaePlot(int row, int col, int N, Mat minutiaeImage) {
 			 }
 			 else if (count == 4) {
 				 minutiae[aux]->setQuality(atoi(output));
+				 totalQuality = totalQuality + atof(output);
 				 count = 0;
 				 aux ++;
 			 }
 		 }
 	}
 	myReadFile.close();
+
+	if (idSystem == 1) {
+		vinterface.setMinutiaeQuantity1(aux - 1);
+		vinterface.setMinutiaeQuality1(totalQuality/(aux - 1));
+	}
+	else if (idSystem == 2) {
+		vinterface.setMinutiaeQuantity2(aux - 1);
+		vinterface.setMinutiaeQuality2(totalQuality/(aux - 1));
+	}
+	else {
+		vinterface.setMinutiaeQuantity3(aux - 1);
+		vinterface.setMinutiaeQuality3(totalQuality/(aux - 1));
+	}
 
 	for (int i = 0; i < aux; i++) {
 		//FOI NECESSÁRIO INVERTER X E Y PARA QUE AS MINÚCIAS FOSSEM EXIBIDAS ADEQUADAMENTE
@@ -320,13 +335,13 @@ void minutiaeExtract(Mat image, int idSystem, int option, int idUsuario)
 	char * parameter2 = new char[output.length() + 1];
 	strcpy(parameter2,output.c_str());
 
-	//char *newargv_mindtct[] = {"mindtct", "/home/priscila/BDs_imagens_de_digitais/2000/DB2/101_1.jpg", "/home/priscila/Rel_4.2.0/mindtct/bin/minutiae", NULL};
 	char *newargv_mindtct[] = {"mindtct", parameter1, parameter2, NULL};
 
 	pid_t pid = fork();
 
 	if(pid == -1){
-		fprintf(stderr, "Erro ao executar o fork");
+		fprintf(stderr, "Erro ao executar o fork\n");
+		fprintf(stderr, "%s\n", strerror(errno));
 		exit(1);
 	}
 
@@ -345,9 +360,12 @@ void minutiaeExtract(Mat image, int idSystem, int option, int idUsuario)
 	*/
 	else{
 		//fprintf(stdout, "Mindtct - PAI EXECUTANDO\n");
-	}
-	fprintf(stdout, "minucias extraidas\n");
+		int status;
+		if (waitpid(pid,&status,0) > 0) {
+			fprintf(stdout, "minucias extraidas\n");
 
-	if (option == 1) saveMinutiae(idSystem, idUsuario);
+			if (option == 1) saveMinutiae(idSystem, idUsuario);
+		}
+	}
 }
 

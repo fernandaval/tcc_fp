@@ -14,6 +14,17 @@
 class VInterfaceDTO{
 
 public:
+
+	float getTotalTime1(void);
+
+	float getTotalTime2(void);
+
+	float getTotalTime31(void);
+
+	float getTotalTime32(void);
+
+	float getTotalTime33(void);
+
 	float getWindowingTime3(void);
 	void setWindowingTime3(float windowingTime3);
 
@@ -47,8 +58,14 @@ public:
 	float getMatchingTime2(void);
 	void setMatchingTime2(float matchingTime2);
 
-	float getMatchingTime3(void);
-	void setMatchingTime3(float matchingTime3);
+	float getMatchingTime31(void);
+	void setMatchingTime31(float matchingTime31);
+
+	float getMatchingTime32(void);
+	void setMatchingTime32(float matchingTime32);
+
+	float getMatchingTime33(void);
+	void setMatchingTime33(float matchingTime33);
 
 	bool getAccepted1(void);
 	void setAccepted1(bool accepted1);
@@ -68,6 +85,24 @@ public:
 	bool getFeedback(void);
 	void setFeedback(bool feedback);
 
+	int getMinutiaeQuantity1(void);
+	void setMinutiaeQuantity1(int minutiaeQuantity1);
+
+	float getMinutiaeQuality1(void);
+	void setMinutiaeQuality1(float setMinutiaeQuality1);
+
+	int getMinutiaeQuantity2(void);
+	void setMinutiaeQuantity2(int minutiaeQuantity2);
+
+	float getMinutiaeQuality2(void);
+	void setMinutiaeQuality2(float setMinutiaeQuality2);
+
+	int getMinutiaeQuantity3(void);
+	void setMinutiaeQuantity3(int minutiaeQuantity3);
+
+	float getMinutiaeQuality3(void);
+	void setMinutiaeQuality3(float setMinutiaeQuality3);
+
 private:
 	float windowingTime3;
 	float equalizationTime2;
@@ -80,13 +115,23 @@ private:
 	float minutiaeExtractionTime3;
 	float matchingTime1;
 	float matchingTime2;
-	float matchingTime3;
+	float matchingTime31;
+	float matchingTime32;
+	float matchingTime33;
 
 	bool accepted1;
 	bool accepted2;
 	bool accepted31;
 	bool accepted32;
 	bool accepted33;
+
+	int minutiaeQuantity1;
+	int minutiaeQuantity2;
+	int minutiaeQuantity3;
+
+	float minutiaeQuality1;
+	float minutiaeQuality2;
+	float minutiaeQuality3;
 
 	bool feedback;
 };

@@ -7,9 +7,35 @@
 
 #include "VInterfaceDTO.hpp"
 
+float VInterfaceDTO::getTotalTime1(void){
+	float totalTime = this->minutiaeExtractionTime1 + this->matchingTime1;
+	return totalTime;
+}
+
+float VInterfaceDTO::getTotalTime2(void){
+	float totalTime = this->equalizationTime2 + this->binarizationTime2 + this->minutiaeExtractionTime2 + this->matchingTime2;
+	return totalTime;
+}
+
+float VInterfaceDTO::getTotalTime31(void){
+	float totalTime = this->windowingTime3 + this->equalizationTime3 + this->gaborFilterTime3 + this->binarizationTime3 + this->minutiaeExtractionTime3 + this->matchingTime31;
+	return totalTime;
+}
+
+float VInterfaceDTO::getTotalTime32(void){
+	float totalTime = this->windowingTime3 + this->equalizationTime3 + this->gaborFilterTime3 + this->binarizationTime3 + this->minutiaeExtractionTime3 + this->matchingTime32;
+	return totalTime;
+}
+
+float VInterfaceDTO::getTotalTime33(void){
+	float totalTime = this->windowingTime3 + this->equalizationTime3 + this->gaborFilterTime3 + this->binarizationTime3 + this->minutiaeExtractionTime3 + this->matchingTime33;
+	return totalTime;
+}
+
 float VInterfaceDTO::getWindowingTime3(void){
 	return this->windowingTime3;
 }
+
 void VInterfaceDTO::setWindowingTime3(float windowingTime3){
 	this->windowingTime3 = windowingTime3;
 }
@@ -88,12 +114,28 @@ void VInterfaceDTO::setMatchingTime2(float matchingTime2){
 	this->matchingTime2 = matchingTime2;
 }
 
-float VInterfaceDTO::getMatchingTime3(void){
-	return this->matchingTime3;
+float VInterfaceDTO::getMatchingTime31(void){
+	return this->matchingTime31;
 }
 
-void VInterfaceDTO::setMatchingTime3(float matchingTime3){
-	this->matchingTime3 = matchingTime3;
+void VInterfaceDTO::setMatchingTime31(float matchingTime31){
+	this->matchingTime31 = matchingTime31;
+}
+
+float VInterfaceDTO::getMatchingTime32(void){
+	return this->matchingTime32;
+}
+
+void VInterfaceDTO::setMatchingTime32(float matchingTime32){
+	this->matchingTime32 = matchingTime32;
+}
+
+float VInterfaceDTO::getMatchingTime33(void){
+	return this->matchingTime33;
+}
+
+void VInterfaceDTO::setMatchingTime33(float matchingTime33){
+	this->matchingTime33 = matchingTime33;
 }
 
 bool VInterfaceDTO::getAccepted1(void){
@@ -142,4 +184,52 @@ void VInterfaceDTO::setFeedback(bool feedback){
 
 bool VInterfaceDTO::getFeedback(void){
 	return this->feedback;
+}
+
+void VInterfaceDTO::setMinutiaeQuantity1(int minutiaeQuantity1){
+	this->minutiaeQuantity1 = minutiaeQuantity1;
+}
+
+int VInterfaceDTO::getMinutiaeQuantity1(void){
+	return this->minutiaeQuantity1;
+}
+
+void VInterfaceDTO::setMinutiaeQuantity2(int minutiaeQuantity2){
+	this->minutiaeQuantity2 = minutiaeQuantity2;
+}
+
+int VInterfaceDTO::getMinutiaeQuantity2(void){
+	return this->minutiaeQuantity2;
+}
+
+void VInterfaceDTO::setMinutiaeQuantity3(int minutiaeQuantity3){
+	this->minutiaeQuantity3 = minutiaeQuantity3;
+}
+
+int VInterfaceDTO::getMinutiaeQuantity3(void){
+	return this->minutiaeQuantity3;
+}
+
+void VInterfaceDTO::setMinutiaeQuality1(float minutiaeQuality1){
+	this->minutiaeQuality1 = minutiaeQuality1;
+}
+
+float VInterfaceDTO::getMinutiaeQuality1(void){
+	return this->minutiaeQuality1;
+}
+
+void VInterfaceDTO::setMinutiaeQuality2(float minutiaeQuality2){
+	this->minutiaeQuality2 = minutiaeQuality2;
+}
+
+float VInterfaceDTO::getMinutiaeQuality2(void){
+	return this->minutiaeQuality2;
+}
+
+void VInterfaceDTO::setMinutiaeQuality3(float minutiaeQuality3){
+	this->minutiaeQuality3 = minutiaeQuality3;
+}
+
+float VInterfaceDTO::getMinutiaeQuality3(void){
+	return this->minutiaeQuality3;
 }

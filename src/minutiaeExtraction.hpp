@@ -35,12 +35,13 @@
 #include "window.hpp"
 #include "preProcessing.hpp"
 #include "minutia.hpp"
+#include "VInterfaceDTO.hpp"
 
 #define TRUE 1
 #define FALSE 0
 
 void minutiaeExtract(Mat image, int idSystem, int option, int id);
 
-void minutiaePlot(int row, int col, int N, Mat minutiaeImage);
+void minutiaePlot(int row, int col, int N, Mat minutiaeImage, int idSystem, VInterfaceDTO vinterface);
 
 #endif /* MINUTIAEEXTRACTION_HPP_ */
