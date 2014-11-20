@@ -74,7 +74,8 @@ void runTests(VInterfaceDTO& vinterface) {
 					strc << c;
 
 					//imagens que deveriam ser aceitas
-					imagePath = imagePathTCCFP1 + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+					string temp = imagePathTCCFP1;
+					imagePath = temp + stra.str() + strb.str() + "_" + strc.str() + ".tif";
 
 					cout << "USUARIO CADASTRADO" << endl;
 					runSystem1(vinterface,imagePath,option,(a*10)+b);

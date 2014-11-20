@@ -1,3 +1,4 @@
+/*
 //FERNANDA
 //preProcessing.cpp
 #define outputPath "/home/fernanda/Documents/tcc/imagens_teste/Output/"
@@ -24,8 +25,8 @@
 #define xytPath "/home/fernanda/workspace/c/tcc_fp/minutiae/minutiae.xyt"
 
 //FERNANDA
+*/
 
-/*
 //PRISCILA
 //preProcessing.cpp
 #define outputPath "/home/priscila/Documents/tcc/imagens_teste/Output/"
@@ -48,7 +49,7 @@
 
 //minutiaeExtraction.cpp
 #define mindtctPath "/home/priscila/Rel_4.2.0/mindtct/bin/mindtct"
-#define imagePath "/home/priscila/tcc_fp/minutiae"
+#define imagePathME "/home/priscila/tcc_fp/minutiae"
 #define xytPath "/home/priscila/tcc_fp/minutiae/minutiae.xyt"
 
 //PRISCILA
@@ -56,7 +57,7 @@
 
 
 //RAFAEL
-
+/*
 //preProcessing.cpp
 #define outputPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/Output"
 #define imagePathAux "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/DB1/101_1.tif"
@@ -76,12 +77,10 @@
 
 //minutiaeExtraction.cpp
 #define mindtctPath "/home/rafael/Desktop/nist/Rel_4.2.0/mindtct/bin/mindtct"
-#define imagePath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/minutiae"
+#define imagePathME "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/minutiae"
 #define xytPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/minutiae/minutiae_ref.xyt"
 
 
 //RAFAEL
-
-
-
 */
+
