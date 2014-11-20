@@ -14,12 +14,12 @@
 
 using namespace std;
 
-void runSystem1(VInterfaceDTO vinterface, string path, int option, int idUser);
-void runSystem2(VInterfaceDTO vinterface, string path, int option, int idUser);
-void runSystem3(VInterfaceDTO vinterface, string path, int option, int idUser);
-void fillBD(VInterfaceDTO vinterface);
-void runTests(VInterfaceDTO vinterface);
-void updateMetrics(bool feedback, VInterfaceDTO vinterface);
+void runSystem1(VInterfaceDTO& vinterface, string path, int option, int idUser);
+void runSystem2(VInterfaceDTO& vinterface, string path, int option, int idUser);
+void runSystem3(VInterfaceDTO& vinterface, string path, int option, int idUser);
+void fillBD(VInterfaceDTO& vinterface);
+void runTests(VInterfaceDTO& vinterface);
+void updateMetrics(bool feedback, VInterfaceDTO& vinterface);
 
 enum SystemMode{
 	DEFAULT = 0, RIGID = 1, TOLERANT = 2

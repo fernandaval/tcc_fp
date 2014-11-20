@@ -45,7 +45,7 @@ void imageRead (Mat *image, int *dpi, string imagePath) {
 
 	// Verifica se a imagem de entrada é válida
 	if(! image->data ){
-		cout <<  "Não foi possível abrir ou encontrar a imagem." << std::endl ;
+		//cout <<  "Não foi possível abrir ou encontrar a imagem." << std::endl ;
 		return;
 	}
 	else{
@@ -415,6 +415,13 @@ void thinningWindows (vector < vector <window*> > *windows, int row, int col, in
 			removeWindowBorder(&((*windows)[i][j]->imageWindow), imageWithBorder, N + 4, N);
 		}
 	}*/
+
+	for (int i = 0; i < row/N; i++){
+		for (int j = 0; j < col/N;  j++){
+			delete aux[i][j];
+		}
+	}
+
 	return;
 }
 
@@ -549,11 +556,11 @@ void orientationMapOLD (vector < vector <window*> > *windows, int row, int col, 
 				(*windows)[i][j]->setAngle( angle + (double)(k * M_PI));// - (double)M_PI * 0.5);
 			}
 			if ((*windows)[i][j]->getAngle() != GABOR_NOT_APPLICABLE) {
-				cout << "janela (i: " << i << ", j: " << j << ") ";
-				cout << "ângulo: " << ((double)(180 / M_PI) * (*windows)[i][j]->getAngle()) << endl;
+				//cout << "janela (i: " << i << ", j: " << j << ") ";
+				//cout << "ângulo: " << ((double)(180 / M_PI) * (*windows)[i][j]->getAngle()) << endl;
 			}
 		}
-		cout << endl;
+		//cout << endl;
 	}
 	return;
 
@@ -593,8 +600,8 @@ void orientationMapOLD (vector < vector <window*> > *windows, int row, int col, 
 				(*windows)[i][j]->setAngle( (double)0.5 * atan((double) Vx / Vy) - (double)M_PI * 0.5);
 			}
 
-			cout << "Ângulo janela (em graus) " << i << ", " << j << ": " << ((double)(180 / M_PI) * (*windows)[i][j]->getAngle())+90;// << endl;
-			cout << "; Ângulo janela (em radianos) " << i << ", " << j << ": " << (*windows)[i][j]->getAngle() + (double)M_PI * 0.5 << endl;
+			//cout << "Ângulo janela (em graus) " << i << ", " << j << ": " << ((double)(180 / M_PI) * (*windows)[i][j]->getAngle())+90;// << endl;
+			//cout << "; Ângulo janela (em radianos) " << i << ", " << j << ": " << (*windows)[i][j]->getAngle() + (double)M_PI * 0.5 << endl;
 		}
 	}
 	return;
@@ -690,7 +697,7 @@ void getWindowBorder (Mat *imageWithBorder, int N, vector < vector <window*> > w
 //int newSize: tamanho da imagem sem bordar
 void removeWindowBorder( Mat *imageWithoutBorder, Mat imageWithBorder, int originalSize, int newSize) {
 	if (newSize > originalSize) {
-		cout << "Erro ao tentar remover borda da imagem: imagem original é menor que o tamanho da imagem sem borda." << endl;
+		//cout << "Erro ao tentar remover borda da imagem: imagem original é menor que o tamanho da imagem sem borda." << endl;
 	}
 	for (int i = 0; i < newSize; i++){
 		for (int j = 0; j < newSize; j++) {
@@ -857,6 +864,18 @@ void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N)
 //
 //					}
 //				}
+
+	for (int i = 0; i < row/N; i++){
+		for (int j = 0; j < col/N;  j++){
+			windowsTemp[i][j];
+		}
+	}
+
+	for (int i = 0; i < row/N; i++){
+		for (int j = 0; j < col/N;  j++){
+			windowsTemp2[i][j];
+		}
+	}
 
 	return;
 }
@@ -1187,8 +1206,8 @@ float getAngle (Mat kernelX, Mat kernelY, Mat image, int N){
 			}
 
 			if (flag == 1) {
-				cout << "Ângulo janela (em graus) : " << ((float)(180 / M_PI)) * angle;
-				cout << "; Ângulo janela (em radianos) : " << angle << endl;
+				//cout << "Ângulo janela (em graus) : " << ((float)(180 / M_PI)) * angle;
+				//cout << "; Ângulo janela (em radianos) : " << angle << endl;
 			}
 
 		}
@@ -1343,7 +1362,7 @@ void orientationMap (vector < vector <window*> > *windows, int row, int col, int
 				(*windows)[(int)i/N][(int)j/N]->setAngle(angle);// - (double)M_PI * 0.5);
 			}
 		}
-		cout << endl;
+		//cout << endl;
 	}
 	return;
 }

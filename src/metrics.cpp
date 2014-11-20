@@ -87,7 +87,7 @@ void minimumScoresUpdate() {
 	float fr = (float)falseRejection;
 	float falseRejectionRate = fr/(fa+ta+tr+fr);
 
-	cout << "falseRejectionRate do Tolerante: " << falseRejectionRate << endl;
+	//cout << "falseRejectionRate do Tolerante: " << falseRejectionRate << endl;
 
 	if (falseRejectionRate > 0.05) {
 		sqlstr = "UPDATE operationMode SET minimumScore = ";
@@ -176,6 +176,8 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 		{
 			//incrementar trueAcceptance do 1
 
+			cout << "trueAcceptance do 1" << endl;
+
 			sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 1;";
 			const char * sql = sqlstr.c_str();
 			rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
@@ -199,6 +201,8 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 		else
 		{
 			//incrementar falseAcceptance do 1
+
+			cout << "falseAcceptance do 1" << endl;
 
 			sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 1;";
 			const char * sql = sqlstr.c_str();
@@ -227,6 +231,8 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 		{
 			//incrementar falseRejection do 1
 
+			cout << "falseRejection do 1" << endl;
+
 			sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 1;";
 			const char * sql = sqlstr.c_str();
 			rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
@@ -249,6 +255,8 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 		else
 		{
 			//incrementar trueRejection do 1
+
+			cout << "trueRejection do 1" << endl;
 
 			sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 1;";
 			const char * sql = sqlstr.c_str();
@@ -278,6 +286,8 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 		{
 			//incrementar trueAcceptance do 2
 
+			cout << "trueAcceptance do 2" << endl;
+
 			sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 2;";
 			const char * sql = sqlstr.c_str();
 			rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
@@ -300,6 +310,8 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 		else
 		{
 			//incrementar falseAcceptance do 2
+
+			cout << "falseAcceptance do 2" << endl;
 
 			sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 2;";
 			const char * sql = sqlstr.c_str();
@@ -327,6 +339,8 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 		{
 			//incrementar falseRejection do 2
 
+			cout << "falseRejection do 2" << endl;
+
 			sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 2;";
 			const char * sql = sqlstr.c_str();
 			rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
@@ -349,6 +363,8 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 		else
 		{
 			//incrementar trueRejection do 2
+
+			cout << "trueRejection do 2" << endl;
 
 			sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 2;";
 			const char * sql = sqlstr.c_str();
@@ -378,6 +394,8 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 		{
 			//incrementar trueAcceptance do 31
 
+			cout << "trueAcceptance do 31" << endl;
+
 			sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 3;";
 			const char * sql = sqlstr.c_str();
 			rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
@@ -400,6 +418,8 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 		else
 		{
 			//incrementar falseAcceptance do 31
+
+			cout << "falseAcceptance do 31" << endl;
 
 			sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 3;";
 			const char * sql = sqlstr.c_str();
@@ -427,6 +447,8 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 		{
 			//incrementar falseRejection do 31
 
+			cout << "falseRejection do 31" << endl;
+
 			sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 3;";
 			const char * sql = sqlstr.c_str();
 			rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
@@ -449,6 +471,8 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 		else
 		{
 			//incrementar trueRejection do 31
+
+			cout << "trueRejection do 31" << endl;
 
 			sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 3;";
 			const char * sql = sqlstr.c_str();
@@ -478,6 +502,8 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 		{
 			//incrementar trueAcceptance do 32
 
+			cout << "trueAcceptance do 32" << endl;
+
 			sqlstr = "SELECT * FROM operationMode WHERE id = 2 AND idSystem = 3;";
 			const char * sql = sqlstr.c_str();
 			rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
@@ -500,6 +526,8 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 		else
 		{
 			//incrementar falseAcceptance do 32
+
+			cout << "falseAcceptance do 32" << endl;
 
 			sqlstr = "SELECT * FROM operationMode WHERE id = 2 AND idSystem = 3;";
 			const char * sql = sqlstr.c_str();
@@ -527,6 +555,8 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 		{
 			//incrementar falseRejection do 32
 
+			cout << "falseRejection do 32" << endl;
+
 			sqlstr = "SELECT * FROM operationMode WHERE id = 2 AND idSystem = 3;";
 			const char * sql = sqlstr.c_str();
 			rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
@@ -549,6 +579,8 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 		else
 		{
 			//incrementar trueRejection do 32
+
+			cout << "trueRejection do 32" << endl;
 
 			sqlstr = "SELECT * FROM operationMode WHERE id = 2 AND idSystem = 3;";
 			const char * sql = sqlstr.c_str();
@@ -578,6 +610,8 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 		{
 			//incrementar trueAcceptance do 33
 
+			cout << "trueAcceptance do 33" << endl;
+
 			sqlstr = "SELECT * FROM operationMode WHERE id = 3 AND idSystem = 3;";
 			const char * sql = sqlstr.c_str();
 			rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
@@ -600,6 +634,8 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 		else
 		{
 			//incrementar falseAcceptance do 33
+
+			cout << "falseAcceptance do 33" << endl;
 
 			sqlstr = "SELECT * FROM operationMode WHERE id = 3 AND idSystem = 3;";
 			const char * sql = sqlstr.c_str();
@@ -627,6 +663,8 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 		{
 			//incrementar falseRejection do 33
 
+			cout << "falseRejection do 33" << endl;
+
 			sqlstr = "SELECT * FROM operationMode WHERE id = 3 AND idSystem = 3;";
 			const char * sql = sqlstr.c_str();
 			rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
@@ -649,6 +687,8 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 		else
 		{
 			//incrementar trueRejection do 33
+
+			cout << "trueRejection do 33" << endl;
 
 			sqlstr = "SELECT * FROM operationMode WHERE id = 3 AND idSystem = 3;";
 			const char * sql = sqlstr.c_str();

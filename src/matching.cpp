@@ -207,11 +207,11 @@ bool matching2()
 	   }
 	   myfile.close();
 	   if (bozorth()==true){
-		   cout << "Matching com template " << results_id[k] << "!\n";
+		   //cout << "Matching com template " << results_id[k] << "!\n";
 		   approval = true;
 	   }
 	   else {
-		   cout << "Sem similaridade com template " << results_id[k] << "\n";
+		   //cout << "Sem similaridade com template " << results_id[k] << "\n";
 	   }
    }
 
@@ -286,7 +286,7 @@ bool matching(int idSystem, int idMode)
 		   sqlite3_free(zErrMsg);
 	   }
 
-	   cout << "modo: " << idMode << " - note de corte: " << minimumScore << endl;
+	   //cout << "modo: " << idMode << " - note de corte: " << minimumScore << endl;
 	   if (bozorth()>=minimumScore){
 		   //cout << "Matching com template " << results_id[k] << "!\n";
 		   approval = true;
