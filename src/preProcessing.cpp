@@ -7,22 +7,8 @@
 //============================================================================
 
 #include "preProcessing.hpp"
+#include "constants.hpp"
 #define GABOR_NOT_APPLICABLE 1000
-
-//FERNANDA
-//#define outputPath "/home/fernanda/Documents/tcc/imagens_teste/Output/"
-//#define imagePathAux "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/103_1.tif"
-//FERNANDA
-
-//PRISCILA
-#define outputPath "/home/priscila/Documents/tcc/imagens_teste/Output/"
-#define imagePathAux "/home/priscila/Rel_4.2.0/mindtct/bin/101_1.jpg"
-//PRISCILA
-
-//RAFAEL
-//#define outputPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/Output"
-//#define imagePathAux "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/DB1/101_1.tif"
-//RAFAEL
 
 using namespace cv;
 using namespace std;

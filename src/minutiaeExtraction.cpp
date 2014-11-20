@@ -7,33 +7,7 @@
 
 
 #include "minutiaeExtraction.hpp"
-
-//PRISCILA
-#define mindtctPath "/home/priscila/Rel_4.2.0/mindtct/bin/mindtct"
-#define imagePath "/home/priscila/tcc_fp/minutiae"
-#define xytPath "/home/priscila/tcc_fp/minutiae/minutiae.xyt"
-#define bdPath "/home/priscila/tcc_fp/fingerprint.db"
-#define outputPath "/home/priscila/tcc_fp/minutiae/minucias.jpg"
-//PRISCILA
-
-//FERNANDA
-/*
-#define mindtctPath "/home/fernanda/Documents/tcc/nbis/Rel_4.2.0/mindtct/bin/mindtct"
-#define imagePath "/home/fernanda/workspace/c/tcc_fp/minutiae"
-#define xytPath "/home/fernanda/workspace/c/tcc_fp/minutiae/minutiae.xyt"
-#define bdPath "/home/fernanda/workspace/c/tcc_fp/fingerprint.db"
-#define outputPath "/home/fernanda/workspace/c/tcc_fp/minutiae/minucias.jpg"
-*/
-//FERNANDA
-
-//RAFAEL
-//#define mindtctPath "/home/rafael/Desktop/nist/Rel_4.2.0/mindtct/bin/mindtct"
-//#define imagePath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/minutiae"
-//#define xytPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/minutiae/minutiae_ref.xyt"
-//#define bdPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/fingerprint.db"
-//#define outputPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/minutiae/minucias.jpg"
-//RAFAEL
-
+#include "constants.hpp"
 
 #define TRUE 1
 #define FALSE 0
@@ -323,10 +297,10 @@ void minutiaeExtract(Mat image, int idSystem, int option, int idUsuario)
 	//EXTRAÇÃO DE MINÚCIAS COM MINDTCT
 	char *my_env[] = {NULL};
 
-	string input = imagePath;
+	string input = imagePathME;
 	imwrite(input.append("/image.jpg"), image);
 
-	string output = imagePath;
+	string output = imagePathME;
 	output.append("/minutiae");
 
 	char * parameter1 = new char[input.length() + 1];

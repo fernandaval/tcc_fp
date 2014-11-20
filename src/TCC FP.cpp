@@ -34,33 +34,7 @@
 #include "window.hpp"
 #include "TCC FP.hpp"
 #include "metrics.hpp"
-
-//Priscila
-//#define minutiae1Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/minutiae1.tif"
-//#define minutiae2Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/minutiae2.tif"
-//#define minutiae3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/minutiae3.tif"
-//#define equalized2Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/equalized2.tif"
-//#define equalized3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/equalized3.tif"
-//#define binarized2Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/binarized2.tif"
-//#define binarized3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/binarized3.tif"
-//#define gabor3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/gabor3.tif"
-//#define whiteBorder23Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/whiteborder23.tif"
-//#define originalPath "/home/priscila/tcc_fp_gui/resources/images/fingerprints/original.tif"
-//#define bdPath "/home/priscila/tcc_fp/fingerprint.db"
-
-//Rafael
-#define minutiae1Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/minutiae1.tif"
-#define minutiae2Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/minutiae2.tif"
-#define minutiae3Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/minutiae3.tif"
-#define equalized2Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/equalized2.tif"
-#define equalized3Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/equalized3.tif"
-#define binarized2Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/binarized2.tif"
-#define binarized3Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/binarized3.tif"
-#define gabor3Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/gabor3.tif"
-#define whiteBorder23Path "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/whiteborder23.tif"
-#define originalPath "/home/rafael/Desktop/rafael/tcc_fe/gui_fe/gui_tcc/resources/images/fingerprints/original.tif"
-#define bdPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/fingerprint.db"
-//Rafael
+#include "constants.hpp"
 
 using namespace cv;
 using namespace std;
@@ -70,7 +44,7 @@ VInterfaceDTO Main::getVInterfaceDTO(void){
 	return this->vInterfaceDTO;
 }
 
-void runTests(VInterfaceDTO vinterface) {
+void runTests(VInterfaceDTO& vinterface) {
 	string imagePath;	//endereço da imagem de entrada
 	Mat originalImage;	//imagem de entrada (no formato lido pelo opencv)
 	vector < vector <window*> > windows;
@@ -81,11 +55,11 @@ void runTests(VInterfaceDTO vinterface) {
 	a = 0;
 	option = 2;
 
-	while (a <= 0)
+	while (a <= 1)
 	{
-		while (b <= 2)
+		while (b <= 9)
 		{
-			while (c<=2)
+			while (c<=8)
 			{
 				if (10*a+b <= 10) //Só executa para ID de usuário <= 10
 				{
@@ -97,8 +71,8 @@ void runTests(VInterfaceDTO vinterface) {
 					strc << c;
 
 					//imagens que deveriam ser aceitas
-					imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
-
+					imagePath = imagePathTCCFP1 + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+					cout << imagePath << endl;
 					runSystem1(vinterface,imagePath,option,(a*10)+b);
 					runSystem2(vinterface,imagePath,option,(a*10)+b);
 					runSystem3(vinterface,imagePath,option,(a*10)+b);
@@ -106,8 +80,8 @@ void runTests(VInterfaceDTO vinterface) {
 					updateMetrics(true,vinterface);
 
 					//imagens que deveriam ser rejeitadas
-					imagePath = "/home/priscila/BDs_imagens_de_digitais/2000/DB2/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
-
+					imagePath = imagePathTCCFP2 + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+					cout << imagePath << endl;
 					runSystem1(vinterface,imagePath,option,(a*10)+b);
 					runSystem2(vinterface,imagePath,option,(a*10)+b);
 					runSystem3(vinterface,imagePath,option,(a*10)+b);
@@ -124,7 +98,7 @@ void runTests(VInterfaceDTO vinterface) {
 	}
 }
 
-void fillBD(VInterfaceDTO vinterface) {
+void fillBD(VInterfaceDTO& vinterface) {
 	string imagePath;	//endereço da imagem de entrada
 	Mat originalImage;	//imagem de entrada (no formato lido pelo opencv)
 	vector < vector <window*> > windows;
@@ -139,7 +113,7 @@ void fillBD(VInterfaceDTO vinterface) {
 	{
 		while (b <= 9)
 		{
-			while (c<=1) //quantas imagens de cada pessoa queremos cadastrar
+			while (c<=4) //quantas imagens de cada pessoa queremos cadastrar
 			{
 				if (10*a+b <= 10) //Só executa para ID de usuário <= 10
 				{
@@ -149,7 +123,7 @@ void fillBD(VInterfaceDTO vinterface) {
 					stra << a;
 					strb << b;
 					strc << c;
-					imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+					imagePath = "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
 
 					runSystem1(vinterface,imagePath,option,(a*10)+b);
 					runSystem2(vinterface,imagePath,option,(a*10)+b);
@@ -195,7 +169,7 @@ void fillBD(VInterfaceDTO vinterface) {
 	}
 }
 
-void runSystem1(VInterfaceDTO vinterface, string imagePath, int option, int idUser) {
+void runSystem1(VInterfaceDTO& vinterface, string imagePath, int option, int idUser) {
 
 	int idSystem = 1;
 	int dpi;			//resolução da imagem em dpi's
@@ -212,14 +186,6 @@ void runSystem1(VInterfaceDTO vinterface, string imagePath, int option, int idUs
 	//Converte a imagem no formato colorido para que seja possível utilizá-la na hora de exibir as minúcias (em cor)
 	Mat minutiaeImage;
 	cvtColor(originalImage, minutiaeImage, CV_GRAY2RGB);
-
-//	cout << "O que você deseja fazer com a imagem: 1- cadastrar no BD 2- autenticar no sistema" << endl;
-//	cin >> option;
-//	int id = 0;
-//	if (option == 1) {
-//		cout << "Para qual usuário você deseja cadastrar essa imagem? Digite a ID" << endl;
-//		cin >> id;
-//	}
 
 	//MINUTIA EXTRACTION
 	struct timeval minutiaeExtractionTimeBefore, minutiaeExtractionTimeAfter;  // removed comma
@@ -253,7 +219,7 @@ void runSystem1(VInterfaceDTO vinterface, string imagePath, int option, int idUs
 
 }
 
-void runSystem2(VInterfaceDTO vinterface, string imagePath, int option, int idUser) {
+void runSystem2(VInterfaceDTO& vinterface, string imagePath, int option, int idUser) {
 
 	int idSystem = 2;
 	int dpi;			//resolução da imagem em dpi's
@@ -316,20 +282,6 @@ void runSystem2(VInterfaceDTO vinterface, string imagePath, int option, int idUs
 	Mat minutiaeImage;
 	cvtColor(equalizedImage, minutiaeImage, CV_GRAY2RGB);
 
-	/*thinning(imageNew);
-	imshow("imagem afinada", imageNew);
-	*/
-
-//	int option = 2;
-//	int id = 1;
-//	cout << "O que você deseja fazer com a imagem: 1- cadastrar no BD 2- autenticar no sistema" << endl;
-//	cin >> option;
-//	int id = 0;
-//	if (option == 1) {
-//		cout << "Para qual usuário você deseja cadastrar essa imagem? Digite a ID" << endl;
-//		cin >> id;
-//	}
-
 	//MINUTIA EXTRACTION
 	struct timeval minutiaeExtractionTimeBefore, minutiaeExtractionTimeAfter;  // removed comma
 	gettimeofday (&minutiaeExtractionTimeBefore, NULL);
@@ -363,7 +315,7 @@ void runSystem2(VInterfaceDTO vinterface, string imagePath, int option, int idUs
 
 }
 
-void runSystem3(VInterfaceDTO vinterface, string imagePath, int option, int idUser) {
+void runSystem3(VInterfaceDTO& vinterface, string imagePath, int option, int idUser) {
 
 	int idSystem = 3;
 	int dpi;			//resolução da imagem em dpi's
@@ -544,7 +496,7 @@ void Main::updateMetrics(bool feedback, HasCallbackClass *_clazz) {
 	_clazz->callback();
 }
 
-void updateMetrics(bool feedback, VInterfaceDTO vinterface) {
+void updateMetrics(bool feedback, VInterfaceDTO& vinterface) {
 
 	metricsUpdate(feedback,vinterface.getAccepted1(),vinterface.getAccepted2(),vinterface.getAccepted31(),vinterface.getAccepted32(),vinterface.getAccepted33());
 	minimumScoresUpdate();
@@ -553,11 +505,11 @@ void updateMetrics(bool feedback, VInterfaceDTO vinterface) {
 
 void Main::execute(HasCallbackClass *_clazz, string imagePath) {
 
-	//fillBD(this->vInterfaceDTO);
+	fillBD(this->vInterfaceDTO);
 
-	runSystem1(this->vInterfaceDTO, imagePath,2,0);
-	runSystem2(this->vInterfaceDTO, imagePath,2,0);
-	runSystem3(this->vInterfaceDTO, imagePath,2,0);
+//	runSystem1(this->vInterfaceDTO, imagePath,2,0);
+//	runSystem2(this->vInterfaceDTO, imagePath,2,0);
+//	runSystem3(this->vInterfaceDTO, imagePath,2,0);
 
 	runTests(this->vInterfaceDTO);
 
