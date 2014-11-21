@@ -93,10 +93,10 @@ void refreshAllMetrics(VInterfaceDTO& vinterface) {
 	ta = (float)trueAcceptance;
 	tr = (float)trueRejection;
 	fr = (float)falseRejection;
-	vinterface.setFar1(fa/(fa+ta+tr+fr));
-	vinterface.setFrr1(fr/(fa+ta+tr+fr));
-	vinterface.setTar1(ta/(fa+ta+tr+fr));
-	vinterface.setTrr1(tr/(fa+ta+tr+fr));
+	vinterface.setFar1(fa/(fa+ta));
+	vinterface.setFrr1(fr/(tr+fr));
+	vinterface.setTar1(ta/(fa+ta));
+	vinterface.setTrr1(tr/(tr+fr));
 
 	//sistema 2
 	sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 2;";
@@ -110,10 +110,10 @@ void refreshAllMetrics(VInterfaceDTO& vinterface) {
 	ta = (float)trueAcceptance;
 	tr = (float)trueRejection;
 	fr = (float)falseRejection;
-	vinterface.setFar2(fa/(fa+ta+tr+fr));
-	vinterface.setFrr2(fr/(fa+ta+tr+fr));
-	vinterface.setTar2(ta/(fa+ta+tr+fr));
-	vinterface.setTrr2(tr/(fa+ta+tr+fr));
+	vinterface.setFar2(fa/(fa+ta));
+	vinterface.setFrr2(fr/(tr+fr));
+	vinterface.setTar2(ta/(fa+ta));
+	vinterface.setTrr2(tr/(tr+fr));
 
 	//sistema 3 modo padrão
 	sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 3;";
@@ -127,10 +127,10 @@ void refreshAllMetrics(VInterfaceDTO& vinterface) {
 	ta = (float)trueAcceptance;
 	tr = (float)trueRejection;
 	fr = (float)falseRejection;
-	vinterface.setFar31(fa/(fa+ta+tr+fr));
-	vinterface.setFrr31(fr/(fa+ta+tr+fr));
-	vinterface.setTar31(ta/(fa+ta+tr+fr));
-	vinterface.setTrr31(tr/(fa+ta+tr+fr));
+	vinterface.setFar31(fa/(fa+ta));
+	vinterface.setFrr31(fr/(tr+fr));
+	vinterface.setTar31(ta/(fa+ta));
+	vinterface.setTrr31(tr/(tr+fr));
 
 	//sistema 3 modo tolerante
 	sqlstr = "SELECT * FROM operationMode WHERE id = 2 AND idSystem = 3;";
@@ -144,10 +144,10 @@ void refreshAllMetrics(VInterfaceDTO& vinterface) {
 	ta = (float)trueAcceptance;
 	tr = (float)trueRejection;
 	fr = (float)falseRejection;
-	vinterface.setFar32(fa/(fa+ta+tr+fr));
-	vinterface.setFrr32(fr/(fa+ta+tr+fr));
-	vinterface.setTar32(ta/(fa+ta+tr+fr));
-	vinterface.setTrr32(tr/(fa+ta+tr+fr));
+	vinterface.setFar32(fa/(fa+ta));
+	vinterface.setFrr32(fr/(tr+fr));
+	vinterface.setTar32(ta/(fa+ta));
+	vinterface.setTrr32(tr/(tr+fr));
 
 	//sistema 3 modo rigoroso
 	sqlstr = "SELECT * FROM operationMode WHERE id = 3 AND idSystem = 3;";
@@ -161,10 +161,10 @@ void refreshAllMetrics(VInterfaceDTO& vinterface) {
 	ta = (float)trueAcceptance;
 	tr = (float)trueRejection;
 	fr = (float)falseRejection;
-	vinterface.setFar33(fa/(fa+ta+tr+fr));
-	vinterface.setFrr33(fr/(fa+ta+tr+fr));
-	vinterface.setTar33(ta/(fa+ta+tr+fr));
-	vinterface.setTrr33(tr/(fa+ta+tr+fr));
+	vinterface.setFar33(fa/(fa+ta));
+	vinterface.setFrr33(fr/(tr+fr));
+	vinterface.setTar33(ta/(fa+ta));
+	vinterface.setTrr33(tr/(tr+fr));
 
 	return;
 }
@@ -196,14 +196,14 @@ void minimumScoresUpdate() {
 	float ta = (float)trueAcceptance;
 	float tr = (float)trueRejection;
 	float fr = (float)falseRejection;
-	float falseRejectionRate = fr/(fa+ta+tr+fr);
+	float falseRejectionRate = fr/(tr+fr);
 
 	//cout << "falseRejectionRate do Tolerante: " << falseRejectionRate << endl;
 
 	if (falseRejectionRate > 0.05) {
 		sqlstr = "UPDATE operationMode SET minimumScore = ";
 		int temp = score - 5;
-		if (temp >= 5) { //minimumScore não deve ultrapassar o limite mínimo de 20
+		if (temp >= 15) { //minimumScore não deve ultrapassar esse limite mínimo
 			sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << temp) )->str());
 			sqlstr.append(" WHERE id = 2 AND idSystem = 3;");
 			const char * sql2 = sqlstr.c_str();
@@ -238,8 +238,8 @@ void minimumScoresUpdate() {
 	  sqlite3_free(zErrMsg);
 	}
 
-	float falseAcceptanceRate = fa/(fa+ta+tr+fr);
-	if (falseAcceptanceRate > 0.01) {
+	float falseAcceptanceRate = fa/(fa+ta);
+	if (falseAcceptanceRate > 0.05) {
 		sqlstr = "UPDATE operationMode SET minimumScore = ";
 		int temp = score + 5;
 		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << temp) )->str());

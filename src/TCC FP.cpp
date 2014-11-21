@@ -130,16 +130,16 @@ void fillBD(VInterfaceDTO& vinterface) {
 					stra << a;
 					strb << b;
 					strc << c;
-					imagePath = "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+					imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
 
 					runSystem1(vinterface,imagePath,option,(a*10)+b);
-					//cout << "cadastrei template " << strc.str() << " do usuario " << stra.str() + strb.str() << " no sistema 1" << endl;
+					cout << "cadastrei template " << strc.str() << " do usuario " << stra.str() + strb.str() << " no sistema 1" << endl;
 
 					runSystem2(vinterface,imagePath,option,(a*10)+b);
-					//cout << "cadastrei template " << strc.str() << " do usuario " << stra.str() + strb.str() << " no sistema 2" << endl;
+					cout << "cadastrei template " << strc.str() << " do usuario " << stra.str() + strb.str() << " no sistema 2" << endl;
 
 					runSystem3(vinterface,imagePath,option,(a*10)+b);
-					//cout << "cadastrei template " << strc.str() << " do usuario " << stra.str() + strb.str() << " no sistema 3" << endl;
+					cout << "cadastrei template " << strc.str() << " do usuario " << stra.str() + strb.str() << " no sistema 3" << endl;
 
 				}
 				c = c + 1;
@@ -493,13 +493,13 @@ void Main::getMetrics(HasCallbackClass *_clazz) {
 
 void Main::execute(HasCallbackClass *_clazz, string imagePath) {
 
-	fillBD(this->vInterfaceDTO);
+	//fillBD(this->vInterfaceDTO);
 
-	//runSystem1(this->vInterfaceDTO, imagePath,2,0);
-	//runSystem2(this->vInterfaceDTO, imagePath,2,0);
-	//runSystem3(this->vInterfaceDTO, imagePath,2,0);
+	runSystem1(this->vInterfaceDTO, imagePath,2,0);
+	runSystem2(this->vInterfaceDTO, imagePath,2,0);
+	runSystem3(this->vInterfaceDTO, imagePath,2,0);
 
-	runTests(this->vInterfaceDTO);
+	//runTests(this->vInterfaceDTO);
 
 	_clazz->callback();
 	//waitKey(0);
