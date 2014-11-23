@@ -31,6 +31,7 @@ public:
 	VInterfaceDTO getVInterfaceDTO(void);
     void updateMetrics(bool feedback, HasCallbackClass *_clazz);
     void getMetrics(HasCallbackClass *_clazz);
+    void showImage (string path);
 private:
 	VInterfaceDTO vInterfaceDTO;
 };

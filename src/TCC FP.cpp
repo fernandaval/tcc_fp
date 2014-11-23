@@ -489,11 +489,21 @@ void updateMetrics(bool feedback, VInterfaceDTO& vinterface) {
 void Main::getMetrics(HasCallbackClass *_clazz) {
 
 	refreshAllMetrics(this->vInterfaceDTO);
+
+	_clazz->callback();
+}
+
+void Main::showImage (string path){
+	Mat image = imread(path.substr(7,path.length()));
+	namedWindow( "Selected Image", WINDOW_AUTOSIZE ); // Create a window to display image
+	imshow( "Selected Image", image ); // Show the image inside it
 }
 
 void Main::execute(HasCallbackClass *_clazz, string imagePath) {
 
 	//fillBD(this->vInterfaceDTO);
+
+	//imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/108_8.tif"; //apenas para teste
 
 	runSystem1(this->vInterfaceDTO, imagePath,2,0);
 	runSystem2(this->vInterfaceDTO, imagePath,2,0);

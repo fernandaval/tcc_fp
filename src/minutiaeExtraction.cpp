@@ -14,7 +14,7 @@
 
 using namespace std;
 
-void minutiaePlot(int row, int col, int N, Mat minutiaeImage, int idSystem, VInterfaceDTO vinterface) {
+void minutiaePlot(int row, int col, int N, Mat minutiaeImage, int idSystem, VInterfaceDTO& vinterface) {
 	 vector <minutia*> minutiae;
 	 ifstream myReadFile;
 	 char output[100];

@@ -32,6 +32,11 @@
 
 #define bdPath "/home/priscila/tcc_fp/fingerprint.db"
 
+//parametros de teste
+#define scoreChange 2
+#define minimumTolerant 12
+#define minimumRigorous 20
+
 using namespace std;
 
 int score;
@@ -63,10 +68,6 @@ void refreshAllMetrics(VInterfaceDTO& vinterface) {
 	float ta;
 	float tr;
 	float fr;
-	float falseRejectionRate;
-	float falseAcceptanceRate;
-	float trueRejectionRate;
-	float trueAcceptanceRate;
 
 	sqlite3 *db;
 	char *zErrMsg = 0;
@@ -202,8 +203,8 @@ void minimumScoresUpdate() {
 
 	if (falseRejectionRate > 0.05) {
 		sqlstr = "UPDATE operationMode SET minimumScore = ";
-		int temp = score - 5;
-		if (temp >= 15) { //minimumScore não deve ultrapassar esse limite mínimo
+		int temp = score - scoreChange;
+		if (temp >= minimumTolerant) { //minimumScore não deve ultrapassar esse limite mínimo
 			sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << temp) )->str());
 			sqlstr.append(" WHERE id = 2 AND idSystem = 3;");
 			const char * sql2 = sqlstr.c_str();
@@ -216,16 +217,14 @@ void minimumScoresUpdate() {
 	}
 	else {
 		sqlstr = "UPDATE operationMode SET minimumScore = ";
-		int temp = score + 5;
-		if (temp <= 60) { //sistema tolerante nunca deve ter nota de corte menor que 60
-			sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << temp) )->str());
-			sqlstr.append(" WHERE id = 2 AND idSystem = 3;");
-			const char * sql2 = sqlstr.c_str();
-			rc = sqlite3_exec(db, sql2, callbackNone, 0, &zErrMsg);
-			if( rc != SQLITE_OK ){
-			  fprintf(stderr, "SQL error: %s\n", zErrMsg);
-			  sqlite3_free(zErrMsg);
-			}
+		int temp = score + scoreChange;
+		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << temp) )->str());
+		sqlstr.append(" WHERE id = 2 AND idSystem = 3;");
+		const char * sql2 = sqlstr.c_str();
+		rc = sqlite3_exec(db, sql2, callbackNone, 0, &zErrMsg);
+		if( rc != SQLITE_OK ){
+		  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		  sqlite3_free(zErrMsg);
 		}
 	}
 
@@ -241,7 +240,7 @@ void minimumScoresUpdate() {
 	float falseAcceptanceRate = fa/(fa+ta);
 	if (falseAcceptanceRate > 0.05) {
 		sqlstr = "UPDATE operationMode SET minimumScore = ";
-		int temp = score + 5;
+		int temp = score + scoreChange;
 		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << temp) )->str());
 		sqlstr.append(" WHERE id = 3 AND idSystem = 3;");
 		const char * sql2 = sqlstr.c_str();
@@ -253,8 +252,8 @@ void minimumScoresUpdate() {
 	}
 	else {
 		sqlstr = "UPDATE operationMode SET minimumScore = ";
-		int temp = score - 5;
-		if (temp >= 60) { //sistema rigoroso nunca deve ter nota de corte menor que 60
+		int temp = score - scoreChange;
+		if (temp >= minimumRigorous) { //sistema rigoroso nunca deve ter nota de corte menor do que esse limite
 			sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << temp) )->str());
 			sqlstr.append(" WHERE id = 3 AND idSystem = 3;");
 			const char * sql2 = sqlstr.c_str();

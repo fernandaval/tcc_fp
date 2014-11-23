@@ -42,6 +42,6 @@
 
 void minutiaeExtract(Mat image, int idSystem, int option, int id);
 
-void minutiaePlot(int row, int col, int N, Mat minutiaeImage, int idSystem, VInterfaceDTO vinterface);
+void minutiaePlot(int row, int col, int N, Mat minutiaeImage, int idSystem, VInterfaceDTO& vinterface);
 
 #endif /* MINUTIAEEXTRACTION_HPP_ */
