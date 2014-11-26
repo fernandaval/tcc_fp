@@ -693,10 +693,29 @@ void removeWindowBorder( Mat *imageWithoutBorder, Mat imageWithBorder, int origi
 	return;
 }
 
-void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N) {
+void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N) {//, vector < vector <window*> > *windowsNew) {
+
+//	REVISAR PONTEIROS!!!
 
 	int w = 10; // frequencia a ser utilizada no Gabor
 	//TEMP
+
+//	//Dimensiona a matriz com as janelas (i = linhas, j = colunas)
+//	windowsNew->resize(row/N - 2);
+//	for (int i = 0; i < row/N - 2; i++){
+//		windowsNew[i].resize((int)col/N - 2);
+//	}
+//
+//	//inicializando a matriz com as janelas (usando a classe window)
+//	for (int i = 0; i < row/N-2; i++){
+//		for (int j = 0; j < col/N-2;  j++){
+//			(*windowsNew)[i][j] = new window(N, N, (*windows)[0][0]->getImageWindow().type());
+//			(*windows)[i + 1][j + 1]->getImageWindow().copyTo((*windowsNew)[i][j]->imageWindow);
+//			(*windowsNew)[i][j]->setAngle((*windows)[i][j]->getAngle());
+//			//windowsTemp[i][j]->setImageWindow((*windows)[i][j]->getImageWindow());
+//		}
+//	}
+
 
 	vector < vector <window*> > windowsTemp;
 	//Dimensiona a matriz com as janelas (i = linhas, j = colunas)
@@ -732,23 +751,21 @@ void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N)
 		}
 	}
 
-
-//	vector < vector <window*> > windowsFinal;
-//	//Dimensiona a matriz com as janelas (i = linhas, j = colunas)
-//	windowsFinal.resize(row/N);
-//	for (int i = 0; i < row/N; i++){
-//		windowsFinal[i].resize((int)col/N);
+//	//preenchendo as janelas laterais verticais com brancos
+//	for (int i = 0; i < row/N; i++) {
+//		for (int j = 0; j < col/N; j = j + col/N -1) {
+//			(*windows)[i][j]->imageWindow.setTo(Scalar(255,255,255));
+//		}
 //	}
 //
-//	//inicializando a matriz com as janelas (usando a classe window)
-//	for (int i = 0; i < row/N; i++){
-//		for (int j = 0; j < col/N;  j++){
-//			windowsFinal[i][j] = new window(N, N, (*windows)[0][0]->getImageWindow().type());
-//			(*windows)[i][j]->getImageWindow().copyTo(windowsFinal[i][j]->imageWindow);
-//			windowsFinal[i][j]->setAngle((*windows)[i][j]->getAngle());
+//	//preenchendo as janelas laterais horizontais com brancos
+//	for (int j = 1; j < col/N - 1; j++) {
+//		for (int i = 0; i < row/N; i = i + row/N -1) {
+//			(*windows)[i][j]->imageWindow.setTo(Scalar(255,255,255));
 //		}
 //	}
 
+	//aplicando o gabor nas janelas internas
 	for (int i = 1; i < row/N - 1; i++) {
 			for (int j = 1; j <  col/N - 1; j++) {
 				if ( windowsTemp[i][j]->getAngle() != GABOR_NOT_APPLICABLE) {
@@ -777,89 +794,26 @@ void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N)
 					if (media > media2) {
 //						windowsTemp[i][j]->imageWindow.copyTo(windowsFinal[i][j]->imageWindow);
 						windowsTemp[i][j]->imageWindow.copyTo((*windows)[i][j]->imageWindow);
+//						windowsTemp[i][j]->imageWindow.copyTo((*windowsNew)[i - 1][j - 1]->imageWindow);
 					}
 					else {
 //						windowsTemp2[i][j]->imageWindow.copyTo(windowsFinal[i][j]->imageWindow);
 						windowsTemp2[i][j]->imageWindow.copyTo((*windows)[i][j]->imageWindow);
+//						windowsTemp2[i][j]->imageWindow.copyTo((*windowsNew)[i - 1][j - 1]->imageWindow);
 					}
 				}
 			}
 		}
-//
-//		Mat fullImage;
-//		fullImage.create(row, col, CV_8UC1);
-//		groupImageWindows(&fullImage, windowsFinal, row, col, N);
-//
-//		string nome;
-//		nome.append("Imagem Final depois do Gabor ");
-//		nome.append(static_cast<ostringstream*>( &(ostringstream() << w) )->str());
-//		imshow (nome, fullImage);
-
-		Mat tempImage;
-		tempImage.create(row, col, CV_8UC1);
-		groupImageWindows(&tempImage, windowsTemp, row, col, N);
-
-		string sqlstr;
-		sqlstr.append("teste ");
-		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << w) )->str());
-		//imshow (sqlstr, tempImage);
-
-		Mat tempImage2;
-		tempImage2.create(row, col, CV_8UC1);
-		groupImageWindows(&tempImage2, windowsTemp2, row, col, N);
-
-		string sqlstr2;
-		sqlstr2.append("teste2 ");
-		sqlstr2.append(static_cast<ostringstream*>( &(ostringstream() << w) )->str());
-		//imshow (sqlstr2, tempImage2);
-
-
-	//PERCORRE A IMAGEM COMBINADA DE DOIS GABORS PARA CORRIGIR JANELAS QUE NÃO ESTÃO ADEQUADAS
-	//precisa percorrer as janelas deixando duas de sobra para olhar os vizinhos
-//	for (int i = 2; i < row/N - 2; i++) {
-//		for (int j = 2; j <  col/N - 2; j++) {
-//			if (windowsFinal[i][j]->getAngle() != GABOR_NOT_APPLICABLE) {
-//				float mediaVizinhas = 0;
-//				float media = mean(windowsFinal[i][j]->getImageWindow(), windowsFinal[i][j]->getImageWindow())[0];
-//				cout << "media " << media << endl;
-//
-//				int count = 0;
-//				for (int k = i - 1; k <= i +1; k +=2) {
-//					for (int l = j - 1; l <= j +1; l +=2) {
-//						if (windowsFinal[k][l]->getAngle() != GABOR_NOT_APPLICABLE) {
-//							count ++;
-//							mediaVizinhas = mediaVizinhas + mean(windowsFinal[k][l]->getImageWindow(), windowsFinal[k][l]->getImageWindow())[0];
-//						}
-//					}
-//				}
-//				if ( count != 0) {
-//					mediaVizinhas = mediaVizinhas/count;
-//
-//					if (abs(media - mediaVizinhas) > 5) {
-//						cout << "mudou a imagem da janela" << endl;
-//
-//						float media1 = mean(windowsTemp[i][j]->imageWindow, windowsTemp[i][j]->imageWindow)[0];
-//						float media2 = mean(windowsTemp2[i][j]->imageWindow, windowsTemp2[i][j]->imageWindow)[0];
-//
-//						if (media1 > media2) {
-//							windowsTemp2[i][j]->imageWindow.copyTo(windowsFinal[i][j]->imageWindow);
-//						}
-//						else {
-//							windowsTemp[i][j]->imageWindow.copyTo(windowsFinal[i][j]->imageWindow);//.copyTo(&windowsTemp[i][j]->imageWindow);
-//						}
-//
-//					}
-//				}
 
 	for (int i = 0; i < row/N; i++){
 		for (int j = 0; j < col/N;  j++){
-			windowsTemp[i][j];
+			delete windowsTemp[i][j];
 		}
 	}
 
 	for (int i = 0; i < row/N; i++){
 		for (int j = 0; j < col/N;  j++){
-			windowsTemp2[i][j];
+			delete windowsTemp2[i][j];
 		}
 	}
 

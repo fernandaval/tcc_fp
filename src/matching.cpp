@@ -6,29 +6,7 @@
  */
 
 #include "matching.hpp"
-
-//PRISCILA
-#define bozorthPath "/home/priscila/Rel_4.2.0/bozorth3/bin/bozorth3"
-#define bdPath "/home/priscila/tcc_fp/fingerprint.db"
-#define xytPath "/home/priscila/tcc_fp/minutiae/minutiae_ref.xyt"
-#define inputPath "/home/priscila/tcc_fp/minutiae/minutiae.xyt"
-//PRISCILA
-
-//FERNANDA
-/*
-#define bozorthPath "/home/fernanda/Documents/tcc/nbis/Rel_4.2.0/bozorth3/bin/bozorth3"
-#define bdPath "/home/fernanda/workspace/c/tcc_fp/fingerprint.db"
-#define xytPath "/home/fernanda/workspace/c/tcc_fp/minutiae/minutiae_ref.xyt"
-#define inputPath "/home/fernanda/workspace/c/tcc_fp/minutiae/minutiae.xyt"
-*/
-//FERNANDA
-
-//RAFAEL
-//#define bozorthPath "/home/rafael/Desktop/nist/Rel_4.2.0/bozorth3/bin/bozorth3"
-//#define bdPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/fingerprint.db"
-//#define xytPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/minutiae/minutiae_ref.xyt"
-//#define inputPath "/home/rafael/Desktop/rafael/tcc_fe/core/tcc_fp/minutiae/minutiae.xyt"
-//RAFAEL
+#include "constants.hpp"
 
 #define TRUE 1
 #define FALSE 0
@@ -101,7 +79,7 @@ static int callbackMinutia(void *data, int argc, char **argv, char **azColName){
 int bozorth()
 {
 	char *my_env[] = {NULL};
-	char *newargv_bozorth[] = {"bozorth3", inputPath, xytPath, NULL};
+	char *newargv_bozorth[] = {"bozorth3", inputPath, xytPathMatching, NULL};
 
 	int fd[2];
 	if(pipe(fd) == -1){

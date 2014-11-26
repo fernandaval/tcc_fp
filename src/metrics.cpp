@@ -29,8 +29,8 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <sys/time.h>
 #include <sqlite3.h>
-
-#define bdPath "/home/priscila/tcc_fp/fingerprint.db"
+#include "constants.hpp"
+//#define bdPath "/home/priscila/tcc_fp/fingerprint.db"
 
 //parametros de teste
 #define scoreChange 2

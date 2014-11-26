@@ -130,7 +130,8 @@ void fillBD(VInterfaceDTO& vinterface) {
 					stra << a;
 					strb << b;
 					strc << c;
-					imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+//					imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+					imagePath = "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
 
 					runSystem1(vinterface,imagePath,option,(a*10)+b);
 					cout << "cadastrei template " << strc.str() << " do usuario " << stra.str() + strb.str() << " no sistema 1" << endl;
@@ -227,6 +228,7 @@ void runSystem2(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 
 	imwrite(equalized2Path, equalizedImage);
 
+
 	//BINARIZATION
 	struct timeval binarizationTimeBefore, binarizationTimeAfter;  // removed comma
 	gettimeofday (&binarizationTimeBefore, NULL);
@@ -300,6 +302,7 @@ void runSystem3(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 	Mat imageWhiteBorder;
 	int N, col, row;
 	vector < vector <window*> > windows;
+	vector < vector <window*> > windowsPostGabor;
 
 	//Leitura da imagem de entrada
 	imageRead(&originalImage, &dpi, imagePath);
@@ -351,11 +354,11 @@ void runSystem3(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 	groupImageWindows(&fullImage, windows, row, col, N);
 	struct timeval gaborFilterTimeBefore, gaborFilterTimeAfter;  // removed comma
 	gettimeofday (&gaborFilterTimeBefore, NULL);
+
 //	orientationMapOLD(&windows, row, col, N);
 	orientationMap(&windows, row, col, N);
 //	frequencyMap(&windows, row, col, N);
-	//cout << "depois mapa de orientação, antes gabor" << endl;
-	gaborFilter (&windows, row, col, N);
+	gaborFilter (&windows, row, col, N); //, &windowsPostGabor);
 	//cout << "depois gabor" << endl;
 	gettimeofday (&gaborFilterTimeAfter, NULL);
 	float gaborFilterTime = ((gaborFilterTimeAfter.tv_sec - gaborFilterTimeBefore.tv_sec)
@@ -367,21 +370,24 @@ void runSystem3(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 	Mat imageAfterGabor;
 	imageAfterGabor.create(row, col, CV_8UC1);
 	groupImageWindows(&imageAfterGabor, windows, row, col, N);
+	imshow("gabor", imageAfterGabor);
+
+	Mat imageCropped(imageAfterGabor, Rect(N, N, col - 2*N, row - 2*N));
 
 	vinterface.setGaborFilterTime3(gaborFilterTime);
-	imwrite(gabor3Path, imageAfterGabor);
+	imwrite(gabor3Path, imageCropped);
 
 	//BINARIZATION
 	struct timeval binarizationTimeBefore, binarizationTimeAfter;  // removed comma
 	gettimeofday (&binarizationTimeBefore, NULL);
 	//binarization(&windows, row, col, N);
-	imageBinarization (&imageAfterGabor);
+	imageBinarization (&imageCropped);
 	gettimeofday (&binarizationTimeAfter, NULL);
 	float binarizationTime = ((binarizationTimeAfter.tv_sec - binarizationTimeBefore.tv_sec)
 				+ (binarizationTimeAfter.tv_usec - binarizationTimeBefore.tv_usec)/(float)1000000);
 	//cout << "binarizationTime(3): " << binarizationTime << " segundos" << endl;
 	vinterface.setBinarizationTime3(binarizationTime);
-	imwrite(binarized3Path,imageAfterGabor);
+	imwrite(binarized3Path,imageCropped);
 
 	//THINNING
 
@@ -398,12 +404,12 @@ void runSystem3(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 
 	//Converte a imagem no formato colorido para que seja possível utilizá-la na hora de exibir as minúcias (em cor)
 	Mat minutiaeImage;
-	cvtColor(imageAfterGabor, minutiaeImage, CV_GRAY2RGB);
+	cvtColor(imageCropped, minutiaeImage, CV_GRAY2RGB);
 
 	//MINUTIA EXTRACTION
 	struct timeval minutiaeExtractionTimeBefore, minutiaeExtractionTimeAfter;  // removed comma
 	gettimeofday (&minutiaeExtractionTimeBefore, NULL);
-	minutiaeExtract(imageAfterGabor,idSystem,option,idUser);
+	minutiaeExtract(imageCropped,idSystem,option,idUser);
 	gettimeofday (&minutiaeExtractionTimeAfter, NULL);
 	float minutiaeExtractionTime = ((minutiaeExtractionTimeAfter.tv_sec - minutiaeExtractionTimeBefore.tv_sec)
 				+ (minutiaeExtractionTimeAfter.tv_usec - minutiaeExtractionTimeBefore.tv_usec)/(float)1000000);
@@ -501,7 +507,7 @@ void Main::showImage (string path){
 
 void Main::execute(HasCallbackClass *_clazz, string imagePath) {
 
-	//fillBD(this->vInterfaceDTO);
+//	fillBD(this->vInterfaceDTO);
 
 	//imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/108_8.tif"; //apenas para teste
 
@@ -509,10 +515,8 @@ void Main::execute(HasCallbackClass *_clazz, string imagePath) {
 	runSystem2(this->vInterfaceDTO, imagePath,2,0);
 	runSystem3(this->vInterfaceDTO, imagePath,2,0);
 
-	//runTests(this->vInterfaceDTO);
+//	runTests(this->vInterfaceDTO);
 
 	_clazz->callback();
 	//waitKey(0);
-
-	//TODO fazer o delete das windows
 }

@@ -57,7 +57,8 @@ void getWindowBorder (Mat *imageWithBorder, int N, vector < vector <window*> > w
 
 void removeWindowBorder( Mat *imageWithoutBorder, Mat imageWithBorder, int originalSize, int newSize);
 
-void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N);
+//void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N);
+void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N);//, vector < vector <window*> > *windowsNew);
 
 Mat do_FFT(Mat padded);
 
