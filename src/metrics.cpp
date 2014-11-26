@@ -29,13 +29,17 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <sys/time.h>
 #include <sqlite3.h>
+
 #include "constants.hpp"
 //#define bdPath "/home/priscila/tcc_fp/fingerprint.db"
 
 //parametros de teste
 #define scoreChange 2
-#define minimumTolerant 12
+#define minimumTolerant 14
 #define minimumRigorous 20
+#define limitFAR 0.05
+#define limitFRR 0.05
+#define quantityTransitory 3
 
 using namespace std;
 
@@ -199,12 +203,24 @@ void minimumScoresUpdate() {
 	float fr = (float)falseRejection;
 	float falseRejectionRate = fr/(tr+fr);
 
-	//cout << "falseRejectionRate do Tolerante: " << falseRejectionRate << endl;
-
-	if (falseRejectionRate > 0.05) {
-		sqlstr = "UPDATE operationMode SET minimumScore = ";
-		int temp = score - scoreChange;
-		if (temp >= minimumTolerant) { //minimumScore não deve ultrapassar esse limite mínimo
+	if (fa+ta+tr+fr > quantityTransitory) {
+		if (falseRejectionRate > limitFRR) {
+			sqlstr = "UPDATE operationMode SET minimumScore = ";
+			int temp = score - scoreChange;
+			if (temp >= minimumTolerant) { //minimumScore não deve ultrapassar esse limite mínimo
+				sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << temp) )->str());
+				sqlstr.append(" WHERE id = 2 AND idSystem = 3;");
+				const char * sql2 = sqlstr.c_str();
+				rc = sqlite3_exec(db, sql2, callbackNone, 0, &zErrMsg);
+				if( rc != SQLITE_OK ){
+				  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+				  sqlite3_free(zErrMsg);
+				}
+			}
+		}
+		else {
+			sqlstr = "UPDATE operationMode SET minimumScore = ";
+			int temp = score + scoreChange;
 			sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << temp) )->str());
 			sqlstr.append(" WHERE id = 2 AND idSystem = 3;");
 			const char * sql2 = sqlstr.c_str();
@@ -213,18 +229,6 @@ void minimumScoresUpdate() {
 			  fprintf(stderr, "SQL error: %s\n", zErrMsg);
 			  sqlite3_free(zErrMsg);
 			}
-		}
-	}
-	else {
-		sqlstr = "UPDATE operationMode SET minimumScore = ";
-		int temp = score + scoreChange;
-		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << temp) )->str());
-		sqlstr.append(" WHERE id = 2 AND idSystem = 3;");
-		const char * sql2 = sqlstr.c_str();
-		rc = sqlite3_exec(db, sql2, callbackNone, 0, &zErrMsg);
-		if( rc != SQLITE_OK ){
-		  fprintf(stderr, "SQL error: %s\n", zErrMsg);
-		  sqlite3_free(zErrMsg);
 		}
 	}
 
@@ -237,23 +241,16 @@ void minimumScoresUpdate() {
 	  sqlite3_free(zErrMsg);
 	}
 
+	fa = (float)falseAcceptance;
+	ta = (float)trueAcceptance;
+	tr = (float)trueRejection;
+	fr = (float)falseRejection;
 	float falseAcceptanceRate = fa/(fa+ta);
-	if (falseAcceptanceRate > 0.05) {
-		sqlstr = "UPDATE operationMode SET minimumScore = ";
-		int temp = score + scoreChange;
-		sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << temp) )->str());
-		sqlstr.append(" WHERE id = 3 AND idSystem = 3;");
-		const char * sql2 = sqlstr.c_str();
-		rc = sqlite3_exec(db, sql2, callbackNone, 0, &zErrMsg);
-		if( rc != SQLITE_OK ){
-		  fprintf(stderr, "SQL error: %s\n", zErrMsg);
-		  sqlite3_free(zErrMsg);
-		}
-	}
-	else {
-		sqlstr = "UPDATE operationMode SET minimumScore = ";
-		int temp = score - scoreChange;
-		if (temp >= minimumRigorous) { //sistema rigoroso nunca deve ter nota de corte menor do que esse limite
+
+	if (fa+ta+tr+fr > quantityTransitory) {
+		if (falseAcceptanceRate > limitFAR) {
+			sqlstr = "UPDATE operationMode SET minimumScore = ";
+			int temp = score + scoreChange;
 			sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << temp) )->str());
 			sqlstr.append(" WHERE id = 3 AND idSystem = 3;");
 			const char * sql2 = sqlstr.c_str();
@@ -261,6 +258,20 @@ void minimumScoresUpdate() {
 			if( rc != SQLITE_OK ){
 			  fprintf(stderr, "SQL error: %s\n", zErrMsg);
 			  sqlite3_free(zErrMsg);
+			}
+		}
+		else {
+			sqlstr = "UPDATE operationMode SET minimumScore = ";
+			int temp = score - scoreChange;
+			if (temp >= minimumRigorous) { //sistema rigoroso nunca deve ter nota de corte menor do que esse limite
+				sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << temp) )->str());
+				sqlstr.append(" WHERE id = 3 AND idSystem = 3;");
+				const char * sql2 = sqlstr.c_str();
+				rc = sqlite3_exec(db, sql2, callbackNone, 0, &zErrMsg);
+				if( rc != SQLITE_OK ){
+				  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+				  sqlite3_free(zErrMsg);
+				}
 			}
 		}
 	}

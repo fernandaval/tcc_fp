@@ -1,4 +1,4 @@
-
+/*
 //FERNANDA
 //preProcessing.cpp
 #define outputPath "/home/fernanda/Documents/tcc/imagens_teste/Output/"
@@ -30,8 +30,8 @@
 #define inputPath "/home/fernanda/workspace/c/tcc_fp/minutiae/minutiae.xyt"
 
 //FERNANDA
+*/
 
-/*
 //PRISCILA
 //preProcessing.cpp
 #define outputPath "/home/priscila/Documents/tcc/imagens_teste/Output/"
@@ -57,10 +57,16 @@
 #define imagePathME "/home/priscila/tcc_fp/minutiae"
 #define xytPath "/home/priscila/tcc_fp/minutiae/minutiae.xyt"
 
+//matching.cpp
+#define bozorthPath "/home/priscila/Rel_4.2.0/bozorth3/bin/bozorth3"
+#define xytPathMatching "/home/priscila/tcc_fp/minutiae/minutiae_ref.xyt"
+#define inputPath "/home/priscila/tcc_fp/minutiae/minutiae.xyt"
+
+
 //PRISCILA
 
 
-
+/*
 //RAFAEL
 
 //preProcessing.cpp

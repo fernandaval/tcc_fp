@@ -74,26 +74,25 @@ void runTests(VInterfaceDTO& vinterface) {
 					strc << c;
 
 					//imagens que deveriam ser aceitas
-					string temp = imagePathTCCFP1;
-					imagePath = temp + stra.str() + strb.str() + "_" + strc.str() + ".tif";
-
+					imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+					cout << "image path: " << imagePath << endl;
 					cout << "USUARIO CADASTRADO" << endl;
 					runSystem1(vinterface,imagePath,option,(a*10)+b);
 					runSystem2(vinterface,imagePath,option,(a*10)+b);
 					runSystem3(vinterface,imagePath,option,(a*10)+b);
 
-					updateMetrics(true,vinterface);
+					updateMetricsLocal(true,vinterface);
 
 					cout << "usuario NAO cadastrado" << endl;
 
 					//imagens que deveriam ser rejeitadas
-					imagePath = imagePathTCCFP2 + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+					imagePath = "/home/priscila/BDs_imagens_de_digitais/2000/DB2/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
 
 					runSystem1(vinterface,imagePath,option,(a*10)+b);
 					runSystem2(vinterface,imagePath,option,(a*10)+b);
 					runSystem3(vinterface,imagePath,option,(a*10)+b);
 
-					updateMetrics(false,vinterface);
+					updateMetricsLocal(false,vinterface);
 				}
 				c = c + 1;
 			}
@@ -130,8 +129,8 @@ void fillBD(VInterfaceDTO& vinterface) {
 					stra << a;
 					strb << b;
 					strc << c;
-//					imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
-					imagePath = "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+					imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+//					imagePath = "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
 
 					runSystem1(vinterface,imagePath,option,(a*10)+b);
 					cout << "cadastrei template " << strc.str() << " do usuario " << stra.str() + strb.str() << " no sistema 1" << endl;
@@ -358,7 +357,7 @@ void runSystem3(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 //	orientationMapOLD(&windows, row, col, N);
 	orientationMap(&windows, row, col, N);
 //	frequencyMap(&windows, row, col, N);
-	gaborFilter (&windows, row, col, N); //, &windowsPostGabor);
+	//gaborFilter (&windows, row, col, N); //, &windowsPostGabor);
 	//cout << "depois gabor" << endl;
 	gettimeofday (&gaborFilterTimeAfter, NULL);
 	float gaborFilterTime = ((gaborFilterTimeAfter.tv_sec - gaborFilterTimeBefore.tv_sec)
@@ -370,7 +369,6 @@ void runSystem3(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 	Mat imageAfterGabor;
 	imageAfterGabor.create(row, col, CV_8UC1);
 	groupImageWindows(&imageAfterGabor, windows, row, col, N);
-	imshow("gabor", imageAfterGabor);
 
 	Mat imageCropped(imageAfterGabor, Rect(N, N, col - 2*N, row - 2*N));
 
@@ -485,7 +483,7 @@ void Main::updateMetrics(bool feedback, HasCallbackClass *_clazz) {
 	_clazz->callback();
 }
 
-void updateMetrics(bool feedback, VInterfaceDTO& vinterface) {
+void updateMetricsLocal(bool feedback, VInterfaceDTO& vinterface) {
 
 	metricsUpdate(feedback,vinterface.getAccepted1(),vinterface.getAccepted2(),vinterface.getAccepted31(),vinterface.getAccepted32(),vinterface.getAccepted33());
 	minimumScoresUpdate();
@@ -507,16 +505,34 @@ void Main::showImage (string path){
 
 void Main::execute(HasCallbackClass *_clazz, string imagePath) {
 
-//	fillBD(this->vInterfaceDTO);
+	fillBD(this->vInterfaceDTO);
 
 	//imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/108_8.tif"; //apenas para teste
 
-	runSystem1(this->vInterfaceDTO, imagePath,2,0);
-	runSystem2(this->vInterfaceDTO, imagePath,2,0);
-	runSystem3(this->vInterfaceDTO, imagePath,2,0);
+//	runSystem1(this->vInterfaceDTO, imagePath,2,0);
+//	runSystem2(this->vInterfaceDTO, imagePath,2,0);
+//	runSystem3(this->vInterfaceDTO, imagePath,2,0);
 
-//	runTests(this->vInterfaceDTO);
+	runTests(this->vInterfaceDTO);
 
+	//testes manuais
+	/*
+	int option = 2;
+	int a = 0;
+	int b = 5;
+	int c = 7;
+	stringstream stra;
+	stringstream strb;
+	stringstream strc;
+	stra << a;
+	strb << b;
+	strc << c;
+	imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB2/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+	runSystem1(this->vInterfaceDTO,imagePath,option,(a*10)+b);
+	runSystem2(this->vInterfaceDTO,imagePath,option,(a*10)+b);
+	runSystem3(this->vInterfaceDTO,imagePath,option,(a*10)+b);
+	updateMetricsLocal(false,this->vInterfaceDTO);
+	*/
 	_clazz->callback();
 	//waitKey(0);
 }

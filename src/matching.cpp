@@ -177,7 +177,7 @@ bool matching2()
 	   }
 
 	   ofstream myfile;
-	   myfile.open(xytPath);
+	   myfile.open(xytPathMatching);
 	   if (myfile.is_open()) {
 		   for(int a=0; a<results_x.size(); a++){
 			   myfile << results_x[a] << " " << results_y[a] << " " << results_theta[a] << " " << results_quality[a] << "\n";
@@ -245,7 +245,7 @@ bool matching(int idSystem, int idMode)
 	   }
 
 	   ofstream myfile;
-	   myfile.open(xytPath);
+	   myfile.open(xytPathMatching);
 
 	   if (myfile.is_open()) {
 		   myfile << minutiae;
@@ -265,7 +265,10 @@ bool matching(int idSystem, int idMode)
 	   }
 
 	   //cout << "modo: " << idMode << " - note de corte: " << minimumScore << endl;
-	   if (bozorth()>=minimumScore){
+
+	   int temp = bozorth();
+	   cout << "nota de similaridade: " << temp << endl;
+	   if (temp>=minimumScore){
 		   //cout << "Matching com template " << results_id[k] << "!\n";
 		   approval = true;
 	   }
