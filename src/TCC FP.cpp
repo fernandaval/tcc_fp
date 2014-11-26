@@ -511,8 +511,8 @@ void Main::execute(HasCallbackClass *_clazz, string imagePath) {
 
 	//imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/108_8.tif"; //apenas para teste
 
-	runSystem1(this->vInterfaceDTO, imagePath,2,0);
-	runSystem2(this->vInterfaceDTO, imagePath,2,0);
+//	runSystem1(this->vInterfaceDTO, imagePath,2,0);
+//	runSystem2(this->vInterfaceDTO, imagePath,2,0);
 	runSystem3(this->vInterfaceDTO, imagePath,2,0);
 
 //	runTests(this->vInterfaceDTO);
