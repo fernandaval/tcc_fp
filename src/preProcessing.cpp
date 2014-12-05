@@ -601,79 +601,120 @@ void orientationMapOLD (vector < vector <window*> > *windows, int row, int col, 
 //int i, int j: índices do vetor window para saber qual janela será usada como base
 void getWindowBorder (Mat *imageWithBorder, int N, vector < vector <window*> > windows, int i, int j) {
 
-	imageWithBorder->create(N + 4, N + 4, windows[i][j]->getImageWindow().type());
+	cout << "entrou no get Windows border" << endl;
+//	imageWithBorder->create(N + 4, N + 4, windows[i][j]->getImageWindow().type());
+	imageWithBorder->create(N + 10, N + 10, windows[i][j]->getImageWindow().type());
+
+	cout << "criou imagem" << endl;
 
 	//PREENCHE BORDA SUPERIOR ESQUERDA
 	//Para preencher esta borda, precisa acessar a imagem da janela (i-1, j-1)
-	for (int row = 0; row < 2; row++) {
-		for (int col = 0; col < 2; col++) {
-			imageWithBorder->at<uchar>(row, col) = windows[i - 1][j - 1]->getImageWindow().at<uchar>((N - 2 + row), (N - 2 + col));
+	for (int row = 0; row < 10; row++) {
+		for (int col = 0; col < 10; col++) {
+//	for (int row = 0; row < 2; row++) {
+//		for (int col = 0; col < 2; col++) {
+//			imageWithBorder->at<uchar>(row, col) = windows[i - 1][j - 1]->getImageWindow().at<uchar>((N - 2 + row), (N - 2 + col));
+			imageWithBorder->at<uchar>(row, col) = windows[i - 1][j - 1]->getImageWindow().at<uchar>((N - 10 + row), (N - 10 + col));
 		}
 	}
+	cout << "preencheu borda superior esquerda" << endl;
 
 	//PREENCHE BORDA INFERIOR ESQUERDA
 	//Para preencher esta borda, precisa acessar a imagem da janela (i+1, j-1)
-	for (int row = N + 2; row < N + 4; row++) {
-		for (int col = 0; col < 2; col++) {
-			imageWithBorder->at<uchar>(row, col) = windows[i + 1][j - 1]->getImageWindow().at<uchar>((row - (N + 2)), (col + (N - 2)));
+	for (int row = N + 10; row < N + 20; row++) {
+			for (int col = 0; col < 10; col++) {
+//	for (int row = N + 2; row < N + 4; row++) {
+//		for (int col = 0; col < 2; col++) {
+//			imageWithBorder->at<uchar>(row, col) = windows[i + 1][j - 1]->getImageWindow().at<uchar>((row - (N + 2)), (col + (N - 2)));
+				imageWithBorder->at<uchar>(row, col) = windows[i + 1][j - 1]->getImageWindow().at<uchar>((row - (N + 10)), (col + (N - 10)));
 		}
 	}
+	cout << "preencheu borda inferior esquerda" << endl;
+
 
 	//PREENCHE BORDA SUPERIOR DIREITA
 	//Para preencher esta borda, precisa acessar a imagem da janela (i-1, j+1)
-	for (int row = 0 ; row < 2; row++) {
-		for (int col = N + 2; col < N + 4; col++) {
-			imageWithBorder->at<uchar>(row, col) = windows[i - 1][j + 1]->getImageWindow().at<uchar>((N - 2 + row), (col - (N + 2)));
+	for (int row = 0 ; row < 10; row++) {
+		for (int col = N + 10; col < N + 20; col++) {
+			imageWithBorder->at<uchar>(row, col) = windows[i - 1][j + 1]->getImageWindow().at<uchar>((N - 10 + row), (col - (N + 10)));
+//	for (int row = 0 ; row < 2; row++) {
+//		for (int col = N + 2; col < N + 4; col++) {
+//			imageWithBorder->at<uchar>(row, col) = windows[i - 1][j + 1]->getImageWindow().at<uchar>((N - 2 + row), (col - (N + 2)));
 		}
 	}
+	cout << "preencheu borda superior direita" << endl;
 
 	//PREENCHE BORDA INFERIOR DIREITA
 	//Para preencher esta borda, precisa acessar a imagem da janela (i+1, j+1)
-	for (int row = N + 2; row < N + 4; row++) {
-		for (int col = N + 2; col < N + 4; col++) {
-			imageWithBorder->at<uchar>(row, col) = windows[i + 1][j + 1]->getImageWindow().at<uchar>((row - (N + 2)), (col - (N + 2)));
+	for (int row = N + 10; row < N + 20; row++) {
+		for (int col = N + 10; col < N + 20; col++) {
+			imageWithBorder->at<uchar>(row, col) = windows[i + 1][j + 1]->getImageWindow().at<uchar>((row - (N + 10)), (col - (N + 10)));
+//	for (int row = N + 2; row < N + 4; row++) {
+//		for (int col = N + 2; col < N + 4; col++) {
+//			imageWithBorder->at<uchar>(row, col) = windows[i + 1][j + 1]->getImageWindow().at<uchar>((row - (N + 2)), (col - (N + 2)));
 		}
 	}
+	cout << "preencheu borda inferior direita" << endl;
 
 	//PREENCHE TOPO
 	//Para preencher esta borda, precisa acessar a imagem da janela (i-1, j)
-	for (int row  = 0; row < 2; row++) {
-		for (int col = 2; col < N + 2; col++) {
-			imageWithBorder->at<uchar>(row, col) = windows[i - 1][j]->getImageWindow().at<uchar>(row + (N - 2), col - 2);
+	for (int row  = 0; row < 10; row++) {
+		for (int col = 10; col < N + 10; col++) {
+			imageWithBorder->at<uchar>(row, col) = windows[i - 1][j]->getImageWindow().at<uchar>(row + (N - 10), col - 10);
+//	for (int row  = 0; row < 2; row++) {
+//		for (int col = 2; col < N + 2; col++) {
+//			imageWithBorder->at<uchar>(row, col) = windows[i - 1][j]->getImageWindow().at<uchar>(row + (N - 2), col - 2);
 		}
 	}
+	cout << "preencheu topo" << endl;
 
 	//PREENCHE BASE (BOTTOM)
 	//Para preencher esta borda, precisa acessar a imagem da janela (i+1, j)
-	for (int row  = N + 2; row < N + 4; row++) {
-		for (int col = 2; col < N + 2; col++) {
-			imageWithBorder->at<uchar>(row, col) = windows[i + 1][j]->getImageWindow().at<uchar>(row - (N - 2), col - 2);
+	for (int row  = N + 10; row < N + 20; row++) {
+		for (int col = 10; col < N + 10; col++) {
+			imageWithBorder->at<uchar>(row, col) = windows[i + 1][j]->getImageWindow().at<uchar>(row - (N - 10), col - 10);
+//	for (int row  = N + 2; row < N + 4; row++) {
+//		for (int col = 2; col < N + 2; col++) {
+//			imageWithBorder->at<uchar>(row, col) = windows[i + 1][j]->getImageWindow().at<uchar>(row - (N - 2), col - 2);
 		}
 	}
+	cout << "preencheu bottom" << endl;
 
 	//PREENCHE LATERAL ESQUERDA
 	//Para preencher esta borda, precisa acessar a imagem da janela (i, j - 1)
-	for (int row  = 2; row < N + 2; row++) {
-		for (int col = 0; col < 2; col++) {
-			imageWithBorder->at<uchar>(row, col) = windows[i][j - 1]->getImageWindow().at<uchar>(row -  2, col + (N - 2));
+	for (int row  = 10; row < N + 10; row++) {
+		for (int col = 0; col < 10; col++) {
+			imageWithBorder->at<uchar>(row, col) = windows[i][j - 1]->getImageWindow().at<uchar>(row -  10, col + (N - 10));
+//	for (int row  = 2; row < N + 2; row++) {
+//		for (int col = 0; col < 2; col++) {
+//			imageWithBorder->at<uchar>(row, col) = windows[i][j - 1]->getImageWindow().at<uchar>(row -  2, col + (N - 2));
 		}
 	}
+	cout << "preencheu lateral esquerda" << endl;
 
 	//PREENCHE LATERAL DIREITA
 	//Para preencher esta borda, precisa acessar a imagem da janela (i, j - 1)
-	for (int row = 2; row < N + 2; row++) {
-		for (int col = 0; col < 2; col++) {
-			imageWithBorder->at<uchar>(row, col) = windows[i][j - 1]->getImageWindow().at<uchar>(row -  2, col + (N - 2));
+	for (int row = 10; row < N + 10; row++) {
+		for (int col = 0; col < 10; col++) {
+			imageWithBorder->at<uchar>(row, col) = windows[i][j - 1]->getImageWindow().at<uchar>(row -  10, col + (N - 10));
+//	for (int row = 2; row < N + 2; row++) {
+//		for (int col = 0; col < 2; col++) {
+//			imageWithBorder->at<uchar>(row, col) = windows[i][j - 1]->getImageWindow().at<uchar>(row -  2, col + (N - 2));
 		}
 	}
+	cout << "preencheu lateral direita esquerda" << endl;
 
 	//PREENCHE CENTRO
 	//Para preencher esta borda, precisa acessar a imagem da janela (i, j)
-	for (int row = 2; row < N + 2; row++) {
-		for (int col = 2; col < N + 2; col++) {
-			imageWithBorder->at<uchar>(row, col) = windows[i][j]->getImageWindow().at<uchar>(row -  2, col - 2);
+	for (int row = 10; row < N + 10; row++) {
+		for (int col = 10; col < N + 10; col++) {
+			imageWithBorder->at<uchar>(row, col) = windows[i][j]->getImageWindow().at<uchar>(row -  10, col - 10);
+//	for (int row = 2; row < N + 2; row++) {
+//		for (int col = 2; col < N + 2; col++) {
+//			imageWithBorder->at<uchar>(row, col) = windows[i][j]->getImageWindow().at<uchar>(row -  2, col - 2);
 		}
 	}
+	cout << "preencheu centro" << endl;
 
 	return;
 }
@@ -695,6 +736,7 @@ void removeWindowBorder( Mat *imageWithoutBorder, Mat imageWithBorder, int origi
 
 void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N) {//, vector < vector <window*> > *windowsNew) {
 
+	cout << "entrou no gabor" << endl;
 //	REVISAR PONTEIROS!!!
 
 	int w = 10; // frequencia a ser utilizada no Gabor
@@ -771,22 +813,32 @@ void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N)
 				if ( windowsTemp[i][j]->getAngle() != GABOR_NOT_APPLICABLE) {
 					Mat imageWithBorder;
 					getWindowBorder (&imageWithBorder, N, windowsTemp, i, j);
-
+					cout << "fim getwindowBorder" << endl;
 					Mat gaborKernel;
-					gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, windowsTemp[i][j]->getAngle()+ M_PI/2, w, 1, 0, CV_32F );
+//					gaborKernel = getGaborKernel( Size(N + 4,N + 4) , 4, windowsTemp[i][j]->getAngle()+ M_PI/2, w, 1, 0, CV_32F );
+					gaborKernel = getGaborKernel( Size(N+10,N+10), 4, windowsTemp[i][j]->getAngle()+ M_PI/2, w, 1, 0, CV_32F );
 
 					Mat gaborKernel2;
-					gaborKernel2 = getGaborKernel( Size(N + 4,N + 4) , 4, windowsTemp2[i][j]->getAngle(), w, 1, 0, CV_32F );
+//					gaborKernel2 = getGaborKernel( Size(N + 4,N + 4) , 4, windowsTemp2[i][j]->getAngle(), w, 1, 0, CV_32F );
+					gaborKernel2 = getGaborKernel( Size(N + 10,N + 10) , 4, windowsTemp2[i][j]->getAngle(), w, 1, 0, CV_32F );
+
+					cout << "fim gabor kernel" << endl;
 
 					Mat imageAux;
 					Mat imageAux2;
-					imageAux.create(N+4, N+4, imageWithBorder.type());
-					imageAux2.create(N+4, N+4, imageWithBorder.type());
+//					imageAux.create(N+4, N+4, imageWithBorder.type());
+//					imageAux2.create(N+4, N+4, imageWithBorder.type());
+					imageAux.create(N + 10, N + 10, imageWithBorder.type());
+					imageAux2.create(N + 10, N + 10, imageWithBorder.type());
+
+					cout << "fim image aux" << endl;
 					filter2D(imageWithBorder, imageAux, -1, gaborKernel);
 					filter2D(imageWithBorder, imageAux2, -1, gaborKernel2);
 
-					removeWindowBorder( &windowsTemp[i][j]->imageWindow, imageAux, N + 4, N);
-					removeWindowBorder( &windowsTemp2[i][j]->imageWindow, imageAux2, N + 4, N);
+//					removeWindowBorder( &windowsTemp[i][j]->imageWindow, imageAux, N + 4, N);
+//					removeWindowBorder( &windowsTemp2[i][j]->imageWindow, imageAux2, N + 4, N);
+					removeWindowBorder( &windowsTemp[i][j]->imageWindow, imageAux, N + 10, N);
+					removeWindowBorder( &windowsTemp2[i][j]->imageWindow, imageAux2, N + 10, N);
 
 					float media = mean(windowsTemp[i][j]->imageWindow, windowsTemp[i][j]->imageWindow)[0];
 					float media2 = mean(windowsTemp2[i][j]->imageWindow, windowsTemp2[i][j]->imageWindow)[0];
