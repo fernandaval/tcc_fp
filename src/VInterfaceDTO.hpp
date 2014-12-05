@@ -15,6 +15,21 @@ class VInterfaceDTO{
 
 public:
 
+	float getAvgTime1(void);
+	void setAvgTime1(float avgTime1);
+
+	float getAvgTime2(void);
+	void setAvgTime2(float avgTime2);
+
+	float getAvgTime31(void);
+	void setAvgTime31(float avgTime31);
+
+	float getAvgTime32(void);
+	void setAvgTime32(float avgTime32);
+
+	float getAvgTime33(void);
+	void setAvgTime33(float avgTime33);
+
 	float getTotalTime1(void);
 
 	float getTotalTime2(void);
@@ -178,6 +193,11 @@ private:
 	float matchingTime31;
 	float matchingTime32;
 	float matchingTime33;
+	float avgTime1;
+	float avgTime2;
+	float avgTime31;
+	float avgTime32;
+	float avgTime33;
 
 	bool accepted1;
 	bool accepted2;

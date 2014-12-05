@@ -5,7 +5,7 @@ drop table template;
 
 create table system(id integer not null, primary key (id));
 
-create table operationMode(id integer not null, idSystem int not null, falseRejection int, falseAcceptance int, trueRejection int, trueAcceptance int, minimumScore int, foreign key (idSystem) references system(id), primary key (id, idSystem));
+create table operationMode(id integer not null, idSystem int not null, falseRejection int, falseAcceptance int, trueRejection int, trueAcceptance int, minimumScore int, avgExecutionTime real, numberOfExecutions int, foreign key (idSystem) references system(id), primary key (id, idSystem));
 
 create table user(id integer not null, idSystem int not null, name varchar(40), rg varchar(15), cpf varchar(11), nusp varchar(10), email varchar(50), falseRejection int, falseAcceptance int, trueRejection int, trueAcceptance int, minimumScore int, foreign key (idSystem) references system(id), primary key (id, idSystem));
 
@@ -15,11 +15,11 @@ insert into system (id) values(1);
 insert into system (id) values(2);
 insert into system (id) values(3);
 
-insert into operationMode (id, idSystem, falseRejection, falseAcceptance, trueRejection, trueAcceptance, minimumScore) values (1,1,0,0,0,0,20);
-insert into operationMode (id, idSystem, falseRejection, falseAcceptance, trueRejection, trueAcceptance, minimumScore) values (1,2,0,0,0,0,20);
-insert into operationMode (id, idSystem, falseRejection, falseAcceptance, trueRejection, trueAcceptance, minimumScore) values (1,3,0,0,0,0,20);
-insert into operationMode (id, idSystem, falseRejection, falseAcceptance, trueRejection, trueAcceptance, minimumScore) values (2,3,0,0,0,0,20);
-insert into operationMode (id, idSystem, falseRejection, falseAcceptance, trueRejection, trueAcceptance, minimumScore) values (3,3,0,0,0,0,20);
+insert into operationMode (id, idSystem, falseRejection, falseAcceptance, trueRejection, trueAcceptance, minimumScore, avgExecutionTime, numberOfExecutions) values (1,1,0,0,0,0,20,0,0);
+insert into operationMode (id, idSystem, falseRejection, falseAcceptance, trueRejection, trueAcceptance, minimumScore, avgExecutionTime, numberOfExecutions) values (1,2,0,0,0,0,20,0,0);
+insert into operationMode (id, idSystem, falseRejection, falseAcceptance, trueRejection, trueAcceptance, minimumScore, avgExecutionTime, numberOfExecutions) values (1,3,0,0,0,0,20,0,0);
+insert into operationMode (id, idSystem, falseRejection, falseAcceptance, trueRejection, trueAcceptance, minimumScore, avgExecutionTime, numberOfExecutions) values (2,3,0,0,0,0,20,0,0);
+insert into operationMode (id, idSystem, falseRejection, falseAcceptance, trueRejection, trueAcceptance, minimumScore, avgExecutionTime, numberOfExecutions) values (3,3,0,0,0,0,20,0,0);
 
 insert into user (id,idSystem, name, rg, cpf, nusp, email, falseRejection, falseAcceptance, trueRejection, trueAcceptance, minimumScore) values(1,1,'','','','','',0,0,0,0,60);
 insert into user (id,idSystem, name, rg, cpf, nusp, email, falseRejection, falseAcceptance, trueRejection, trueAcceptance, minimumScore) values(2,1,'','','','','',0,0,0,0,60);

@@ -64,7 +64,7 @@ void runTests(VInterfaceDTO& vinterface) {
 		{
 			while (c<=8)
 			{
-				if (10*a+b <= 10) //Só executa para ID de usuário <= 10
+				if (10*a+b <= 2) //Só executa para ID de usuário <= 10
 				{
 					stringstream stra;
 					stringstream strb;
@@ -474,7 +474,7 @@ void runSystem3(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 
 void Main::updateMetrics(bool feedback, HasCallbackClass *_clazz) {
 
-	metricsUpdate(feedback,this->vInterfaceDTO.getAccepted1(),this->vInterfaceDTO.getAccepted2(),this->vInterfaceDTO.getAccepted31(),this->vInterfaceDTO.getAccepted32(),this->vInterfaceDTO.getAccepted33());
+	metricsUpdate(feedback,this->vInterfaceDTO.getAccepted1(),this->vInterfaceDTO.getAccepted2(),this->vInterfaceDTO.getAccepted31(),this->vInterfaceDTO.getAccepted32(),this->vInterfaceDTO.getAccepted33(),this->vInterfaceDTO.getTotalTime1(),this->vInterfaceDTO.getTotalTime2(),this->vInterfaceDTO.getTotalTime31(),this->vInterfaceDTO.getTotalTime32(),this->vInterfaceDTO.getTotalTime33());
 
 	minimumScoresUpdate();
 
@@ -485,7 +485,7 @@ void Main::updateMetrics(bool feedback, HasCallbackClass *_clazz) {
 
 void updateMetricsLocal(bool feedback, VInterfaceDTO& vinterface) {
 
-	metricsUpdate(feedback,vinterface.getAccepted1(),vinterface.getAccepted2(),vinterface.getAccepted31(),vinterface.getAccepted32(),vinterface.getAccepted33());
+	metricsUpdate(feedback,vinterface.getAccepted1(),vinterface.getAccepted2(),vinterface.getAccepted31(),vinterface.getAccepted32(),vinterface.getAccepted33(),vinterface.getTotalTime1(),vinterface.getTotalTime2(),vinterface.getTotalTime31(),vinterface.getTotalTime32(),vinterface.getTotalTime33());
 	minimumScoresUpdate();
 
 }
@@ -505,7 +505,7 @@ void Main::showImage (string path){
 
 void Main::execute(HasCallbackClass *_clazz, string imagePath) {
 
-	fillBD(this->vInterfaceDTO);
+	//fillBD(this->vInterfaceDTO);
 
 	//imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/108_8.tif"; //apenas para teste
 

@@ -7,6 +7,46 @@
 
 #include "VInterfaceDTO.hpp"
 
+float VInterfaceDTO::getAvgTime1(void){
+	return this->avgTime1;
+}
+
+float VInterfaceDTO::getAvgTime2(void){
+	return this->avgTime2;
+}
+
+float VInterfaceDTO::getAvgTime31(void){
+	return this->avgTime31;
+}
+
+float VInterfaceDTO::getAvgTime32(void){
+	return this->avgTime32;
+}
+
+float VInterfaceDTO::getAvgTime33(void){
+	return this->avgTime33;
+}
+
+void VInterfaceDTO::setAvgTime1(float avgTime1){
+	this->avgTime1 = avgTime1;
+}
+
+void VInterfaceDTO::setAvgTime2(float avgTime2){
+	this->avgTime2 = avgTime2;
+}
+
+void VInterfaceDTO::setAvgTime31(float avgTime31){
+	this->avgTime31 = avgTime31;
+}
+
+void VInterfaceDTO::setAvgTime32(float avgTime32){
+	this->avgTime32 = avgTime32;
+}
+
+void VInterfaceDTO::setAvgTime33(float avgTime33){
+	this->avgTime33 = avgTime33;
+}
+
 float VInterfaceDTO::getTotalTime1(void){
 	float totalTime = this->minutiaeExtractionTime1 + this->matchingTime1;
 	return totalTime;

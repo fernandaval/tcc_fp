@@ -10,7 +10,7 @@
 
 #include "VInterfaceDTO.hpp"
 
-void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted31, bool accepted32, bool accepted33);
+void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted31, bool accepted32, bool accepted33, float executionTime1, float executionTime2, float executionTime31, float executionTime32, float executionTime33);
 
 void minimumScoresUpdate();
 

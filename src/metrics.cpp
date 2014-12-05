@@ -48,6 +48,8 @@ int trueAcceptance;
 int trueRejection;
 int falseAcceptance;
 int falseRejection;
+float avgExecutionTime;
+int numberOfExecutions;
 
 static int callback(void *NotUsed, int argc, char **argv, char **azColName){
    int i;
@@ -59,6 +61,8 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName){
 		if (column == "falseAcceptance") falseAcceptance = atoi(temp);
 		if (column == "falseRejection") falseRejection = atoi(temp);
 		if (column == "minimumScore") score = atoi(temp);
+		if (column == "numberOfExecutions") numberOfExecutions = atoi(temp);
+		if (column == "avgExecutionTime") avgExecutionTime = atof(temp);
    }
    return 0;
 }
@@ -102,6 +106,7 @@ void refreshAllMetrics(VInterfaceDTO& vinterface) {
 	vinterface.setFrr1(fr/(tr+fr));
 	vinterface.setTar1(ta/(fa+ta));
 	vinterface.setTrr1(tr/(tr+fr));
+	vinterface.setAvgTime1(avgExecutionTime);
 
 	//sistema 2
 	sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 2;";
@@ -119,6 +124,7 @@ void refreshAllMetrics(VInterfaceDTO& vinterface) {
 	vinterface.setFrr2(fr/(tr+fr));
 	vinterface.setTar2(ta/(fa+ta));
 	vinterface.setTrr2(tr/(tr+fr));
+	vinterface.setAvgTime2(avgExecutionTime);
 
 	//sistema 3 modo padrão
 	sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 3;";
@@ -136,6 +142,7 @@ void refreshAllMetrics(VInterfaceDTO& vinterface) {
 	vinterface.setFrr31(fr/(tr+fr));
 	vinterface.setTar31(ta/(fa+ta));
 	vinterface.setTrr31(tr/(tr+fr));
+	vinterface.setAvgTime31(avgExecutionTime);
 
 	//sistema 3 modo tolerante
 	sqlstr = "SELECT * FROM operationMode WHERE id = 2 AND idSystem = 3;";
@@ -153,6 +160,7 @@ void refreshAllMetrics(VInterfaceDTO& vinterface) {
 	vinterface.setFrr32(fr/(tr+fr));
 	vinterface.setTar32(ta/(fa+ta));
 	vinterface.setTrr32(tr/(tr+fr));
+	vinterface.setAvgTime32(avgExecutionTime);
 
 	//sistema 3 modo rigoroso
 	sqlstr = "SELECT * FROM operationMode WHERE id = 3 AND idSystem = 3;";
@@ -170,6 +178,7 @@ void refreshAllMetrics(VInterfaceDTO& vinterface) {
 	vinterface.setFrr33(fr/(tr+fr));
 	vinterface.setTar33(ta/(fa+ta));
 	vinterface.setTrr33(tr/(tr+fr));
+	vinterface.setAvgTime33(avgExecutionTime);
 
 	return;
 }
@@ -277,11 +286,13 @@ void minimumScoresUpdate() {
 	}
 }
 
-void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted31, bool accepted32, bool accepted33) {
+void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted31, bool accepted32, bool accepted33, float executionTime1, float executionTime2, float executionTime31, float executionTime32, float executionTime33) {
 	sqlite3 *db;
 	char *zErrMsg = 0;
 	int rc;
 	string sqlstr;
+	float tempTime;
+	int tempNumber;
 
 	/* Open database */
 	rc = sqlite3_open(bdPath, &db);
@@ -399,6 +410,29 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 			}
 		}
 	}
+	//atualização do tempo médio de execução e número de execuções
+	sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 1;";
+	const char * sql3 = sqlstr.c_str();
+	rc = sqlite3_exec(db, sql3, callback, 0, &zErrMsg);
+	if( rc != SQLITE_OK ){
+	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+	  sqlite3_free(zErrMsg);
+	}
+	sqlstr = "UPDATE operationMode SET avgExecutionTime = ";
+	tempTime = ((avgExecutionTime*numberOfExecutions)+executionTime1)/(numberOfExecutions+1);
+	sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << tempTime) )->str());
+	sqlstr.append(", numberOfExecutions = ");
+	tempNumber = numberOfExecutions + 1;
+	cout<< "numberOfExeuctions: " << numberOfExecutions <<endl;
+	sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << tempNumber) )->str());
+	sqlstr.append(" WHERE id = 1 AND idSystem = 1;");
+	const char * sql4 = sqlstr.c_str();
+	rc = sqlite3_exec(db, sql4, callback, 0, &zErrMsg);
+	if( rc != SQLITE_OK ){
+	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+	  sqlite3_free(zErrMsg);
+	}
+
 
 	//Atualizando métricas do sistema 2
 	if (accepted2)
@@ -506,6 +540,27 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 			  sqlite3_free(zErrMsg);
 			}
 		}
+	}
+	//atualização do tempo médio de execução e número de execuções
+	sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 2;";
+	const char * sql5 = sqlstr.c_str();
+	rc = sqlite3_exec(db, sql5, callback, 0, &zErrMsg);
+	if( rc != SQLITE_OK ){
+	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+	  sqlite3_free(zErrMsg);
+	}
+	sqlstr = "UPDATE operationMode SET avgExecutionTime = ";
+	tempTime = ((avgExecutionTime*numberOfExecutions)+executionTime2)/(numberOfExecutions+1);
+	sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << tempTime) )->str());
+	sqlstr.append(", numberOfExecutions = ");
+	tempNumber = numberOfExecutions + 1;
+	sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << tempNumber) )->str());
+	sqlstr.append(" WHERE id = 1 AND idSystem = 2;");
+	const char * sql6 = sqlstr.c_str();
+	rc = sqlite3_exec(db, sql6, callback, 0, &zErrMsg);
+	if( rc != SQLITE_OK ){
+	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+	  sqlite3_free(zErrMsg);
 	}
 
 	//Atualizando métricas do sistema 3 modo 1
@@ -615,6 +670,27 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 			}
 		}
 	}
+	//atualização do tempo médio de execução e número de execuções
+	sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 3;";
+	const char * sql7 = sqlstr.c_str();
+	rc = sqlite3_exec(db, sql7, callback, 0, &zErrMsg);
+	if( rc != SQLITE_OK ){
+	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+	  sqlite3_free(zErrMsg);
+	}
+	sqlstr = "UPDATE operationMode SET avgExecutionTime = ";
+	tempTime = ((avgExecutionTime*numberOfExecutions)+executionTime31)/(numberOfExecutions+1);
+	sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << tempTime) )->str());
+	sqlstr.append(", numberOfExecutions = ");
+	tempNumber = numberOfExecutions + 1;
+	sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << tempNumber) )->str());
+	sqlstr.append(" WHERE id = 1 AND idSystem = 3;");
+	const char * sql8 = sqlstr.c_str();
+	rc = sqlite3_exec(db, sql8, callback, 0, &zErrMsg);
+	if( rc != SQLITE_OK ){
+	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+	  sqlite3_free(zErrMsg);
+	}
 
 	//Atualizando métricas do sistema 3 modo 2
 	if (accepted32)
@@ -723,6 +799,27 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 			}
 		}
 	}
+	//atualização do tempo médio de execução e número de execuções
+	sqlstr = "SELECT * FROM operationMode WHERE id = 2 AND idSystem = 3;";
+	const char * sql9 = sqlstr.c_str();
+	rc = sqlite3_exec(db, sql9, callback, 0, &zErrMsg);
+	if( rc != SQLITE_OK ){
+	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+	  sqlite3_free(zErrMsg);
+	}
+	sqlstr = "UPDATE operationMode SET avgExecutionTime = ";
+	tempTime = ((avgExecutionTime*numberOfExecutions)+executionTime32)/(numberOfExecutions+1);
+	sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << tempTime) )->str());
+	sqlstr.append(", numberOfExecutions = ");
+	tempNumber = numberOfExecutions + 1;
+	sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << tempNumber) )->str());
+	sqlstr.append(" WHERE id = 2 AND idSystem = 3;");
+	const char * sql10 = sqlstr.c_str();
+	rc = sqlite3_exec(db, sql10, callback, 0, &zErrMsg);
+	if( rc != SQLITE_OK ){
+	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+	  sqlite3_free(zErrMsg);
+	}
 
 	//Atualizando métricas do sistema 3 modo 3
 	if (accepted33)
@@ -830,6 +927,27 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 			  sqlite3_free(zErrMsg);
 			}
 		}
+	}
+	//atualização do tempo médio de execução e número de execuções
+	sqlstr = "SELECT * FROM operationMode WHERE id = 3 AND idSystem = 3;";
+	const char * sql11 = sqlstr.c_str();
+	rc = sqlite3_exec(db, sql11, callback, 0, &zErrMsg);
+	if( rc != SQLITE_OK ){
+	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+	  sqlite3_free(zErrMsg);
+	}
+	sqlstr = "UPDATE operationMode SET avgExecutionTime = ";
+	tempTime = ((avgExecutionTime*numberOfExecutions)+executionTime33)/(numberOfExecutions+1);
+	sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << tempTime) )->str());
+	sqlstr.append(", numberOfExecutions = ");
+	tempNumber = numberOfExecutions + 1;
+	sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << tempNumber) )->str());
+	sqlstr.append(" WHERE id = 3 AND idSystem = 3;");
+	const char * sql12 = sqlstr.c_str();
+	rc = sqlite3_exec(db, sql12, callback, 0, &zErrMsg);
+	if( rc != SQLITE_OK ){
+	  fprintf(stderr, "SQL error: %s\n", zErrMsg);
+	  sqlite3_free(zErrMsg);
 	}
 
 	sqlite3_close(db);
