@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
+#include <string>
 #include <fcntl.h>
 #include <cstdio>
 #include <cstdlib>
@@ -48,7 +49,7 @@ int trueAcceptance;
 int trueRejection;
 int falseAcceptance;
 int falseRejection;
-float avgExecutionTime;
+double avgExecutionTime;
 int numberOfExecutions;
 
 static int callback(void *NotUsed, int argc, char **argv, char **azColName){
@@ -62,7 +63,16 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName){
 		if (column == "falseRejection") falseRejection = atoi(temp);
 		if (column == "minimumScore") score = atoi(temp);
 		if (column == "numberOfExecutions") numberOfExecutions = atoi(temp);
-		if (column == "avgExecutionTime") avgExecutionTime = atof(temp);
+		//if (column == "avgExecutionTime") avgExecutionTime = atof(temp);
+		if (column == "avgExecutionTime")
+		{
+			string strtemp(temp);
+			string strtemp2(strtemp.substr(0,strtemp.find(".")));
+			string strtemp3(strtemp.substr(strtemp.find(".")+1,strtemp.length()));
+			string strtemp4(strtemp2 + "," + strtemp3);
+			avgExecutionTime = stof(strtemp4);
+			//cout << "callback - avgExecutionTime(stof): " << to_string(stof(strtemp4)) << endl;
+		}
    }
    return 0;
 }
@@ -107,6 +117,7 @@ void refreshAllMetrics(VInterfaceDTO& vinterface) {
 	vinterface.setTar1(ta/(fa+ta));
 	vinterface.setTrr1(tr/(tr+fr));
 	vinterface.setAvgTime1(avgExecutionTime);
+	cout << "avg time1: " << avgExecutionTime << endl;
 
 	//sistema 2
 	sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 2;";
@@ -125,6 +136,7 @@ void refreshAllMetrics(VInterfaceDTO& vinterface) {
 	vinterface.setTar2(ta/(fa+ta));
 	vinterface.setTrr2(tr/(tr+fr));
 	vinterface.setAvgTime2(avgExecutionTime);
+	cout << "avg time2: " << avgExecutionTime << endl;
 
 	//sistema 3 modo padrão
 	sqlstr = "SELECT * FROM operationMode WHERE id = 1 AND idSystem = 3;";
@@ -143,6 +155,7 @@ void refreshAllMetrics(VInterfaceDTO& vinterface) {
 	vinterface.setTar31(ta/(fa+ta));
 	vinterface.setTrr31(tr/(tr+fr));
 	vinterface.setAvgTime31(avgExecutionTime);
+	cout << "avg time31: " << avgExecutionTime << endl;
 
 	//sistema 3 modo tolerante
 	sqlstr = "SELECT * FROM operationMode WHERE id = 2 AND idSystem = 3;";
@@ -161,6 +174,7 @@ void refreshAllMetrics(VInterfaceDTO& vinterface) {
 	vinterface.setTar32(ta/(fa+ta));
 	vinterface.setTrr32(tr/(tr+fr));
 	vinterface.setAvgTime32(avgExecutionTime);
+	cout << "avg time32: " << avgExecutionTime << endl;
 
 	//sistema 3 modo rigoroso
 	sqlstr = "SELECT * FROM operationMode WHERE id = 3 AND idSystem = 3;";
@@ -179,6 +193,7 @@ void refreshAllMetrics(VInterfaceDTO& vinterface) {
 	vinterface.setTar33(ta/(fa+ta));
 	vinterface.setTrr33(tr/(tr+fr));
 	vinterface.setAvgTime33(avgExecutionTime);
+	cout << "avg time33: " << avgExecutionTime << endl;
 
 	return;
 }
@@ -419,10 +434,14 @@ void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted3
 	  sqlite3_free(zErrMsg);
 	}
 	sqlstr = "UPDATE operationMode SET avgExecutionTime = ";
-	tempTime = ((avgExecutionTime*numberOfExecutions)+executionTime1)/(numberOfExecutions+1);
+	cout << "avgExecutionTime: " << avgExecutionTime << endl;
+	cout << "avgExecutionTime*numberOfExecutions: " << avgExecutionTime*numberOfExecutions << endl;
+	tempTime = ((avgExecutionTime*(float)numberOfExecutions)+(float)executionTime1)/((float)numberOfExecutions+1);
+	cout << "tempTime: " << tempTime << endl;
 	sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << tempTime) )->str());
 	sqlstr.append(", numberOfExecutions = ");
 	tempNumber = numberOfExecutions + 1;
+	cout << "tempNumber: " << tempNumber << endl;
 	cout<< "numberOfExeuctions: " << numberOfExecutions <<endl;
 	sqlstr.append(static_cast<ostringstream*>( &(ostringstream() << tempNumber) )->str());
 	sqlstr.append(" WHERE id = 1 AND idSystem = 1;");

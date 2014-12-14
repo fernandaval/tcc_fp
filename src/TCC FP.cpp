@@ -485,6 +485,7 @@ void Main::updateMetrics(bool feedback, HasCallbackClass *_clazz) {
 
 void updateMetricsLocal(bool feedback, VInterfaceDTO& vinterface) {
 
+	cout << "updating metrics - getTotalTime1: " << vinterface.getTotalTime1() << endl;
 	metricsUpdate(feedback,vinterface.getAccepted1(),vinterface.getAccepted2(),vinterface.getAccepted31(),vinterface.getAccepted32(),vinterface.getAccepted33(),vinterface.getTotalTime1(),vinterface.getTotalTime2(),vinterface.getTotalTime31(),vinterface.getTotalTime32(),vinterface.getTotalTime33());
 	minimumScoresUpdate();
 
