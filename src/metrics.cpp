@@ -116,6 +116,8 @@ void refreshAllMetrics(VInterfaceDTO& vinterface) {
 	vinterface.setFrr1(fr/(tr+fr));
 	vinterface.setTar1(ta/(fa+ta));
 	vinterface.setTrr1(tr/(tr+fr));
+	vinterface.setMinimumScore1(score);
+	cout << "get Minimum Score1: " << vinterface.getMinimumScore1() << endl;
 	vinterface.setAvgTime1(avgExecutionTime);
 	cout << "avg time1: " << avgExecutionTime << endl;
 
@@ -135,6 +137,7 @@ void refreshAllMetrics(VInterfaceDTO& vinterface) {
 	vinterface.setFrr2(fr/(tr+fr));
 	vinterface.setTar2(ta/(fa+ta));
 	vinterface.setTrr2(tr/(tr+fr));
+	vinterface.setMinimumScore2(score);
 	vinterface.setAvgTime2(avgExecutionTime);
 	cout << "avg time2: " << avgExecutionTime << endl;
 
@@ -154,6 +157,7 @@ void refreshAllMetrics(VInterfaceDTO& vinterface) {
 	vinterface.setFrr31(fr/(tr+fr));
 	vinterface.setTar31(ta/(fa+ta));
 	vinterface.setTrr31(tr/(tr+fr));
+	vinterface.setMinimumScore31(score);
 	vinterface.setAvgTime31(avgExecutionTime);
 	cout << "avg time31: " << avgExecutionTime << endl;
 
@@ -173,6 +177,7 @@ void refreshAllMetrics(VInterfaceDTO& vinterface) {
 	vinterface.setFrr32(fr/(tr+fr));
 	vinterface.setTar32(ta/(fa+ta));
 	vinterface.setTrr32(tr/(tr+fr));
+	vinterface.setMinimumScore32(score);
 	vinterface.setAvgTime32(avgExecutionTime);
 	cout << "avg time32: " << avgExecutionTime << endl;
 
@@ -192,6 +197,7 @@ void refreshAllMetrics(VInterfaceDTO& vinterface) {
 	vinterface.setFrr33(fr/(tr+fr));
 	vinterface.setTar33(ta/(fa+ta));
 	vinterface.setTrr33(tr/(tr+fr));
+	vinterface.setMinimumScore33(score);
 	vinterface.setAvgTime33(avgExecutionTime);
 	cout << "avg time33: " << avgExecutionTime << endl;
 
@@ -302,6 +308,8 @@ void minimumScoresUpdate() {
 }
 
 void metricsUpdate(bool feedback, bool accepted1, bool accepted2, bool accepted31, bool accepted32, bool accepted33, float executionTime1, float executionTime2, float executionTime31, float executionTime32, float executionTime33) {
+	cout << "feedback recebido: " << feedback << endl;
+
 	sqlite3 *db;
 	char *zErrMsg = 0;
 	int rc;

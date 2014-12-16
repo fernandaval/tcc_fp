@@ -74,7 +74,8 @@ void runTests(VInterfaceDTO& vinterface) {
 					strc << c;
 
 					//imagens que deveriam ser aceitas
-					imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+//					imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+					imagePath = "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
 					cout << "image path: " << imagePath << endl;
 					cout << "USUARIO CADASTRADO" << endl;
 					runSystem1(vinterface,imagePath,option,(a*10)+b);
@@ -86,7 +87,8 @@ void runTests(VInterfaceDTO& vinterface) {
 					cout << "usuario NAO cadastrado" << endl;
 
 					//imagens que deveriam ser rejeitadas
-					imagePath = "/home/priscila/BDs_imagens_de_digitais/2000/DB2/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+//					imagePath = "/home/priscila/BDs_imagens_de_digitais/2000/DB2/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+					imagePath = "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2000/DB2/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
 
 					runSystem1(vinterface,imagePath,option,(a*10)+b);
 					runSystem2(vinterface,imagePath,option,(a*10)+b);
@@ -129,8 +131,8 @@ void fillBD(VInterfaceDTO& vinterface) {
 					stra << a;
 					strb << b;
 					strc << c;
-					imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
-//					imagePath = "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+//					imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
+					imagePath = "/home/fernanda/Documents/tcc/BDs_imagens_de_digitais/2004/DB1/1" + stra.str() + strb.str() + "_" + strc.str() + ".tif";
 
 					runSystem1(vinterface,imagePath,option,(a*10)+b);
 					cout << "cadastrei template " << strc.str() << " do usuario " << stra.str() + strb.str() << " no sistema 1" << endl;
@@ -163,6 +165,10 @@ void runSystem1(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 	imageRead(&originalImage, &dpi, imagePath);
 
 	imwrite(originalPath,originalImage);
+	imwrite(whiteBorder1Path, originalImage);
+	imwrite(binarized1Path, originalImage);
+	imwrite(equalized1Path, originalImage);
+	imwrite(gabor1Path, originalImage);
 
 	imageMeasures (originalImage, dpi, &N, &col, &row); //retorna coluna e linha da imagem final com borda
 
@@ -211,6 +217,7 @@ void runSystem2(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 
 	//Leitura da imagem de entrada
 	imageRead(&originalImage, &dpi, imagePath);
+	imwrite(whiteBorder2Path, originalImage);
 
 	imageMeasures (originalImage, dpi, &N, &col, &row); //retorna coluna e linha da imagem final com borda
 
@@ -226,6 +233,7 @@ void runSystem2(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 	vinterface.setEqualizationTime2(equalizationTime);
 
 	imwrite(equalized2Path, equalizedImage);
+	imwrite(gabor2Path, equalizedImage);
 
 
 	//BINARIZATION
@@ -357,7 +365,7 @@ void runSystem3(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 //	orientationMapOLD(&windows, row, col, N);
 	orientationMap(&windows, row, col, N);
 //	frequencyMap(&windows, row, col, N);
-	//gaborFilter (&windows, row, col, N); //, &windowsPostGabor);
+	gaborFilter (&windows, row, col, N); //, &windowsPostGabor);
 	//cout << "depois gabor" << endl;
 	gettimeofday (&gaborFilterTimeAfter, NULL);
 	float gaborFilterTime = ((gaborFilterTimeAfter.tv_sec - gaborFilterTimeBefore.tv_sec)
@@ -379,13 +387,15 @@ void runSystem3(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 	struct timeval binarizationTimeBefore, binarizationTimeAfter;  // removed comma
 	gettimeofday (&binarizationTimeBefore, NULL);
 	//binarization(&windows, row, col, N);
-	imageBinarization (&imageCropped);
+//	imageBinarization (&imageCropped);
+	imageBinarization (&fullImage);
 	gettimeofday (&binarizationTimeAfter, NULL);
 	float binarizationTime = ((binarizationTimeAfter.tv_sec - binarizationTimeBefore.tv_sec)
 				+ (binarizationTimeAfter.tv_usec - binarizationTimeBefore.tv_usec)/(float)1000000);
 	//cout << "binarizationTime(3): " << binarizationTime << " segundos" << endl;
 	vinterface.setBinarizationTime3(binarizationTime);
-	imwrite(binarized3Path,imageCropped);
+//	imwrite(binarized3Path,imageCropped);
+	imwrite(binarized3Path,fullImage);
 
 	//THINNING
 
@@ -402,12 +412,14 @@ void runSystem3(VInterfaceDTO& vinterface, string imagePath, int option, int idU
 
 	//Converte a imagem no formato colorido para que seja possível utilizá-la na hora de exibir as minúcias (em cor)
 	Mat minutiaeImage;
-	cvtColor(imageCropped, minutiaeImage, CV_GRAY2RGB);
+//	cvtColor(imageCropped, minutiaeImage, CV_GRAY2RGB);
+	cvtColor(fullImage, minutiaeImage, CV_GRAY2RGB);
 
 	//MINUTIA EXTRACTION
 	struct timeval minutiaeExtractionTimeBefore, minutiaeExtractionTimeAfter;  // removed comma
 	gettimeofday (&minutiaeExtractionTimeBefore, NULL);
-	minutiaeExtract(imageCropped,idSystem,option,idUser);
+//	minutiaeExtract(imageCropped,idSystem,option,idUser);
+	minutiaeExtract(fullImage,idSystem,option,idUser);
 	gettimeofday (&minutiaeExtractionTimeAfter, NULL);
 	float minutiaeExtractionTime = ((minutiaeExtractionTimeAfter.tv_sec - minutiaeExtractionTimeBefore.tv_sec)
 				+ (minutiaeExtractionTimeAfter.tv_usec - minutiaeExtractionTimeBefore.tv_usec)/(float)1000000);
@@ -509,12 +521,14 @@ void Main::execute(HasCallbackClass *_clazz, string imagePath) {
 	//fillBD(this->vInterfaceDTO);
 
 	//imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/108_8.tif"; //apenas para teste
-
-//	runSystem1(this->vInterfaceDTO, imagePath,2,0);
-//	runSystem2(this->vInterfaceDTO, imagePath,2,0);
-//	runSystem3(this->vInterfaceDTO, imagePath,2,0);
-
-	runTests(this->vInterfaceDTO);
+	cout << "imagepath" << imagePath << endl;
+	Mat temp = imread(imagePath);
+	imwrite ("/home/fernanda/workspace/c/tcc_fp_gui/resources/images/fingerprints/original.tif", temp);
+	runSystem1(this->vInterfaceDTO, imagePath,2,0);
+	runSystem2(this->vInterfaceDTO, imagePath,2,0);
+	runSystem3(this->vInterfaceDTO, imagePath,2,0);
+	refreshAllMetrics(this->vInterfaceDTO);
+//	runTests(this->vInterfaceDTO);
 
 	//testes manuais
 	/*

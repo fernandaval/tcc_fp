@@ -603,7 +603,7 @@ void getWindowBorder (Mat *imageWithBorder, int N, vector < vector <window*> > w
 
 	cout << "entrou no get Windows border" << endl;
 //	imageWithBorder->create(N + 4, N + 4, windows[i][j]->getImageWindow().type());
-	imageWithBorder->create(N + 10, N + 10, windows[i][j]->getImageWindow().type());
+	imageWithBorder->create(N + 20, N + 20, windows[i][j]->getImageWindow().type());
 
 	cout << "criou imagem" << endl;
 
@@ -740,23 +740,6 @@ void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N)
 //	REVISAR PONTEIROS!!!
 
 	int w = 10; // frequencia a ser utilizada no Gabor
-	//TEMP
-
-//	//Dimensiona a matriz com as janelas (i = linhas, j = colunas)
-//	windowsNew->resize(row/N - 2);
-//	for (int i = 0; i < row/N - 2; i++){
-//		windowsNew[i].resize((int)col/N - 2);
-//	}
-//
-//	//inicializando a matriz com as janelas (usando a classe window)
-//	for (int i = 0; i < row/N-2; i++){
-//		for (int j = 0; j < col/N-2;  j++){
-//			(*windowsNew)[i][j] = new window(N, N, (*windows)[0][0]->getImageWindow().type());
-//			(*windows)[i + 1][j + 1]->getImageWindow().copyTo((*windowsNew)[i][j]->imageWindow);
-//			(*windowsNew)[i][j]->setAngle((*windows)[i][j]->getAngle());
-//			//windowsTemp[i][j]->setImageWindow((*windows)[i][j]->getImageWindow());
-//		}
-//	}
 
 
 	vector < vector <window*> > windowsTemp;
@@ -792,21 +775,6 @@ void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N)
 			//windowsTemp[i][j]->setImageWindow((*windows)[i][j]->getImageWindow());
 		}
 	}
-
-//	//preenchendo as janelas laterais verticais com brancos
-//	for (int i = 0; i < row/N; i++) {
-//		for (int j = 0; j < col/N; j = j + col/N -1) {
-//			(*windows)[i][j]->imageWindow.setTo(Scalar(255,255,255));
-//		}
-//	}
-//
-//	//preenchendo as janelas laterais horizontais com brancos
-//	for (int j = 1; j < col/N - 1; j++) {
-//		for (int i = 0; i < row/N; i = i + row/N -1) {
-//			(*windows)[i][j]->imageWindow.setTo(Scalar(255,255,255));
-//		}
-//	}
-
 	//aplicando o gabor nas janelas internas
 	for (int i = 1; i < row/N - 1; i++) {
 			for (int j = 1; j <  col/N - 1; j++) {
@@ -833,22 +801,29 @@ void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N)
 
 					cout << "fim image aux" << endl;
 					filter2D(imageWithBorder, imageAux, -1, gaborKernel);
+					cout << "fim image aux2" << endl;
 					filter2D(imageWithBorder, imageAux2, -1, gaborKernel2);
+					cout << "fim image aux3" << endl;
 
+					cout << "2" << endl;
 //					removeWindowBorder( &windowsTemp[i][j]->imageWindow, imageAux, N + 4, N);
 //					removeWindowBorder( &windowsTemp2[i][j]->imageWindow, imageAux2, N + 4, N);
 					removeWindowBorder( &windowsTemp[i][j]->imageWindow, imageAux, N + 10, N);
 					removeWindowBorder( &windowsTemp2[i][j]->imageWindow, imageAux2, N + 10, N);
 
+					cout << "3" << endl;
 					float media = mean(windowsTemp[i][j]->imageWindow, windowsTemp[i][j]->imageWindow)[0];
 					float media2 = mean(windowsTemp2[i][j]->imageWindow, windowsTemp2[i][j]->imageWindow)[0];
 
+					cout << "4" << endl;
 					if (media > media2) {
 //						windowsTemp[i][j]->imageWindow.copyTo(windowsFinal[i][j]->imageWindow);
 						windowsTemp[i][j]->imageWindow.copyTo((*windows)[i][j]->imageWindow);
 //						windowsTemp[i][j]->imageWindow.copyTo((*windowsNew)[i - 1][j - 1]->imageWindow);
 					}
 					else {
+
+						cout << "6" << endl;
 //						windowsTemp2[i][j]->imageWindow.copyTo(windowsFinal[i][j]->imageWindow);
 						windowsTemp2[i][j]->imageWindow.copyTo((*windows)[i][j]->imageWindow);
 //						windowsTemp2[i][j]->imageWindow.copyTo((*windowsNew)[i - 1][j - 1]->imageWindow);
@@ -857,14 +832,18 @@ void gaborFilter (vector < vector <window*> > *windows, int row, int col, int N)
 			}
 		}
 
+	cout << "antes window temp" << endl;
 	for (int i = 0; i < row/N; i++){
 		for (int j = 0; j < col/N;  j++){
+			cout << "i(row)= " << i << "; j= " << j << endl;
 			delete windowsTemp[i][j];
 		}
 	}
 
+	cout << "antes window temp2" << endl;
 	for (int i = 0; i < row/N; i++){
 		for (int j = 0; j < col/N;  j++){
+			cout << "i(row)= " << i << "; j= " << j << endl;
 			delete windowsTemp2[i][j];
 		}
 	}

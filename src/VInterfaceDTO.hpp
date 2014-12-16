@@ -8,6 +8,7 @@
 #ifndef VINTERFACEDTO_HPP_
 #define VINTERFACEDTO_HPP_
 
+
 /**
  *	Not exactly a DTO but is a class that stores data that will be used by the GUI project
  **/
@@ -178,6 +179,21 @@ public:
 	float getTrr33(void);
 	void setTrr33(float trr33);
 
+	int getMinimumScore1(void);
+	void setMinimumScore1(int minimumScore1);
+
+	int getMinimumScore2(void);
+	void setMinimumScore2(int minimumScore2);
+
+	int getMinimumScore31(void);
+	void setMinimumScore31(int minimumScore31);
+
+	int getMinimumScore32(void);
+	void setMinimumScore32(int minimumScore32);
+
+	int getMinimumScore33(void);
+	void setMinimumScore33(int minimumScore33);
+
 private:
 	float windowingTime3;
 	float equalizationTime2;
@@ -238,6 +254,12 @@ private:
 	float trr33;
 
 	bool feedback;
+
+	int minimumScore1;
+	int minimumScore2;
+	int minimumScore31;
+	int minimumScore32;
+	int minimumScore33;
 };
 
 

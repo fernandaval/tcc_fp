@@ -433,3 +433,42 @@ void VInterfaceDTO::setTrr33(float trr33){
 float VInterfaceDTO::getTrr33(void){
 	return this->trr33;
 }
+
+int VInterfaceDTO::getMinimumScore1(void) {
+	return this->minimumScore1;
+}
+
+void VInterfaceDTO::setMinimumScore1(int minimumScore1) {
+	this->minimumScore1 = minimumScore1;
+}
+
+int VInterfaceDTO::getMinimumScore2(void) {
+	return this->minimumScore2;
+}
+void VInterfaceDTO::setMinimumScore2(int minimumScore2){
+	this->minimumScore2 = minimumScore2;
+}
+
+int VInterfaceDTO::getMinimumScore31(void) {
+	return this->minimumScore31;
+}
+
+void VInterfaceDTO::setMinimumScore31(int minimumScore31){
+	this->minimumScore31 = minimumScore31;
+}
+
+int VInterfaceDTO::getMinimumScore32(void) {
+	return this->minimumScore32;
+}
+
+void VInterfaceDTO::setMinimumScore32(int minimumScore32){
+	this->minimumScore32 = minimumScore32;
+}
+
+int VInterfaceDTO::getMinimumScore33(void) {
+	return this->minimumScore33;
+}
+
+void VInterfaceDTO::setMinimumScore33(int minimumScore33){
+	this->minimumScore33 = minimumScore33;
+}
