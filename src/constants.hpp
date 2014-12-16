@@ -37,8 +37,8 @@
 
 //FERNANDA
 
-
 /*
+
 //PRISCILA
 //preProcessing.cpp
 #define outputPath "/home/priscila/Documents/tcc/imagens_teste/Output/"
@@ -48,11 +48,17 @@
 #define minutiae1Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/minutiae1.tif"
 #define minutiae2Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/minutiae2.tif"
 #define minutiae3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/minutiae3.tif"
+#define equalized1Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/equalized1.tif"
 #define equalized2Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/equalized2.tif"
 #define equalized3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/equalized3.tif"
+#define binarized1Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/binarized1.tif"
 #define binarized2Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/binarized2.tif"
 #define binarized3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/binarized3.tif"
+#define gabor1Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/gabor1.tif"
+#define gabor2Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/gabor2.tif"
 #define gabor3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/gabor3.tif"
+#define whiteBorder1Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/whiteborder1.tif"
+#define whiteBorder2Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/whiteborder2.tif"
 #define whiteBorder3Path "/home/priscila/tcc_fp_gui/resources/images/fingerprints/whiteborder23.tif"
 #define originalPath "/home/priscila/tcc_fp_gui/resources/images/fingerprints/original.tif"
 #define bdPath "/home/priscila/tcc_fp/fingerprint.db"

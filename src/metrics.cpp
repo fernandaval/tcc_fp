@@ -35,12 +35,12 @@
 //#define bdPath "/home/priscila/tcc_fp/fingerprint.db"
 
 //parametros de teste
-#define scoreChange 2
+#define scoreChange 1
 #define minimumTolerant 14
 #define minimumRigorous 20
 #define limitFAR 0.05
-#define limitFRR 0.05
-#define quantityTransitory 3
+#define limitFRR 0.03
+#define quantityTransitory 5
 
 using namespace std;
 

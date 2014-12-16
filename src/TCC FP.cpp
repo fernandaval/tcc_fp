@@ -64,7 +64,7 @@ void runTests(VInterfaceDTO& vinterface) {
 		{
 			while (c<=8)
 			{
-				if (10*a+b <= 2) //Só executa para ID de usuário <= 10
+				if (10*a+b <= 10) //Só executa para ID de usuário <= 10
 				{
 					stringstream stra;
 					stringstream strb;
@@ -518,10 +518,10 @@ void Main::showImage (string path){
 
 void Main::execute(HasCallbackClass *_clazz, string imagePath) {
 
-	//fillBD(this->vInterfaceDTO);
+//	fillBD(this->vInterfaceDTO);
 
-	//imagePath = "/home/priscila/BDs_imagens_de_digitais/2004/DB1/108_8.tif"; //apenas para teste
-	cout << "imagepath" << imagePath << endl;
+
+//	cout << "imagepath" << imagePath << endl;
 	Mat temp = imread(imagePath);
 	imwrite ("/home/fernanda/workspace/c/tcc_fp_gui/resources/images/fingerprints/original.tif", temp);
 	runSystem1(this->vInterfaceDTO, imagePath,2,0);
